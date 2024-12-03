@@ -1,8 +1,8 @@
 # HUG
 <p align="center">
-    <img src="/frontend/images/logo.png" align="center" width="30%">
+    <img src="/frontend/images/logo.png" align="center" width="50%">
 </p>
-<p align="center"><h1 align="center">README-AI</h1></p>
+<p align="center"><h1 align="center">H.U.G</h1></p>
 <p align="center">
 	<em><code>❯ REPLACE-ME</code></em>
 </p>
