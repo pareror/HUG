@@ -6,7 +6,7 @@ app.use(express.json());
 
 // API di esempio
 app.get('/api/tasks', (req, res) => {
-    res.json([{ id: 1, title: 'Task 2123123123', completed: false }]);
+    res.json([{ id: 1, title: 'PROVA', completed: false }]);
 });
 
 
