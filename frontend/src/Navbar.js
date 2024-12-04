@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -6,6 +6,34 @@ const Navbar = () => {
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
+
+    const closeMenu = () => {
+        setMenuOpen(false);
+    };
+
+    useEffect(() => {
+        // Chiudi il menu quando si clicca fuori o si ridimensiona la finestra
+        const handleClickOutside = (event) => {
+            if (!event.target.closest(".navbar")) {
+                closeMenu();
+            }
+        };
+
+        const handleResize = () => {
+            if (window.innerWidth > 768) {
+                closeMenu(); // Chiudi il menu se la finestra viene ingrandita
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+        window.addEventListener("resize", handleResize);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     return (
         <nav className="navbar">

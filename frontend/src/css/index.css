@@ -2,36 +2,35 @@
 html, body {
   margin: 0;
   padding: 0;
-  width: 100vw; /* Larghezza massima della viewport */
-  height: 100vh; /* Altezza massima della viewport */
+  width: 100%; /* Larghezza al 100% */
+  height: 100%; /* Altezza al 100% */
   font-family: Arial, sans-serif;
-  overflow-x: hidden;;
+  overflow-x: hidden; /* Evita lo scrolling orizzontale */
 }
 
+/* Contenitore principale */
 .App {
-  width: 100vw; /* Larghezza massima della viewport */
-  height: 100vh; /* Altezza massima della viewport */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #f5f5f5; /* Colore di sfondo */
+  min-height: 100vh;
+  background-color: #f5f5f5;
 }
 
+/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%; /* Assicura che la larghezza sia esattamente il 100% della finestra */
-  box-sizing: border-box; /* Include padding e bordi nella dimensione totale */
-  height: 60px;
+  width: 100%;
+  height: 60px; /* Altezza della navbar */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px; /* Spaziatura interna */
+  padding: 0 20px;
   background-color: #ffffff;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 /* Logo */
@@ -41,27 +40,26 @@ html, body {
 }
 
 .logo {
-  height: 40px; /* Dimensioni dinamiche del logo */
-  max-height: 100%; /* Per essere sicuri che si adatti all'altezza della navbar */
+  height: 40px;
+  max-height: 100%;
 }
 
 /* Menu toggle (icona ☰ per schermi piccoli) */
 .menu-toggle {
-  display: none; /* Nascondi il pulsante per schermi grandi */
+  display: none;
   font-size: 24px;
   background: none;
   border: none;
   cursor: pointer;
 }
 
-/* Collegamenti della navbar */
 .navbar-links {
   display: flex;
-  gap: 20px; /* Spaziatura tra i link */
+  gap: 20px;
   align-items: center;
 }
 
-/* Link e pulsante Accedi */
+/* Stile dei collegamenti e pulsanti nella navbar */
 .navbar-links a, .navbar-button {
   text-decoration: none;
   font-size: 16px;
@@ -89,7 +87,6 @@ html, body {
   background-color: #0056b3;
 }
 
-/* Menu a scomparsa */
 .navbar-links.active {
   display: flex;
   flex-direction: column;
@@ -103,23 +100,184 @@ html, body {
   z-index: 999;
 }
 
-/* Responsività */
 @media (max-width: 768px) {
   .navbar-links {
-      display: none; /* Nascondi i link per schermi piccoli */
+    display: none;
   }
 
   .menu-toggle {
-      display: block; /* Mostra il pulsante menu */
+    display: block;
   }
 
   .navbar-links.active {
-      display: flex; /* Mostra il menu quando attivo */
+    display: flex;
   }
 }
+
 main {
-  flex: 1; /* Si adatta allo spazio rimanente */
-  margin-top: 60px; /* Stessa altezza della navbar */
-  padding: 20px;
+  flex: 1;
+  padding: 0 20px;
   box-sizing: border-box;
+  padding-top: 60px; /* Compensa l'altezza della navbar */
+}
+
+/* Correzione per spazi indesiderati */
+body, html, .App, main {
+  margin: 0;
+  padding: 0;
+}
+
+
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 90px 0;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 50px; /* Lati ovali */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15); /* Ombre laterali */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Permette ai contenuti di andare a capo */
+  gap: 20px; /* Spaziatura tra gli elementi */
+}
+
+/* Contenitore del contenuto testuale */
+.hero-content {
+  flex: 1; /* Occupa tutta la larghezza disponibile */
+  max-width: 50%; /* Limita la larghezza massima sui display più grandi */
+  text-align: left; /* Allinea il testo a sinistra */
+}
+
+/* Immagine nella Hero Section */
+.hero-image {
+  flex: 1; /* Occupa tutta la larghezza disponibile */
+  max-width: 40%; /* Limita la larghezza massima sui display più grandi */
+  text-align: center;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto; /* Mantiene le proporzioni */
+  margin: 20px 0; /* Spaziatura sopra e sotto */
+  border-radius: 10px; /* Mantiene angoli arrotondati */
+}
+
+/* Pulsante */
+.hero-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4caf93; /* Verde del logo */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s;
+  margin-top: 20px; /* Spaziatura dal contenuto */
+}
+
+.hero-button:hover {
+  background-color: #3c8b74; /* Verde scuro */
+}
+
+/* Media Query per Schermi Piccoli */
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column; /* Disposizione verticale per gli elementi */
+    align-items: center; /* Centra gli elementi */
+    padding: 20px; /* Riduci il padding sui dispositivi mobili */
+  }
+
+  .hero-content {
+    max-width: 100%; /* Permetti al contenuto di utilizzare tutta la larghezza */
+    text-align: center; /* Centra il testo */
+  }
+
+  .hero-image {
+    max-width: 100%; /* L'immagine occupa tutta la larghezza */
+  }
+
+  .hero-button {
+    width: 100%; /* Allarga il pulsante a tutta la larghezza */
+    padding: 8px 0px; /* Riduci il padding orizzontale */
+  }
+}
+
+
+/* Services Section */
+.services-section {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.services-section h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.services-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.service-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.service-card img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.service-card h3 {
+  margin: 10px 0;
+  font-size: 1.5em;
+  color: #333;
+}
+
+.service-card p {
+  font-size: 1em;
+  color: #555;
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  margin: 40px 0;
+  padding: 20px;
+  background-color: #f0f8ff;
+  border-radius: 10px;
+}
+
+.cta-section h2 {
+  font-size: 2em;
+  color: #007bff;
+}
+
+.cta-section p {
+  margin: 10px 0 20px;
+  color: #555;
+  font-size: 1.2em;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+  background-color: #0056b3;
 }
