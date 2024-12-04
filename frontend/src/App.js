@@ -1,23 +1,16 @@
 
 import './style.css';
-
+import Navbar from './Navbar'
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src="/images/logo.png" className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <main>
+                {/* Contenuto principale */}
+                <h1>Benvenuto nel mio sito!</h1>
+                <p>Qui puoi trovare informazioni sui nostri servizi, chi siamo e come contattarci.</p>
+            </main>
+
     </div>
   );
 }
