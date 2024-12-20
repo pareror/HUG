@@ -45,6 +45,7 @@ function App() {
                     Lavora insieme ad altri centri per offrire il meglio ai tuoi utenti.
                 </p>
             </div>
+            
         </div>
     </section>
 
