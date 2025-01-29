@@ -1,0 +1,148 @@
+/* Contenitore dello slider */
+.slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    padding: 40px 20px;
+}
+
+/* Contenitore delle card */
+.slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+/* Area delle card con transizione più lenta */
+.slider-content {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    width: 950px;
+    overflow: hidden;
+    padding: 20px;
+    transition: transform 0.6s ease-in-out; /* Slide più fluido */
+}
+
+
+/* Stile delle card */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    width: 320px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Pulsanti di navigazione */
+.slider-button {
+    background-color: #ddd;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.slider-button:hover {
+    background-color: #bbb;
+}
+
+/* Posizionamento delle frecce su PC */
+.left {
+    left: 5%;
+}
+
+.right {
+    right: 5%;
+}
+
+/* ✅ Indicatori sotto le card */
+.slider-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    margin: 0 5px;
+    background-color: #888;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active {
+    background-color: #000;
+}
+
+/* ✅ Responsività per dispositivi con schermo ridotto */
+@media (max-width: 768px) {
+    .slider-container {
+        flex-direction: column;
+    }
+
+    .slider-content {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    /* Modifica: Le frecce sono ora accanto, sopra la prima card */
+    .mobile-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .slider-button {
+        display: block;
+        position: static;
+        transform: none;
+        background-color: #ddd;
+    }
+
+    /* Nasconde le frecce laterali su mobile */
+    .left,
+    .right {
+        position: static;
+    }
+
+    .slider-indicators {
+        position: relative;
+        margin-top: 15px;
+    }
+
+    .dot {
+        width: 6px;
+        height: 6px;
+    }
+}

@@ -11,3 +11,38 @@
     box-sizing: border-box; /* Assicura che il padding non aumenti la larghezza totale */
 
   }
+
+  /* Stile per il titolo della sezione */
+.section-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Linea sottostante il titolo per migliorarne l'estetica */
+.section-title::after {
+  content: "";
+  display: block;
+  width: 150px;
+  height: 4px;
+  background-color: #00a86b; /* Verde in linea con il design */
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* ✅ Responsività per schermi più piccoli */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+    margin-top: 20px;
+  }
+
+  .section-title::after {
+    width: 120px;
+    height: 3px;
+  }
+}
