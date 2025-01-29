@@ -24,7 +24,7 @@
   }
   
   .logo {
-    height: 40px;
+    height: 45px;
     max-height: 100%;
   }
   
@@ -46,7 +46,7 @@
   /* Stile dei collegamenti e pulsanti nella navbar */
   .navbar-links a, .navbar-button {
     text-decoration: none;
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
     padding: 8px 12px;
     transition: background-color 0.3s, color 0.3s;
