@@ -4,4 +4,10 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+
+    
+    margin: 0 auto; /* Centra il contenitore */
+    padding: 0 20px; /* Aggiungi padding laterale */
+    box-sizing: border-box; /* Assicura che il padding non aumenti la larghezza totale */
+
   }
