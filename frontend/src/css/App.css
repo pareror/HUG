@@ -1,0 +1,7 @@
+.App {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
