@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../css/Navbar.css";
 
-const Navbar = () => {
+const Navbar = (props) => {
     const [menuOpen, setMenuOpen] = useState(false);
-
+    const {items} = props
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
@@ -45,10 +45,9 @@ const Navbar = () => {
                 ☰
             </button>
             <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-                <a href="#services">Home</a>
-                <a href="#services">Servizi</a>
-                <a href="#about">Chi siamo</a>
-                <a href="#contact">Contatti</a>
+            {items.map(item => (
+                <a href={item.fragment}>{item.name}</a>
+            ))}
                 <button className="navbar-button">Accedi</button>
             </div>
         </nav>
