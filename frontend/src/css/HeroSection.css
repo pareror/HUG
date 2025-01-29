@@ -1,0 +1,78 @@
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 10px; /* Ridotto lo spazio ai lati */
+    margin: 0 auto;
+  }
+  
+  /* Contenuto della Hero */
+  .hero-content {
+    max-width: 50%;
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  /* Bottone CTA */
+  .cta-button {
+    background-color: #00a86b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .cta-button:hover {
+    background-color: #008c5f;
+  }
+  
+  /* Immagine della Hero */
+  .hero-image {
+    max-width: 50%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .hero-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+  }
+  
+  /* ✅ Media Query per Schermi Piccoli (Tablet & Mobile) */
+  @media (max-width: 768px) {
+    .hero {
+      flex-direction: column; /* Testo sopra, immagine sotto */
+      text-align: center;
+      padding: 20px 10px; /* Ridotto lo spazio ai lati */
+    }
+  
+    .hero-content {
+      max-width: 100%;
+    }
+  
+    .hero-image {
+      max-width: 100%;
+      margin-top: 20px; /* Distanza tra testo e immagine */
+
+    }
+  
+    .cta-button {
+      width: 100%; /* Rende il bottone più accessibile */
+    }
+  }
+  

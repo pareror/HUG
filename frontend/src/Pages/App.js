@@ -1,3 +1,4 @@
+import HeroSection from '../Components/HeroSection';
 import Navbar from '../Components/Navbar'
 import '../css/App.css'
 function App() {
@@ -5,6 +6,7 @@ function App() {
   return (
     <div className="App">
       <Navbar items={items}/>
+      <HeroSection />
       <p>asddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasddddddddddasdddddddddd<br/>
       asddddddddasdddddddddd<br/>
       asdddddddd</p>
