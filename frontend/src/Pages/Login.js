@@ -4,7 +4,7 @@ import axios from "axios";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import "../css/Login.css";
 import "../css/ErrorPopup.css"; // Stesso file CSS per gestire i popup
-
+import "../css/SuccessPopup.css"; // Stesso file CSS per gestire i popup
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -139,12 +139,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Se vuoi mostrare il token sotto, altrimenti rimuovi */}
-          {token && (
-            <div style={{ color: "green", marginTop: "10px" }}>
-              Token JWT: {token}
-            </div>
-          )}
         </div>
 
         <div className="login-side">
