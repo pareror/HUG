@@ -48,7 +48,7 @@ router.post('/login', (req, res) => {
 
         // Genera il token JWT
         const token = generateToken(user);
-        res.json({ token });
+        res.status(200).json({ token });
     });
 });
 
