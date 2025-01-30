@@ -1,63 +1,89 @@
-/* Footer */
-.footer {
+
+  /******************************************************
+    2. FOOTER GENERALE
+  *******************************************************/
+  .footer {
+    width: 107%;
+    margin-left: -3%;
+
+    padding: 30px 0;         /* spazio in alto e in basso */
     background-color: #f8f8f8;
-    margin-left: -30px;
-    text-align: center;
-    border-top: 1px solid rgb(200, 191, 191);
-    width: 104%; /* Occupa tutta la larghezza */
-}
-
-/* Contenitore del footer diviso in due parti */
-.footer-container {
+    border-top: 1px solid #c8bfbf; 
+    text-align: center;      /* testo di base centrato */
+  }
+  
+  /******************************************************
+    3. CONTENITORE FOOTER
+    - Larghezza massima ma con sfondo che copre 100%.
+    - Centriamo i blocchi all’interno.
+  *******************************************************/
+  .footer-container {
+    /* Questo contenitore è centrato orizzontalmente 
+       e può avere una larghezza massima fissa. */
+    width: 90%;            /* 90% della pagina, più margine di sicurezza */
+    max-width: 1200px;     /* non crescere oltre 1200px */
+    margin: 0 auto;        /* centrato orizzontalmente */
+    
+    /* Layout a due colonne su desktop, ma che “avvolge” se lo spazio non basta */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Sezioni del footer (Social + Collegamenti Rapidi) */
-.footer-section {
-    flex: 1;
-    text-align: center;
-}
-
-/* Titoli delle sezioni */
-.footer-section h3 {
+    justify-content: space-around; /* separa le sezioni orizzontalmente */
+    align-items: flex-start;       /* allinea in alto le sezioni, se sono di altezze diverse */
+    flex-wrap: wrap;               /* se manca spazio, le sezioni vanno a capo */
+    gap: 40px;                     /* spazio tra le sezioni */
+  }
+  
+  /******************************************************
+    4. LE SEZIONI DEL FOOTER (SOCIAL + COLLEGAMENTI)
+  *******************************************************/
+  .footer-section {
+    /* Così, se c’è spazio, si affiancano; 
+       se non c’è spazio, vanno in colonna */
+    flex: 1 1 300px;  
+    min-width: 200px;        /* evita che si “stringano” troppo */
+    text-align: center;       /* testo interno centrato */
+    margin: 0 auto;           /* se vuoi forzare a centrare in orizzontale */
+  }
+  
+  /* Titoli delle sezioni */
+  .footer-section h3 {
     font-size: 1.3rem;
     margin-bottom: 15px;
     color: #333;
-}
-
-/* Icone social */
-.social-icons {
+  }
+  
+  /******************************************************
+    4a. ICONE SOCIAL
+  *******************************************************/
+  .social-icons {
     display: flex;
     justify-content: center;
     gap: 20px;
-}
-
-.social-icons a {
+  }
+  
+  .social-icons a {
     color: #333;
     transition: color 0.3s, transform 0.2s;
-}
-
-.social-icons a:hover {
+  }
+  
+  .social-icons a:hover {
     color: #007bff;
     transform: scale(1.1);
-}
-
-/* Collegamenti rapidi */
-.footer-section ul {
+  }
+  
+  /******************************************************
+    4b. COLLEGAMENTI RAPIDI
+  *******************************************************/
+  .footer-section ul {
     list-style: none;
     padding: 0;
-}
-
-.footer-section ul li {
+    margin: 0; 
+  }
+  
+  .footer-section ul li {
     margin: 8px 0;
-}
-
-.footer-section ul li button {
+  }
+  
+  .footer-section ul li button {
     background: none;
     border: none;
     font-size: 1rem;
@@ -65,30 +91,42 @@
     cursor: pointer;
     transition: color 0.3s;
     padding: 5px;
-}
-
-.footer-section ul li button:hover {
+  }
+  
+  .footer-section ul li button:hover {
     color: #007bff;
-}
-
-/* Copyright */
-.footer-bottom {
+  }
+  
+  /******************************************************
+    5. COPYRIGHT
+  *******************************************************/
+  .footer-bottom {
     margin-top: 20px;
     font-size: 0.9rem;
     color: #666;
-}
-
-/* ✅ Responsività per schermi più piccoli */
-@media (max-width: 768px) {
-    .footer{
-        margin-left: -20px;
-        width: 106%;
-    }
+    text-align: center; /* centrato in orizzontale */
+  }
+  
+  /******************************************************
+    6. RESPONSIVITÀ PER SCHERMI PIÙ PICCOLI (< 768px)
+  *******************************************************/
+  @media (max-width: 768px) {
     .footer-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 30px;
-        margin-left: 50px;
-        
+      /* Se prima usavi 'flex-direction: column;', ora usi 'row' per mantenerle affiancate */
+      flex-direction: row; 
+      justify-content: center; 
+      align-items: flex-start; /* o center, a seconda di come vuoi allinearle verticalmente */
+      gap: 10px;               /* spazio orizzontale minimo fra le due sezioni */
+      height: auto;           /* se non ti serve l’altezza fissa di 200px, meglio toglierla */
     }
-}
+  
+    .footer-section {
+      /* Se vuoi che ognuna occupi metà schermo:
+         50% + 50% = 100% */
+      width: 50%; 
+      max-width: none; /* Disabilita eventuali limiti di larghezza */
+      flex: none;      /* Rimuovi eventuali regole flex: 1 1 ... */
+    }
+  }
+  
+  
