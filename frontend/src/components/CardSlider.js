@@ -68,7 +68,21 @@ const CardSlider = ({ setSectionTitle }) => {
       {/* Indicatori sotto le card */}
       <div className="slider-indicators">
         {Array.from({ length: totalSlides }).map((_, i) => (
-          <span key={i} className={`dot ${i === index ? "active" : ""}`} onClick={() => setIndex(i)}></span>
+          <button
+          key={i}
+          className={`dot ${i === index ? "active" : ""}`}
+          onClick={() => setIndex(i)}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") {
+              setIndex((prev) => (prev + 1) % totalSlides);
+            } else if (e.key === "ArrowLeft") {
+              setIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+            }
+          }}
+          aria-label={`Vai alla slide ${i + 1}`}
+        >
+        </button>
+        
         ))}
       </div>
     </div>
