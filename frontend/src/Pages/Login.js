@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../css/Login.css"; // Qui puoi inserire lo stile per il popup e il form
 import axios from "axios";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
-import "../css/ErrorPopup.css";
+import "../css/Login.css";
+import "../css/ErrorPopup.css"; // Stesso file CSS per gestire i popup
+
 const Login = () => {
-  // Stati locali
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);  // Per memorizzare gli errori dal server
+
+  // Error & success states
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+
+  // Token facoltativo
   const [token, setToken] = useState(null);
+
   const navigate = useNavigate();
 
   // Mostra/nasconde la password
@@ -18,7 +24,7 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  // useEffect: se `error` è impostato, scompare dopo 3 secondi
+  // Quando arriva un errore, lo facciamo sparire dopo 3 secondi
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -28,40 +34,42 @@ const Login = () => {
     }
   }, [error]);
 
-  // Gestore dell'invio del form
+  // Quando `success` è true, dopo 3 secondi si va a /dashboard
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/dashboard");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // reset di eventuali errori precedenti
+    setError(null);
+    setSuccess(false);
 
     try {
-      // Esempio di chiamata POST con axios
       const response = await axios.post("http://localhost:5000/api/login", {
         username,
         password,
       });
 
-      // Se la chiamata ha avuto successo (200 OK)
       if (response.status === 200) {
-        // Otteniamo il token dalla risposta
         const data = response.data;
         setToken(data.token);
-        console.log("Token ricevuto:", data.token);
 
-        // Se vuoi, puoi salvare il token in localStorage
+        // (opzionale) Salva il token
         localStorage.setItem("token", data.token);
 
-        // Oppure effettuare un redirect
-        navigate("/dashboard");
+        // Mostra il popup di successo
+        setSuccess(true);
       }
     } catch (err) {
-      // Se c'è un errore di risposta dal server:
       if (err.response) {
-        // err.response.data contiene i dati di errore inviati dal server
         const { error: serverError } = err.response.data;
-        // Altrimenti possiamo settare un messaggio generico
         setError(serverError || "Errore durante il login");
       } else {
-        // Se l’errore è di rete o altro
         setError("Errore di rete: " + err.message);
       }
     }
@@ -69,17 +77,24 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      {/* Popup di errore (solo se `error` è valorizzato) */}
+      {/* Popup di errore (rosso) con la barra di countdown */}
       {error && (
         <div className="error-popup">
-          {error}
+          <div className="error-text">{error}</div>
+          <div className="error-bar"></div>
+        </div>
+      )}
+
+      {/* Popup di successo (verde) con la barra di countdown */}
+      {success && (
+        <div className="success-popup">
+          <div className="success-text">Login effettuato con successo!</div>
+          <div className="success-bar"></div>
         </div>
       )}
 
       <div className="login-content">
-        {/* Sezione Sinistra - Form Login */}
         <div className="login-form">
-          {/* Pulsante Torna Indietro */}
           <button className="back-button" onClick={() => navigate(-1)}>
             <ArrowLeft size={20} />
             Torna indietro
@@ -124,16 +139,14 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Mostra il token se presente */}
+          {/* Se vuoi mostrare il token sotto, altrimenti rimuovi */}
           {token && (
             <div style={{ color: "green", marginTop: "10px" }}>
-              Login avvenuto con successo!<br />
               Token JWT: {token}
             </div>
           )}
         </div>
 
-        {/* Sezione Destra - Registrazione */}
         <div className="login-side">
           <h3>Non possiedi un account?</h3>
           <p>
