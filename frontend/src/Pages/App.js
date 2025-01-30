@@ -3,6 +3,7 @@ import HeroSection from '../Components/HeroSection';
 import Navbar from '../Components/Navbar'
 import '../css/App.css'
 import CardSlider from '../Components/CardSlider';
+import AboutUs from "./AboutUs";
 
 function App() {
   const items = [
@@ -32,10 +33,7 @@ function App() {
 
       {/* Sezione Chi Siamo */}
       <div id="aboutus">
-        <h2 className="section-title">Chi Siamo</h2>
-        <p className="section-content">
-          Siamo un team di esperti nel settore dell'assistenza e organizzazione di servizi per centri diurni.
-        </p>
+        <AboutUs />
       </div>
 
       {/* Sezione Contatti */}

@@ -1,0 +1,148 @@
+/* Contenitore principale della sezione */
+.about-us {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 10%;
+    background-color: #f5efef;
+    margin-top: 25px;
+}
+
+/* Contenitore interno */
+.about-us-container {
+    max-width: 1200px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Titolo della sezione */
+.section-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Linea decorativa sotto il titolo */
+.section-title::after {
+    content: "";
+    display: block;
+    width: 150px;
+    height: 4px;
+    background-color: #00a86b; /* Verde */
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Contenitore per il testo e l'immagine */
+.about-us-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Testo */
+.about-us-text {
+    flex: 1;
+    text-align: left;
+    max-width: 600px;
+}
+
+.about-us-text p {
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Immagine */
+.about-us-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-us-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Sezione "I Nostri Valori" */
+.values-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 50px;
+    width: 100%;
+}
+
+/* Card dei valori */
+.value-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    width: 300px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.value-card:hover {
+    transform: scale(1.05);
+}
+
+/* Icone sopra i valori */
+.value-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Stile del titolo della card */
+.value-card h3 {
+    font-size: 1.2rem;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+/* Testo della card */
+.value-card p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* ✅ Responsività per dispositivi mobili */
+@media (max-width: 768px) {
+    .about-us-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .about-us-text {
+        text-align: center;
+    }
+
+    .about-us-image {
+        order: -1; /* Porta l'immagine sopra il testo */
+    }
+
+    .values-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
