@@ -87,20 +87,35 @@
     bottom: 0px;
 }
 
+/* Stile base dei pallini (indicatori di navigazione) */
 .dot {
-    height: 8px;
-    width: 8px;
+    height: 10px;
+    width: 5px;
     margin: 0 5px;
     background-color: #888;
     border-radius: 50%;
-    display: inline-block;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.dot.active {
+    transition: background-color 0.3s, transform 0.2s;
+    outline: none; /* Rimuove il bordo blu predefinito */
+  }
+  
+  /* Stile del pallino attivo */
+  .dot.active {
     background-color: #000;
-}
+    transform: scale(1.2); /* Leggera espansione per evidenziare il selezionato */
+  }
+  
+  /* Stile per quando il pallino è in hover (mouse sopra) */
+  .dot:hover {
+    background-color: #555;
+  }
+  
+  /* Stile per quando il pallino è focalizzato (quando si usa la tastiera) */
+  .dot:focus {
+    outline: 2px solid #00a86b; /* Bordo verde quando il pulsante è selezionato con la tastiera */
+  }
+  
 
 /* ✅ Responsività per dispositivi con schermo ridotto */
 @media (max-width: 768px) {
