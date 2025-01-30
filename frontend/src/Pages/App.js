@@ -6,6 +6,7 @@ import CardSlider from '../Components/CardSlider';
 import AboutUs from "./AboutUs";
 import ContactUs from "./ContactUs";
 import Footer from "../Components/Footer"
+
 function App() {
   const items = [
     { name: "Home", fragment: "#home" },
@@ -18,6 +19,8 @@ function App() {
 
   return (
     <div className="App">
+      
+
       {/* Navbar con link agli ID delle sezioni */}
       <Navbar items={items} />
 

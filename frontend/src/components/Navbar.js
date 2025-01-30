@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { HashLink as Link } from "react-router-hash-link";
 import "../css/Navbar.css";
 
-const Navbar = ({ items }) => {
+const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -13,7 +14,6 @@ const Navbar = ({ items }) => {
     };
 
     useEffect(() => {
-        // Chiudi il menu quando si clicca fuori o si ridimensiona la finestra
         const handleClickOutside = (event) => {
             if (!event.target.closest(".navbar")) {
                 closeMenu();
@@ -22,44 +22,33 @@ const Navbar = ({ items }) => {
 
         const handleResize = () => {
             if (window.innerWidth > 768) {
-                closeMenu(); // Chiudi il menu se la finestra viene ingrandita
+                closeMenu();
             }
         };
 
         document.addEventListener("click", handleClickOutside);
         window.addEventListener("resize", handleResize);
 
-        // Cleanup
         return () => {
             document.removeEventListener("click", handleClickOutside);
             window.removeEventListener("resize", handleResize);
         };
     }, []);
 
-    // Funzione per lo scrolling fluido
-    const handleScroll = (fragment) => {
-        const element = document.querySelector(fragment);
-        if (element) {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-            closeMenu(); // Chiude il menu dopo il click su mobile
-        }
-    };
-
     return (
         <nav className="navbar">
-            <a href="/" className="navbar-logo">
+            <Link to="/" className="navbar-logo">
                 <img src="/images/logo.png" alt="Logo" className="logo" />
-            </a>
+            </Link>
             <button className="menu-toggle" onClick={toggleMenu}>
                 ☰
             </button>
             <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-                {items.map((item, index) => (
-                    <button key={index} className="nav-link" onClick={() => handleScroll(item.fragment)}>
-                        {item.name}
-                    </button>
-                ))}
-                <button className="navbar-button navbar-login">Accedi</button> {/* Assicurati che la classe sia corretta */}
+                <Link smooth to="/#home" onClick={closeMenu}>Home</Link>
+                <Link smooth to="/#services" onClick={closeMenu}>Servizi</Link>
+                <Link smooth to="/#aboutus" onClick={closeMenu}>Chi Siamo</Link>
+                <Link smooth to="/#contact" onClick={closeMenu}>Contatti</Link>
+                <Link to="/login" className="navbar-button navbar-login">Accedi</Link> {/* Link al login */}
             </div>
         </nav>
     );
