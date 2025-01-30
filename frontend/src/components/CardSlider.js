@@ -22,17 +22,28 @@ const CardSlider = ({ setSectionTitle }) => {
   const cardsPerPage = 3;
   const totalSlides = Math.ceil(cardsData.length / cardsPerPage);
 
-  // Aggiorna il titolo quando cambia la slide
-  React.useEffect(() => {
-    setSectionTitle(cardsData[index * cardsPerPage]?.sectionTitle || "Default Title");
-  }, [index, setSectionTitle]);
-
   const nextSlide = () => {
-    setIndex((prev) => (prev + 1) % totalSlides);
+    const slider = document.querySelector(".slider-content");
+    slider.style.transition = "transform 0.6s ease-in-out"; // Durata più lenta
+    slider.style.transform = "translateX(-100%)"; // Movimento più naturale
+  
+    setTimeout(() => {
+      setIndex((prev) => (prev + 1) % totalSlides);
+      slider.style.transition = "none"; // Reset della transizione per evitare scatti
+      slider.style.transform = "translateX(0)";
+    }, 600); // Stesso valore della transizione
   };
-
+  
   const prevSlide = () => {
-    setIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+    const slider = document.querySelector(".slider-content");
+    slider.style.transition = "transform 0.6s ease-in-out"; // Durata più lenta
+    slider.style.transform = "translateX(100%)"; // Movimento più naturale
+  
+    setTimeout(() => {
+      setIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+      slider.style.transition = "none"; // Reset della transizione
+      slider.style.transform = "translateX(0)";
+    }, 600); // Stesso valore della transizione
   };
 
   return (
