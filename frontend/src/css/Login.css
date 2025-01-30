@@ -1,168 +1,229 @@
-/* Contenitore principale della pagina di login */
+/****************************************************
+  1. RESET & BOX-SIZING
+*****************************************************/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/****************************************************
+  2. CONTENITORE PRINCIPALE (login-container)
+*****************************************************/
 .login-container {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-    background-color: #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Puoi usare min-height: 100vh per evitare tagli. 
+     Se preferisci puoi lasciare height: 100vh, ma occhio ai contenuti lunghi */
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
 }
 
-/* Contenitore interno diviso in due parti */
+/****************************************************
+  3. CONTENITORE INTERNO (login-content)
+*****************************************************/
 .login-content {
-    display: flex;
-    width: 800px; /* Larghezza massima */
-    background-color: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  /* Prima c’era width: 900px; => sostituito con width: 100% e max-width: 900px. */
+  width: 100%;
+  max-width: 900px; 
+  background-color: white;
+  border-radius: 12px;
+  /* Prima c’era overflow: hidden; 
+     se non ti serve più per l’effetto grafico, commentalo o rimuovilo */
+  /* overflow: hidden; */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex-shrink: 1; /* consente di ridimensionarsi senza “tagliare” */
 }
 
-/* Parte sinistra: Form Login */
+/****************************************************
+  4. SEZIONE LOGIN-FORM (sinistra)
+*****************************************************/
+/* Prima c’era width: 50%; min-width: 300px; => sostituito con flex: 1 */
 .login-form {
-    width: 50%;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+/* Pulsante "Torna indietro" */
 .back-button {
-    display: flex;
-    align-items: center;
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 15px;
 }
 
 .back-button svg {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
-/* Titolo */
+/* Titolo e testo descrittivo */
 .login-form h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .login-form p {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
 }
 
 /* Campi input */
 form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-    font-size: 14px;
-    margin: 10px 0 5px;
+  font-size: 14px;
+  margin: 10px 0 5px;
 }
 
+/* Se vuoi eliminare la larghezza massima sugli input, puoi commentare la riga max-width */
 input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
+  width: 100%;
+  /* max-width: 350px; // <-- commentalo o eliminalo se vuoi fluidità */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 /* Sezione della password con icona */
 .password-input {
-    display: flex;
-    align-items: center;
-    position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .toggle-password {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* Link recupero password */
 .forgot-password {
-    font-size: 12px;
-    color: #007bff;
-    text-decoration: none;
-    margin-top: 5px;
+  font-size: 12px;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 5px;
 }
 
 /* Bottone di accesso */
 .login-button {
-    background-color: #00a86b;
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 15px;
+  background-color: #00a86b;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 15px;
+
+  /* Se vuoi un bottone fluido, puoi fare:
+     width: 100%; max-width: 350px;
+     cosicché si adatti allo spazio genitore */
 }
 
 .login-button:hover {
-    background-color: #008c5f;
+  background-color: #008c5f;
 }
 
-/* Parte destra: Registrazione */
+/****************************************************
+  5. SEZIONE LOGIN-SIDE (destra)
+*****************************************************/
+/* Anche qui, prima c’era width: 50%; min-width: 300px; => sostituito con flex: 1 */
 .login-side {
-    width: 50%;
-    background-color: #e5ffe5;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    border-radius: 0 12px 12px 0;
+  flex: 1;
+  background-color: #e5ffe5;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  /* border-radius: 0 12px 12px 0; // lo puoi lasciare o togliere */
 }
 
 .login-side h3 {
-    font-size: 20px;
-    font-weight: bold;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .login-side p {
-    font-size: 14px;
-    color: #555;
-    margin: 10px 0;
+  font-size: 14px;
+  color: #555;
+  margin: 10px 0;
 }
 
 /* Bottone Registrati */
 .register-button {
-    background: none;
-    border: 1px solid #333;
-    padding: 10px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-cplor 0.3s, color 0.3s;
-    font-size: 14px;
+  background: none;
+  border: 1px solid #333;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 14px;
 }
 
 .register-button:hover {
-    background-color: #333;
-    color: white;
+  background-color: #333;
+  color: white;
 }
 
-/* ✅ Responsività */
+/****************************************************
+  6. RESPONSIVITÀ (max-width: 768px)
+*****************************************************/
 @media (max-width: 768px) {
-    .login-content {
-        flex-direction: column;
-        width: 90%;
-    }
+  /* Prima c’era padding: 120px 20px; => ridotto a 40px 20px */
+  .login-container {
+    padding: 40px 20px;
+    /* se preferisci, potresti anche lasciare height: auto; */
+  }
 
-    .login-form, .login-side {
-        width: 100%;
-        border-radius: 0;
-        padding: 30px;
-    }
+  .login-content {
+    flex-direction: column;
+    width: 100%;
+    border-radius: 12px; /* rimodella il contenitore */
+  }
+
+  .login-form,
+  .login-side {
+    width: 100%;
+    /* min-width: unset; // se vuoi annullare eventuali min-width. */
+    padding: 30px; /* un pochino più ridotto rispetto ai 40px */
+    text-align: center; /* se vuoi i testi centrati anche su mobile */
+  }
+
+  /* Riduzione progressiva degli input su mobile */
+  input {
+    /* se vuoi ancora contenere un po’ la larghezza massima, usa: max-width: 250px; */
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .login-button {
+    /* max-width: 250px; */
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .register-button {
+    width: 100%;
+  }
 }
