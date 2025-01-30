@@ -1,0 +1,94 @@
+/* Footer */
+.footer {
+    background-color: #f8f8f8;
+    margin-left: -30px;
+    text-align: center;
+    border-top: 1px solid rgb(200, 191, 191);
+    width: 104%; /* Occupa tutta la larghezza */
+}
+
+/* Contenitore del footer diviso in due parti */
+.footer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sezioni del footer (Social + Collegamenti Rapidi) */
+.footer-section {
+    flex: 1;
+    text-align: center;
+}
+
+/* Titoli delle sezioni */
+.footer-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Icone social */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icons a {
+    color: #333;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.social-icons a:hover {
+    color: #007bff;
+    transform: scale(1.1);
+}
+
+/* Collegamenti rapidi */
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin: 8px 0;
+}
+
+.footer-section ul li button {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 5px;
+}
+
+.footer-section ul li button:hover {
+    color: #007bff;
+}
+
+/* Copyright */
+.footer-bottom {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ✅ Responsività per schermi più piccoli */
+@media (max-width: 768px) {
+    .footer{
+        margin-left: -20px;
+        width: 106%;
+    }
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+        margin-left: 50px;
+        
+    }
+}
