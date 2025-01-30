@@ -1,100 +1,117 @@
 /* Navbar */
 .navbar {
-    position: sticky;
-    top: 15px;
-    left: 0px; 
-    width: 100%;
-    height: 60px; /* Altezza della navbar */
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #ffffff;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 10000;
-    box-sizing: border-box;
-    border-radius: 20px;
-    border: 1px solid rgb(200, 191, 191);
-  }
-  
-  /* Logo */
-  .navbar-logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 45px;
-    max-height: 100%;
-  }
-  
-  /* Menu toggle (icona ☰ per schermi piccoli) */
-  .menu-toggle {
-    display: none;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
+  position: sticky;
+  top: 15px;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Altezza della navbar */
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10000;
+  box-sizing: border-box;
+  border-radius: 20px;
+  border: 1px solid rgb(200, 191, 191);
+}
+
+/* Logo */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 45px;
+  max-height: 100%;
+}
+
+/* Menu toggle (icona ☰ per schermi piccoli) */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Contenitore dei link */
+.navbar-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Stile dei bottoni della navbar */
+.navbar-links button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #333;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Effetto hover sui link della navbar */
+.navbar-links button:hover {
+  background-color: #f0f0f0;
+  border-radius: 25px;
+}
+
+/* Bottone "Accedi" (blu con bordo curvo) */
+.navbar-button.navbar-login {
+  background-color: #007bff !important; /* Blu */
+  color: white !important;
+  border: none;
+  border-radius: 25px; /* Bordo curvo */
+  padding: 8px 16px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Effetto hover e click sul bottone "Accedi" */
+.navbar-button.navbar-login:hover {
+  background-color: #0056b3 !important; /* Blu più scuro */
+  transform: scale(1.05);
+}
+
+
+/* Menu mobile */
+.navbar-links.active {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: #fff;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+  z-index: 999;
+}
+
+/* Effetto di scrolling fluido per tutta la pagina */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsività: schermi piccoli */
+@media (max-width: 768px) {
   .navbar-links {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-  
-  /* Stile dei collegamenti e pulsanti nella navbar */
-  .navbar-links a, .navbar-button {
-    text-decoration: none;
-    font-size: 18px;
-    color: #333;
-    padding: 8px 12px;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .navbar-links a:hover {
-    background-color: #f0f0f0;
-    border-radius: 5px;
-  }
-  
-  .navbar-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .navbar-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .navbar-links.active {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    background-color: #fff;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    padding: 10px;
-    z-index: 999;
-  }
-  
-  @media (max-width: 768px) {
-    .navbar-links {
       display: none;
-    }
-  
-    .menu-toggle {
-      display: block;
-    }
-  
-    .navbar-links.active {
-      display: flex;
-    }
   }
+
+  .menu-toggle {
+      display: block;
+  }
+
+  .navbar-links.active {
+      display: flex;
+  }
+}
