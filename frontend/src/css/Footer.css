@@ -112,17 +112,14 @@
   *******************************************************/
   @media (max-width: 768px) {
     .footer-container {
-      /* Se prima usavi 'flex-direction: column;', ora usi 'row' per mantenerle affiancate */
       flex-direction: row; 
       justify-content: center; 
-      align-items: flex-start; /* o center, a seconda di come vuoi allinearle verticalmente */
-      gap: 10px;               /* spazio orizzontale minimo fra le due sezioni */
-      height: auto;           /* se non ti serve l’altezza fissa di 200px, meglio toglierla */
+      align-items: flex-start; 
+      gap: 10px;              
+      height: auto;           
     }
   
     .footer-section {
-      /* Se vuoi che ognuna occupi metà schermo:
-         50% + 50% = 100% */
       width: 50%; 
       max-width: none; /* Disabilita eventuali limiti di larghezza */
       flex: none;      /* Rimuovi eventuali regole flex: 1 1 ... */
