@@ -1,6 +1,7 @@
 import Home from './App'
 import Login from "./Login";
 import Dashboard from "./Dashboard";
+import Register from "./Register";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "../Components/ProtectedRoute";
 const Website = () => {
@@ -13,12 +14,12 @@ const Website = () => {
             {/* Rotte pubbliche */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-
+            <Route path="/register" element={<Register />} />
             {/* Rotte protette */}
             <Route 
           path="/dashboard" 
           element={
-            <ProtectedRoute requiredPermission={5}>
+            <ProtectedRoute requiredPermission={[2,3,5]}>
               <Dashboard />
             </ProtectedRoute>
           }

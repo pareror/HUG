@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+
 function authenticateJWT(req, res, next) {
   // Se usi il token nel header Authorization: "Bearer <token>"
   const authHeader = req.headers['authorization'];
