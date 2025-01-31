@@ -3,8 +3,8 @@ import '../css/Dashboard.css';
 import Navbar from '../Components/Navbar';
 import Sidebar from '../Components/Sidebar';
 import '../css/Sidebar.css';
-import ActivityStats from "../Components/ActivityStats"
-import '../css/ActivityStats.css';
+/*import ActivityStats from "../Components/ActivityStats"
+import '../css/ActivityStats.css';*/
 import UpcomingActivities from "../Components/UpcomingActivities"
 import '../css/UpcomingActivities.css';
 import PaymentsTable from "../Components/PaymentsTable"
@@ -87,16 +87,14 @@ function Dashboard() {
       },
     ])
   
-    const stats = {
+    /*const stats = {
       attivitaInterne: 12,
       attivitaEsterne: 4,
       pazientiRegistrati: 2,
       utentiRegistrati: 27,
-    }
+    }*/
   
     return (
-       
-
       <div className="flex h-screen bg-gray-100">
          <div className="Dashboard">
             <Navbar />
@@ -107,7 +105,7 @@ function Dashboard() {
                 <div className="max-w-7xl mx-auto">
                   <h1 className="text-2xl font-semibold mb-8">Benvenuto Korian!</h1>
   
-                 <ActivityStats stats={stats} />
+              {/*  <ActivityStats stats={stats} />*/}
   
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
                      <div>
