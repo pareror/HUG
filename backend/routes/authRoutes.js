@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 const { generateToken } = require('../utils/jwtUtils');
-
+const { authenticateJWT } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // 📌 Endpoint di registrazione (salva l'utente nel database con password hashata)
@@ -59,4 +59,8 @@ router.post('/login', (req, res) => {
     });
 });
 
+//quando accedi a register o login se il token è valido ti reindirizza a dashboard nel frontend
+router.get('/check-token', authenticateJWT, (req, res) => {
+    res.status(200).json({ message: 'Token valido', user: req.user });
+});
 module.exports = router;
