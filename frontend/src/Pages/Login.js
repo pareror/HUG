@@ -56,12 +56,12 @@ const Login = () => {
         { withCredentials: true } // 🔹 IMPORTANTE: Permette di ricevere cookie
       );
   
-      console.log("Token ricevuto:", response.data)
       if (response.status === 200) {
         const data = response.data;
+
         setToken(data.token);
         // (opzionale) Salva il token
-        localStorage.setItem("jwt", data.token);
+        localStorage.setItem("jwt", data.jwt);
 
         // Mostra il popup di successo
         setSuccess(true);
