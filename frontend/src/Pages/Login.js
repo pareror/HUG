@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { HashLink as Link } from "react-router-hash-link";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import "../css/Login.css";
 import "../css/ErrorPopup.css"; // Stesso file CSS per gestire i popup
@@ -33,6 +34,28 @@ const Login = () => {
       return () => clearTimeout(timer);
     }
   }, [error]);
+  // Controllo se l'utente ha un token valido al caricamento della pagina
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = localStorage.getItem("jwt");
+      console.log("Token recuperato:", token);
+      if (token) {
+        try {
+          const response = await axios.get("http://localhost:5000/api/check-token", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.status === 200) {
+            navigate("/dashboard");
+          }
+        } catch (err) {
+          localStorage.removeItem("jwt"); // Rimuovi il token se non è più valido
+        }
+      }
+    };
+
+    checkToken();
+  }, [navigate]);
 
   // Quando `success` è true, dopo 3 secondi si va a /dashboard
   useEffect(() => {
@@ -62,7 +85,7 @@ const Login = () => {
         setToken(data.token);
         // (opzionale) Salva il token
         localStorage.setItem("jwt", data.jwt);
-
+        console.log("Token salvato:", localStorage.getItem("jwt"));
         // Mostra il popup di successo
         setSuccess(true);
       }
@@ -135,7 +158,7 @@ const Login = () => {
               Hai dimenticato la password?
             </a>
 
-            <button type="submit" className="login-button">
+            <button type="submit" className="register-button">
               Accedi
             </button>
           </form>
@@ -148,7 +171,7 @@ const Login = () => {
             Unisciti a noi per migliorare la qualità della vita degli anziani
             attraverso la tecnologia.
           </p>
-          <button className="register-button">Registrati</button>
+          <Link to="/register" className="login-button">Registrati</Link>
         </div>
       </div>
     </div>
