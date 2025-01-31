@@ -50,17 +50,18 @@ const Login = () => {
     setSuccess(false);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/login", {
-        username,
-        password,
-      });
-
+      const response = await axios.post(
+        "http://localhost:5000/api/login",
+        { username, password },
+        { withCredentials: true } // 🔹 IMPORTANTE: Permette di ricevere cookie
+      );
+  
+      console.log("Token ricevuto:", response.data)
       if (response.status === 200) {
         const data = response.data;
         setToken(data.token);
-
         // (opzionale) Salva il token
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("jwt", data.token);
 
         // Mostra il popup di successo
         setSuccess(true);
