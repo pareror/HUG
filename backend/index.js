@@ -9,9 +9,20 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
-app.use(cors({
-    origin: 'http://localhost:3000', // o l'indirizzo del tuo frontend
-  }));
+const allowedOrigins = ["http://localhost:3000"]; // Lista degli origin consentiti
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // ✅ Permette di inviare e ricevere cookie
+  })
+);
 app.use(express.json());
 
 // ✅ Route pubbliche (accessibili a tutti)

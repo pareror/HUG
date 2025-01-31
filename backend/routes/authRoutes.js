@@ -48,7 +48,14 @@ router.post('/login', (req, res) => {
 
         // Genera il token JWT
         const token = generateToken(user);
-        res.status(200).json({ token });
+        res.cookie("jwt", token, {
+            httpOnly: true,  // 🔹 Il cookie non è accessibile da JavaScript per sicurezza
+            secure: false,   // 🔹 Deve essere `false` in locale, `true` in produzione con HTTPS
+            sameSite: "Lax", // 🔹 Necessario per evitare problemi di cross-site requests
+            path: "/"        // 🔹 Permette l'accesso a tutto il sito
+          });
+        
+          res.status(200).json({ message: "Login effettuato con successo!" });
     });
 });
 
