@@ -100,8 +100,9 @@ function Dashboard() {
       <div className="flex h-screen bg-gray-100">
          <div className="Dashboard">
             <Navbar />
-              <div className="dashboard">
-                <Sidebar />
+            <Sidebar />
+              <div className="main-content">
+                
                 <main className="flex-1 overflow-y-auto p-8">
                 <div className="max-w-7xl mx-auto">
                   <h1 className="text-2xl font-semibold mb-8">Benvenuto Korian!</h1>
