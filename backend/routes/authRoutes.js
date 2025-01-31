@@ -63,4 +63,10 @@ router.post('/login', (req, res) => {
 router.get('/check-token', authenticateJWT, (req, res) => {
     res.status(200).json({ message: 'Token valido', user: req.user });
 });
+
+// 📌 Endpoint di logout (invalida il token rimuovendo il cookie)
+router.post('/logout', (req, res) => {
+    res.clearCookie("jwt", { path: "/" }); // Rimuove il cookie contenente il JWT
+    res.status(200).json({ message: "Logout effettuato con successo" });
+});
 module.exports = router;
