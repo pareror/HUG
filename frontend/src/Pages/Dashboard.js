@@ -12,6 +12,7 @@ import '../css/PaymentsTable.css';
 import { useState } from "react"
 
 import { Info } from "lucide-react";
+import Logout from "../Components/LogoutButton";
 /*function Dashboard() {
     return (
         <div className="Dashboard">
@@ -99,7 +100,7 @@ function Dashboard() {
       <div className="flex h-screen bg-gray-100">
          <div className="Dashboard">
             <Navbar />
-                <div className="dashboard">
+              <div className="dashboard">
                 <Sidebar />
                 <main className="flex-1 overflow-y-auto p-8">
                 <div className="max-w-7xl mx-auto">
@@ -115,6 +116,7 @@ function Dashboard() {
                 <div>
                 <h2 className="text-xl font-semibold mb-4">Pagamenti</h2>
                 <PaymentsTable payments={payments} />
+                <Logout />
               </div>
             </div>
           </div>
