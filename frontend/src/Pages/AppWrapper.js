@@ -18,7 +18,7 @@ const Website = () => {
             <Route 
           path="/dashboard" 
           element={
-            <ProtectedRoute requiredPermission={5}>
+            <ProtectedRoute requiredPermission={[2,3,5]}>
               <Dashboard />
             </ProtectedRoute>
           }
