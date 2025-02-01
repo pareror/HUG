@@ -65,6 +65,7 @@
     align-items: center;
     gap: 5px;
     transition: color 0.3s ease-in-out;
+
   }
   .dropdown-toggle:hover {
     color: #007bff;
@@ -83,6 +84,7 @@
     padding: 10px;
     min-width: 180px;
     opacity: 0;
+    z-index: 1002;
     visibility: hidden;
     transform: translateY(-10px);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
@@ -244,6 +246,7 @@
     z-index: 1001; /* Assicura che sia in primo piano */
     position: relative; /* Mantiene il flusso normale */
     margin-left: 10px; /* Distanza dalla campanella */
+    
   }
   
   .menu-toggle svg {

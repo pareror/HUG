@@ -25,7 +25,10 @@ const NavbarDashboard = () => {
   const toggleDropdown = (section) => {
     setActiveDropdown((prev) => (prev === section ? null : section));
   };
-
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setActiveDropdown(null);
+  };
   // Chiude menu e dropdown se si clicca fuori dalla navbar
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,7 +40,19 @@ const NavbarDashboard = () => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+    useEffect(() => {
+        const handleResize = () => {
+        if (window.innerWidth > 768) {
+            closeMenu();
+        }
+        };
 
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+        window.removeEventListener('resize', handleResize);
+        };
+    }, []);
   return (
     <nav className="navbar-dashboard">
       {/* Logo a sinistra */}
@@ -156,7 +171,7 @@ const NavbarDashboard = () => {
             className="profile-toggle"
             onClick={() => toggleDropdown("profilo")}
           >
-            <img src="/images/profile.png" alt="Profilo" className="profile-pic" />
+            <img src="/images/profilo.png" alt="Profilo" className="profile-pic" />
             <span>Profilo</span>
             {activeDropdown === "profilo" ? (
               <ChevronUp size={16} />
