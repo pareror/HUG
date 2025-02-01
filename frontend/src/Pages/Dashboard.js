@@ -1,6 +1,6 @@
 import React from "react";
-import '../css/Dashboard.css';
-
+import '../Components/ActivityStats';
+import ActivityStats from "../Components/ActivityStats"
 import UpcomingActivities from "../Components/UpcomingActivities"
 import '../css/UpcomingActivities.css';
 import PaymentsTable from "../Components/PaymentsTable"
@@ -54,18 +54,22 @@ function Dashboard() {
       },
     ])
   
-    /*const stats = {
+    const stats = {
       attivitaInterne: 12,
       attivitaEsterne: 4,
       pazientiRegistrati: 2,
       utentiRegistrati: 27,
-    }*/
+    }
   
     return (
 
       <div className="Dashboard">
         <NavbarDashboard />
           <div className="main-content">
+          <br />
+                <br />
+                 <ActivityStats stats={stats} />
+            <br />
             <UpcomingActivities activities={activities}/>
             <br />
             <PaymentsTable payments={payments}/>
