@@ -1,10 +1,6 @@
 import React from "react";
 import '../css/Dashboard.css';
-import Navbar from '../Components/Navbar';
-import Sidebar from '../Components/Sidebar';
-import '../css/Sidebar.css';
-/*import ActivityStats from "../Components/ActivityStats"
-import '../css/ActivityStats.css';*/
+
 import UpcomingActivities from "../Components/UpcomingActivities"
 import '../css/UpcomingActivities.css';
 import PaymentsTable from "../Components/PaymentsTable"
@@ -13,34 +9,7 @@ import { useState } from "react"
 
 import { Info } from "lucide-react";
 import Logout from "../Components/LogoutButton";
-/*function Dashboard() {
-    return (
-        <div className="Dashboard">
-
-            <Sidebar />
-
-            <div className="dashboard-main">
-                <Navbar />
-
-                <div className="dashboard-content">
-                    <h1>Benvenuto Korian!</h1>
-                    <div className="info-boxes">
-                        <InfoBox title="Attività interne questo mese" value="12" />
-                        <InfoBox title="Pagamenti in sospeso" value="2" />
-                        <InfoBox title="Attività attive oggi" value="3" />
-                        <InfoBox title="utenti Registrati" value="27" />
-                    </div>
-                    </div>
-            </div>
-
-            
-            
-            
-          
-          
-        </div>
-    );
-}*/
+import NavbarDashboard from "../Components/NavbarDashboard";
 
 
 
@@ -95,34 +64,15 @@ function Dashboard() {
     }*/
   
     return (
-      <div className="flex h-screen bg-gray-100">
-         <div className="Dashboard">
-            <Navbar />
-            <Sidebar />
-              <div className="main-content">
-                
-                <main className="flex-1 overflow-y-auto p-8">
-                <div className="max-w-7xl mx-auto">
-                  <h1 className="text-2xl font-semibold mb-8">Benvenuto Korian!</h1>
-  
-              {/*  <ActivityStats stats={stats} />*/}
-  
-                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                     <div>
-                       <h2 className="text-xl font-semibold mb-4">Prossime Attività</h2>
-                     <UpcomingActivities activities={activities} />
-                    </div>
-                <div>
-                <h2 className="text-xl font-semibold mb-4">Pagamenti</h2>
-                <PaymentsTable payments={payments} />
-                <Logout />
-              </div>
-            </div>
+
+      <div className="Dashboard">
+        <NavbarDashboard />
+          <div className="main-content">
+            
+            
           </div>
-        </main>
       </div>
-    </div>
-    </div>
+
     )
   }
   

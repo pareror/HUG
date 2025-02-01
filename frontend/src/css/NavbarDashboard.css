@@ -1,0 +1,335 @@
+/* NAVBAR DASHBOARD */
+.navbar-dashboard {
+    position: sticky;
+    top: 15px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    border-radius: 20px;
+    border: 1px solid rgb(200, 191, 191);
+  }
+  
+  /* Logo */
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+  }
+  .logo {
+    height: 45px;
+    max-height: 100%;
+  }
+  
+  /* SEZIONE LINK DESKTOP */
+  .navbar-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+  }
+  
+  /* Stile link generici */
+  .navbar-links a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .navbar-links a:hover {
+    background-color: #f0f0f0;
+    border-radius: 25px;
+  }
+  
+  /* Dropdown wrapper */
+  .dropdown {
+    position: relative;
+  }
+  
+  /* Bottone dropdown */
+  .dropdown-toggle {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s ease-in-out;
+
+  }
+  .dropdown-toggle:hover {
+    color: #007bff;
+  }
+  
+  /* Contenuto dropdown */
+  .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    left: 0; /* Allinea a sinistra di default */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    min-width: 180px;
+    opacity: 0;
+    z-index: 1002;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
+  }
+  
+  /* Mostra il dropdown se ha la classe .show */
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* Link nel dropdown */
+  .dropdown-menu a {
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  .dropdown-menu a:hover {
+    background: #f3f4f6;
+    color: #007bff;
+  }
+  
+  /* SEZIONE DESTRA (profilo, notifiche, menu) */
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-left: auto;
+  }
+  
+  /* Icona Notifiche */
+  .notification-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+  }
+  .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+  }
+  
+  /* DROPDOWN PROFILO */
+  .profile-dropdown {
+    position: relative;
+  }
+  .profile-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+  .profile-toggle:hover {
+    color: #007bff;
+  }
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #007bff;
+  }
+  
+  /* Menu del profilo, ancorato a destra */
+  .profile-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    left: auto; /* ignora allineamento a sinistra */
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    min-width: 220px;
+    max-width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
+  }
+  .profile-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* Info nel dropdown profilo */
+  .profile-info {
+    padding: 10px;
+    text-align: left;
+  }
+  .profile-info strong {
+    font-size: 16px;
+  }
+  .profile-info p {
+    font-size: 14px;
+    color: gray;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 8px 0;
+  }
+  
+  /* Link del dropdown profilo */
+  .profile-menu a {
+    padding: 10px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .profile-menu a:hover {
+    background: #f3f4f6;
+    color: #007bff;
+    border-radius: 6px;
+  }
+/* Contenitore per il bottone di logout */
+.logout-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ef4444;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Effetto hover sul bottone di logout */
+.logout-container:hover {
+    background: #fef2f2;
+    color: #d32f2f;
+}
+
+/* Icona del logout */
+.logout-container svg {
+    color: #ef4444;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Cambia colore dell'icona quando si passa sopra */
+.logout-container:hover svg {
+    color: #d32f2f;
+}
+
+/* Assicura che il bottone sia ben allineato nel menu */
+.profile-menu .logout-container {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+  .menu-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px; /* Garantisce un'area cliccabile */
+    height: 50px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1001; /* Assicura che sia in primo piano */
+    position: relative; /* Mantiene il flusso normale */
+    margin-left: 10px; /* Distanza dalla campanella */
+    
+  }
+  
+  .menu-toggle svg {
+    pointer-events: none; /* Assicura che il clic venga registrato sul bottone */
+  }
+  
+  /* =====================================
+     MEDIA QUERY per schermi piccoli
+     ===================================== */
+  @media (max-width: 768px) {
+    /* Mostra l'hamburger su mobile */
+    .menu-toggle {
+      display: block;
+    }
+  
+    /* Nasconde le voci di menu (desktop) e le trasforma in menu a comparsa */
+    .navbar-links {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: white;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      width: 220px;
+      padding: 10px;
+      z-index: 999;
+    }
+    .navbar-links.active {
+      display: flex;
+    }
+  
+    /* Stile dei link nel menu mobile */
+    .navbar-links a {
+      display: block;
+      padding: 10px;
+      font-size: 16px;
+      text-align: left;
+    }
+  
+    /* Nasconde la scritta "Profilo" e la freccia su/giù: mostra solo l'icona immagine */
+    .profile-toggle span,
+    .profile-toggle svg {
+      display: none;
+    }
+  }
+  
+  /* =====================================
+     MEDIA QUERY per schermi >= 769
+     ===================================== */
+  @media (min-width: 769px) {
+    /* Su desktop l'hamburger scompare */
+    .menu-toggle {
+      display: none;
+    }
+  }
+  

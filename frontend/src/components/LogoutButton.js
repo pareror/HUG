@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import "../css/LogoutButton.css";
 const LogoutButton = () => {
   const navigate = useNavigate();
 
