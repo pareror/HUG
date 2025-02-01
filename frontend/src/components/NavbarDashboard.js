@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import "../css/NavbarDashboard.css";
-
+import LogoutButton from "./LogoutButton";
 const NavbarDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -196,9 +196,10 @@ const NavbarDashboard = () => {
               <Settings size={16} /> Impostazioni
             </Link>
             <hr />
-            <Link to="/logout" className="logout-btn" onClick={toggleMenu}>
-              <LogOut size={16} /> Esci
-            </Link>
+            <div className="logout-container">
+              <LogOut size={16} />
+              <LogoutButton />
+            </div>
           </div>
         </div>
       </div>
