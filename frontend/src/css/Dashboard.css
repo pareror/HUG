@@ -35,7 +35,7 @@
   }
 
   .main-content {
-    margin-top: 60px; /* Per non sovrapporsi alla navbar */
+    margin-top: 40px; /* Per non sovrapporsi alla navbar */
     padding: 2rem; /* Spazio interno per il contenuto */
     min-height: calc(100vh - 60px); /* Adatta il contenuto sotto la navbar */
     background-color: #e7ebee;

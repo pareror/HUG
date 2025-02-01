@@ -13,6 +13,7 @@ import {
 import "../css/NavbarDashboard.css";
 import LogoutButton from "./LogoutButton";
 import NotificationDropdown from "./NotificationDropdown";
+
 const NavbarDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -22,14 +23,24 @@ const NavbarDashboard = () => {
     setMenuOpen(!menuOpen);
   };
 
-  // Gestione apertura dei dropdown: se uno è già aperto, chiude il precedente
+  // Toggle dropdown principale
   const toggleDropdown = (section) => {
     setActiveDropdown((prev) => (prev === section ? null : section));
   };
+
   const closeMenu = () => {
     setMenuOpen(false);
     setActiveDropdown(null);
   };
+
+  // Funzione per gestire il click sui link:
+  // chiude il menu solo se la finestra è stretta (mobile)
+  const handleLinkClick = () => {
+    if (window.innerWidth < 768) {
+      toggleMenu();
+    }
+  };
+
   // Chiude menu e dropdown se si clicca fuori dalla navbar
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -41,29 +52,31 @@ const NavbarDashboard = () => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-    useEffect(() => {
-        const handleResize = () => {
-        if (window.innerWidth > 768) {
-            closeMenu();
-        }
-        };
 
-        window.addEventListener('resize', handleResize);
+  // Se la finestra viene ridimensionata oltre il breakpoint, chiude il menu mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        closeMenu();
+      }
+    };
 
-        return () => {
-        window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <nav className="navbar-dashboard">
       {/* Logo a sinistra */}
-      <Link to="/dashboard" className="navbar-logo">
+      <Link to="/dashboard" className="navbar-logo" onClick={handleLinkClick}>
         <img src="/images/logo.png" alt="Logo" className="logo" />
       </Link>
 
       {/* Menu Desktop (le voci principali) */}
       <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-        <Link to="/dashboard/calendario" onClick={toggleMenu}>
+        <Link to="/dashboard/calendario" onClick={handleLinkClick}>
           Calendario Attività
         </Link>
 
@@ -85,10 +98,16 @@ const NavbarDashboard = () => {
               activeDropdown === "attivita" ? "show" : ""
             }`}
           >
-            <Link to="/dashboard/attivita/interna" onClick={toggleMenu}>
+            <Link
+              to="/dashboard/attivita/interna"
+              onClick={handleLinkClick}
+            >
               Interna
             </Link>
-            <Link to="/dashboard/attivita/esterna" onClick={toggleMenu}>
+            <Link
+              to="/dashboard/attivita/esterna"
+              onClick={handleLinkClick}
+            >
               Esterna
             </Link>
           </div>
@@ -112,10 +131,16 @@ const NavbarDashboard = () => {
               activeDropdown === "gestioneUtenza" ? "show" : ""
             }`}
           >
-            <Link to="/dashboard/utenza/pazienti" onClick={toggleMenu}>
+            <Link
+              to="/dashboard/utenza/pazienti"
+              onClick={handleLinkClick}
+            >
               Pazienti
             </Link>
-            <Link to="/dashboard/utenza/caregiver" onClick={toggleMenu}>
+            <Link
+              to="/dashboard/utenza/caregiver"
+              onClick={handleLinkClick}
+            >
               Caregiver
             </Link>
           </div>
@@ -139,16 +164,22 @@ const NavbarDashboard = () => {
               activeDropdown === "gestionePagamenti" ? "show" : ""
             }`}
           >
-            <Link to="/dashboard/pagamenti/paziente" onClick={toggleMenu}>
+            <Link
+              to="/dashboard/pagamenti/paziente"
+              onClick={handleLinkClick}
+            >
               Pag. per paziente
             </Link>
-            <Link to="/dashboard/pagamenti/attivita" onClick={toggleMenu}>
+            <Link
+              to="/dashboard/pagamenti/attivita"
+              onClick={handleLinkClick}
+            >
               Pag. per attività
             </Link>
           </div>
         </div>
 
-        <Link to="/dashboard/preventivi" onClick={toggleMenu}>
+        <Link to="/dashboard/preventivi" onClick={handleLinkClick}>
           Lista Preventivi
         </Link>
       </div>
@@ -156,12 +187,16 @@ const NavbarDashboard = () => {
       {/* Sezione a destra */}
       <div className="navbar-right">
         {/* Menu Toggle (hamburger) - visibile solo su mobile */}
-        <button className="menu-toggle" onClick={toggleMenu} aria-label="Apri menu">
-            {menuOpen ? <X size={28} /> : <Menu size={28} />}
+        <button
+          className="menu-toggle"
+          onClick={toggleMenu}
+          aria-label="Apri menu"
+        >
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
         {/* Notifiche */}
-        <NotificationDropdown /> 
+        <NotificationDropdown />
 
         {/* Profilo */}
         <div className="dropdown profile-dropdown">
@@ -169,7 +204,11 @@ const NavbarDashboard = () => {
             className="profile-toggle"
             onClick={() => toggleDropdown("profilo")}
           >
-            <img src="/images/profilo.png" alt="Profilo" className="profile-pic" />
+            <img
+              src="/images/profilo.png"
+              alt="Profilo"
+              className="profile-pic"
+            />
             <span>Profilo</span>
             {activeDropdown === "profilo" ? (
               <ChevronUp size={16} />
@@ -187,14 +226,14 @@ const NavbarDashboard = () => {
               <p>korian.centro@example.com</p>
             </div>
             <hr />
-            <Link to="/dashboard/profilo" onClick={toggleMenu}>
+            <Link to="/dashboard/profilo" onClick={handleLinkClick}>
               <User size={16} /> Profilo
             </Link>
-            <Link to="/dashboard/impostazioni" onClick={toggleMenu}>
+            <Link to="/dashboard/impostazioni" onClick={handleLinkClick}>
               <Settings size={16} /> Impostazioni
             </Link>
             <hr />
-            <div className="logout-container">
+            <div className="logout-container" onClick={handleLinkClick}>
               <LogOut size={16} />
               <LogoutButton />
             </div>

@@ -7,8 +7,6 @@ import PaymentsTable from "../Components/PaymentsTable"
 import '../css/PaymentsTable.css';
 import { useState } from "react"
 
-import { Info } from "lucide-react";
-import Logout from "../Components/LogoutButton";
 import NavbarDashboard from "../Components/NavbarDashboard";
 
 
@@ -68,7 +66,10 @@ function Dashboard() {
       <div className="Dashboard">
         <NavbarDashboard />
           <div className="main-content">
-            
+            <UpcomingActivities activities={activities}/>
+            <br />
+            <PaymentsTable payments={payments}/>
+
             
           </div>
       </div>

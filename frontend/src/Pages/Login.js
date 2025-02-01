@@ -85,7 +85,6 @@ const Login = () => {
         setToken(data.token);
         // (opzionale) Salva il token
         localStorage.setItem("jwt", data.jwt);
-        console.log("Token salvato:", localStorage.getItem("jwt"));
         // Mostra il popup di successo
         setSuccess(true);
       }
