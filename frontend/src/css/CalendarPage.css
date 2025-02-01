@@ -28,17 +28,18 @@
   
   /* Header sinistro: pulsante torna indietro */
   .header-left .back-button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    background-color: #007bff;
-    color: #fff;
+    background: none;
     border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
     cursor: pointer;
+    margin-bottom: 15px;
   }
+  
   .header-left .back-button svg {
-    margin-right: 5px;
+    margin-right: 8px;
   }
   
   /* Header centrale: titolo mese e anno */

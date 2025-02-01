@@ -34,20 +34,19 @@
   
   /* Pulsante torna indietro (stile aggiornato) */
   .back-button {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    background-color: #007bff;
-    color: #fff;
+    background: none;
     border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
     cursor: pointer;
-    text-decoration: none;
-  }
-  .back-button svg {
-    margin-right: 5px;
+    margin-bottom: 15px;
   }
   
+  .back-button svg {
+    margin-right: 8px;
+  }
   /* Lista delle attività */
   .activities-list {
     display: flex;

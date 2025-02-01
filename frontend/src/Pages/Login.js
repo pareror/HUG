@@ -118,7 +118,7 @@ const Login = () => {
 
       <div className="login-content">
         <div className="login-form">
-          <button className="back-button" onClick={() => navigate(-1)}>
+          <button className="back-button" onClick={() => navigate("/")}>
             <ArrowLeft size={20} />
             Torna indietro
           </button>

@@ -74,6 +74,7 @@ const CalendarPage = () => {
   return (
     <div className="calendar-page">
       <NavbarDashboard />
+      <div className="main-content">
       <main className="calendar-main">
         <header className="calendar-header">
           {/* Pulsante torna indietro */}
@@ -122,6 +123,7 @@ const CalendarPage = () => {
           })}
         </div>
       </main>
+      </div>
     </div>
   );
 };

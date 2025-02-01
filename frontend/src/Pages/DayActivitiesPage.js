@@ -33,6 +33,7 @@ const DayActivitiesPage = () => {
   return (
     <div className="day-activities-page">
       <NavbarDashboard />
+      <div className="main-content">
       <main className="day-activities-main">
         <header className="day-activities-header">
           <button className="back-button" onClick={() => navigate(-1)}>
@@ -60,6 +61,7 @@ const DayActivitiesPage = () => {
           )}
         </div>
       </main>
+      </div>
     </div>
   );
 };
