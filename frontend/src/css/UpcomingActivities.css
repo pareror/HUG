@@ -26,6 +26,23 @@
     border-bottom: 1px solid #e5e7eb;
   }
   
+  /* Aggiunta media query per il resizing sotto i 768px */
+@media screen and (max-width: 768px) {
+  .activities-table-container {
+    padding: 0.5rem;
+    margin: 0;
+    overflow-x: auto; /* horizontal scrollbar enabled */
+  }
+  .activities-table {
+    font-size: 0.8rem;
+    min-width: 600px; /* Enforce minimum width for horizontal scrolling */
+  }
+  .activities-table th,
+  .activities-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
   .status-badge {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
@@ -48,5 +65,4 @@
     background-color: #f3f4f6;
     color: #1f2937;
   }
-  
-  
+

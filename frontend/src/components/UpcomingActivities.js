@@ -1,5 +1,5 @@
 import "../css/UpcomingActivities.css"
-import React from "react";
+import React from "react"
 export default function UpcomingActivities({ activities }) {
   return (
     <div className="activities-table-container">
