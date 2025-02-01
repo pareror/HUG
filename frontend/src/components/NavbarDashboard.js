@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import "../css/NavbarDashboard.css";
 import LogoutButton from "./LogoutButton";
+import NotificationDropdown from "./NotificationDropdown";
 const NavbarDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -160,10 +161,7 @@ const NavbarDashboard = () => {
         </button>
 
         {/* Notifiche */}
-        <button className="notification-btn">
-          <Bell size={22} />
-          <span className="notification-badge">2</span>
-        </button>
+        <NotificationDropdown /> 
 
         {/* Profilo */}
         <div className="dropdown profile-dropdown">
