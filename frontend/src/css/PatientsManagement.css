@@ -77,9 +77,12 @@
 
 /* Tabella dei pazienti/caregiver */
 .pm-table-container {
-  overflow-x: auto;
-  text-align: center;
   background-color: white;
+  overflow-x: auto;
+  overflow-y: auto; /* Abilita lo scroll verticale */
+  text-align: center;
+  /* Imposta un'altezza fissa o calcolata per far scorrere solo questo contenuto */
+  height: calc(100vh - 300px);  /* Regola il valore in base al layout della tua pagina */
 }
 .pm-table {
   width: 100%;

@@ -1,7 +1,7 @@
 /* Contenitore principale della pagina calendario */
 .calendar-page {
-    display: flex;
-    flex-direction: column;
+    padding: 20px;
+    background: #e7ebee;
     min-height: 100vh;
   }
   

@@ -30,7 +30,7 @@ const PatientsManagement = () => {
       cognome: "Bianchi",
       codiceFiscale: "BNCHNN90C03H501Y",
       disabled: false,
-    },
+    }
     // Aggiungi altri pazienti se necessario
   ]);
 
