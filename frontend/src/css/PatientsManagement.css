@@ -1,149 +1,149 @@
 /* Contenitore principale della pagina */
 .patients-management-page {
-    padding: 20px;
-    min-height: 100vh;
-    background-color: #e7ebee;
-  }
-  
-  /* Header */
-  .pm-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  
-  /* Suddividi l'header in tre sezioni: sinistra, centro e destra */
-  .header-left,
-  .header-right {
-    width: 150px;
-  }
-  .header-center {
-    flex: 1;
-    text-align: center;
-  }
-  .pm-header h1 {
-    font-size: 24px;
-    margin: 0;
-  }
-  
-  /* Pulsante "Torna indietro" (stile aggiornato) */
-  .back-button {
-    display: flex;
-    align-items: center;
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    margin-bottom: 15px;
-  }
-  .back-button svg {
-    margin-right: 8px;
-  }
-  
-  /* Controlli: barra di ricerca e pulsante aggiungi */
-  .pm-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .search-bar {
-    flex: 1;
-    min-width: 200px;
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  .add-button {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    font-size: 14px;
-  }
-  .add-button svg {
-    margin-right: 5px;
-  }
-  
-  /* Tabella dei pazienti */
-  .pm-table-container {
-    overflow-x: auto;
-    text-align: center;
-    background-color: white;
-  }
-  .pm-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0 auto;
-  }
+  padding: 20px;
+  background: #e7ebee;
+  min-height: 100vh;
+}
+
+/* Header */
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Suddividi l'header in tre sezioni: sinistra, centro e destra */
+.header-left,
+.header-right {
+  width: 150px;
+}
+.header-center {
+  flex: 1;
+  text-align: center;
+}
+.pm-header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+/* Pulsante "Torna indietro" (stile aggiornato) */
+.back-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+.back-button svg {
+  margin-right: 8px;
+}
+
+/* Controlli: barra di ricerca e pulsante aggiungi */
+.pm-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.search-bar {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.add-button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+}
+.add-button svg {
+  margin-right: 5px;
+}
+
+/* Tabella dei pazienti/caregiver */
+.pm-table-container {
+  overflow-x: auto;
+  text-align: center;
+  background-color: white;
+}
+.pm-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+.pm-table th,
+.pm-table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+  min-width: 80px;
+  font-size: 14px;
+}
+.pm-table th {
+  background-color: #f8f8f8;
+}
+.center-cell {
+  text-align: center;
+}
+
+/* Riduci la larghezza minima della prima colonna (ID) */
+.pm-table th:first-child,
+.pm-table td:first-child {
+  min-width: 50px;
+}
+
+/* Colonna unica per Azioni: icone affiancate */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Icona e pulsante per le azioni: dimensioni ridotte e poco padding */
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Messaggio quando non ci sono pazienti/caregiver */
+.no-data {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin: 20px 0;
+}
+
+/* Responsive: riduci font-size e padding su schermi piccoli */
+@media (max-width: 768px) {
   .pm-table th,
   .pm-table td {
-    border: 1px solid #ddd;
-    padding: 6px;
-    text-align: left;
-    min-width: 80px;
-    font-size: 14px;
+    font-size: 12px;
+    padding: 4px;
+    min-width: 70px;
   }
-  .pm-table th {
-    background-color: #f8f8f8;
-  }
-  .center-cell {
-    text-align: center;
-  }
-  
-  /* Riduci la larghezza minima della prima colonna (ID) */
   .pm-table th:first-child,
   .pm-table td:first-child {
     min-width: 50px;
   }
-  
-  /* Colonna unica per Azioni: icone affiancate */
-  .actions-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-  }
-  
-  /* Icona e pulsante per le azioni: dimensioni ridotte e poco padding */
-  .icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 2px;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-  }
-  
-  /* Messaggio quando non ci sono pazienti */
-  .no-data {
-    text-align: center;
-    font-size: 16px;
-    color: #666;
-    margin: 20px 0;
-  }
-  
-  /* Responsive: riduci font-size e padding su schermi piccoli */
-  @media (max-width: 600px) {
-    .pm-table th,
-    .pm-table td {
-      font-size: 12px;
-      padding: 4px;
-      min-width: 70px;
-    }
-    .pm-table th:first-child,
-    .pm-table td:first-child {
-      min-width: 50px;
-    }
-  }
+}

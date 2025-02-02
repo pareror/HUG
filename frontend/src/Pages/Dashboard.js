@@ -1,4 +1,5 @@
 import React from "react";
+import "../css/Dashboard.css";
 import '../Components/ActivityStats';
 import ActivityStats from "../Components/ActivityStats"
 import UpcomingActivities from "../Components/UpcomingActivities"
