@@ -1,8 +1,8 @@
 /* Contenitore principale della pagina */
 .patients-management-page {
     padding: 20px;
+    background: #e7ebee;
     min-height: 100vh;
-    background-color: #e7ebee;
   }
   
   /* Header */
@@ -75,7 +75,7 @@
     margin-right: 5px;
   }
   
-  /* Tabella dei pazienti */
+  /* Tabella dei pazienti/caregiver */
   .pm-table-container {
     overflow-x: auto;
     text-align: center;
@@ -126,7 +126,7 @@
     align-items: center;
   }
   
-  /* Messaggio quando non ci sono pazienti */
+  /* Messaggio quando non ci sono pazienti/caregiver */
   .no-data {
     text-align: center;
     font-size: 16px;
@@ -135,7 +135,7 @@
   }
   
   /* Responsive: riduci font-size e padding su schermi piccoli */
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     .pm-table th,
     .pm-table td {
       font-size: 12px;
@@ -147,3 +147,4 @@
       min-width: 50px;
     }
   }
+  

@@ -7,6 +7,8 @@ import ProtectedRoute from "../Components/ProtectedRoute";
 import CalendarPage from './CalendarPage';
 import DayActivitiesPage from './DayActivitiesPage';
 import PatientsManagement from './PatientsManagement';
+import CaregiversManagement from './CaregiversManagement';
+
 const Website = () => {
     return ( 
         <div className="x">
@@ -43,8 +45,14 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
+            <Route path="/dashboard/utenza/caregiver" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <CaregiversManagement />
+                </ProtectedRoute>
+            }
+            />
         </Routes>  
-        
+            
         </div>
      );
 }
