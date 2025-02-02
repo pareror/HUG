@@ -34,10 +34,10 @@
     justify-content: center;
   }
   
-  /* Stile link generici */
+  /* Stile link generici (font-size ridotto da 18px a 16px) */
   .navbar-links a {
     text-decoration: none;
-    font-size: 18px;
+    font-size: 16px;
     color: #333;
     padding: 8px 12px;
     cursor: pointer;
@@ -53,11 +53,11 @@
     position: relative;
   }
   
-  /* Bottone dropdown */
+  /* Bottone dropdown (font-size ridotto da 18px a 16px) */
   .dropdown-toggle {
     background: none;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     color: #333;
     padding: 8px 12px;
     cursor: pointer;
@@ -65,7 +65,6 @@
     align-items: center;
     gap: 5px;
     transition: color 0.3s ease-in-out;
-
   }
   .dropdown-toggle:hover {
     color: #007bff;
@@ -89,18 +88,16 @@
     transform: translateY(-10px);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
   }
-  
-  /* Mostra il dropdown se ha la classe .show */
   .dropdown-menu.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
   
-  /* Link nel dropdown */
+  /* Link nel dropdown (font-size ridotto da 16px a 14px) */
   .dropdown-menu a {
     padding: 10px;
-    font-size: 16px;
+    font-size: 14px;
     color: #333;
     display: flex;
     align-items: center;
@@ -209,10 +206,10 @@
     margin: 8px 0;
   }
   
-  /* Link del dropdown profilo */
+  /* Link del dropdown profilo (font-size ridotto da 16px a 14px) */
   .profile-menu a {
     padding: 10px;
-    font-size: 16px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -222,8 +219,9 @@
     color: #007bff;
     border-radius: 6px;
   }
-/* Contenitore per il bottone di logout */
-.logout-container {
+  
+  /* Contenitore per il bottone di logout */
+  .logout-container {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -235,32 +233,26 @@
     text-decoration: none;
     border-radius: 6px;
     transition: background-color 0.2s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Effetto hover sul bottone di logout */
-.logout-container:hover {
+  }
+  .logout-container:hover {
     background: #fef2f2;
     color: #d32f2f;
-}
-
-/* Icona del logout */
-.logout-container svg {
+  }
+  .logout-container svg {
     color: #ef4444;
     transition: color 0.3s ease-in-out;
-}
-
-/* Cambia colore dell'icona quando si passa sopra */
-.logout-container:hover svg {
+  }
+  .logout-container:hover svg {
     color: #d32f2f;
-}
-
-/* Assicura che il bottone sia ben allineato nel menu */
-.profile-menu .logout-container {
+  }
+  .profile-menu .logout-container {
     padding: 10px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-}
+  }
+  
+  /* Menu Toggle (hamburger) */
   .menu-toggle {
     display: flex;
     justify-content: center;
@@ -271,26 +263,19 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    z-index: 1001; /* Assicura che sia in primo piano */
-    position: relative; /* Mantiene il flusso normale */
-    margin-left: 10px; /* Distanza dalla campanella */
-    
+    z-index: 1001;
+    position: relative;
+    margin-left: 10px;
   }
-  
   .menu-toggle svg {
-    pointer-events: none; /* Assicura che il clic venga registrato sul bottone */
+    pointer-events: none;
   }
   
-  /* =====================================
-     MEDIA QUERY per schermi piccoli
-     ===================================== */
+  /* MEDIA QUERY per schermi piccoli (navbar) */
   @media (max-width: 768px) {
-    /* Mostra l'hamburger su mobile */
     .menu-toggle {
       display: block;
     }
-  
-    /* Nasconde le voci di menu (desktop) e le trasforma in menu a comparsa */
     .navbar-links {
       display: none;
       flex-direction: column;
@@ -307,29 +292,173 @@
     .navbar-links.active {
       display: flex;
     }
-  
-    /* Stile dei link nel menu mobile */
     .navbar-links a {
       display: block;
       padding: 10px;
       font-size: 16px;
       text-align: left;
     }
-  
-    /* Nasconde la scritta "Profilo" e la freccia su/giù: mostra solo l'icona immagine */
     .profile-toggle span,
     .profile-toggle svg {
       display: none;
     }
   }
   
-  /* =====================================
-     MEDIA QUERY per schermi >= 769
-     ===================================== */
+  /* MEDIA QUERY per schermi >= 769px (navbar) */
   @media (min-width: 769px) {
-    /* Su desktop l'hamburger scompare */
     .menu-toggle {
       display: none;
+    }
+  }
+  
+  /* PATIENTS MANAGEMENT */
+  
+  /* Contenitore principale della pagina */
+  .patients-management-page {
+    padding: 20px;
+    background: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  /* Header */
+  .pm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  /* Suddividi l'header in tre sezioni: sinistra, centro e destra */
+  .header-left,
+  .header-right {
+    width: 150px;
+  }
+  .header-center {
+    flex: 1;
+    text-align: center;
+  }
+  .pm-header h1 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  /* Pulsante "Torna indietro" (stile aggiornato) */
+  .back-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+  .back-button svg {
+    margin-right: 8px;
+  }
+  
+  /* Controlli: barra di ricerca e pulsante aggiungi */
+  .pm-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .search-bar {
+    flex: 1;
+    min-width: 200px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .add-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  .add-button svg {
+    margin-right: 5px;
+  }
+  
+  /* Tabella dei pazienti */
+  .pm-table-container {
+    overflow-x: auto;
+    text-align: center;
+  }
+  .pm-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  .pm-table th,
+  .pm-table td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+    min-width: 80px;
+    font-size: 14px;
+  }
+  .pm-table th {
+    background-color: #f8f8f8;
+  }
+  .center-cell {
+    text-align: center;
+  }
+  
+  /* Riduci la larghezza minima della prima colonna (ID) */
+  .pm-table th:first-child,
+  .pm-table td:first-child {
+    min-width: 50px;
+  }
+  
+  /* Colonna unica per Azioni: icone affiancate */
+  .actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  
+  /* Icona e pulsante per le azioni: dimensioni ridotte e poco padding */
+  .icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  /* Messaggio quando non ci sono pazienti */
+  .no-data {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    margin: 20px 0;
+  }
+  
+  /* MEDIA QUERY per schermi piccoli: usa max-width: 768px per restringere prima */
+  @media (max-width: 768px) {
+    .pm-table th,
+    .pm-table td {
+      font-size: 12px;
+      padding: 4px;
+      min-width: 70px;
+    }
+    .pm-table th:first-child,
+    .pm-table td:first-child {
+      min-width: 50px;
     }
   }
   

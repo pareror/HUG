@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "../Components/ProtectedRoute";
 import CalendarPage from './CalendarPage';
 import DayActivitiesPage from './DayActivitiesPage';
+import PatientsManagement from './PatientsManagement';
 const Website = () => {
     return ( 
         <div className="x">
@@ -33,6 +34,12 @@ const Website = () => {
             <Route path="/dashboard/calendario/day/:day" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <DayActivitiesPage />
+                </ProtectedRoute>
+            }
+            />
+            <Route path="/dashboard/utenza/pazienti" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PatientsManagement />
                 </ProtectedRoute>
             }
             />
