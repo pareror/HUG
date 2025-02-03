@@ -1,0 +1,161 @@
+.activity-header {
+    margin-top: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    padding: 12px 16px;
+  }
+  
+  .activity-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .left-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .back-link {
+    display: flex;
+    align-items: center;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  
+  .back-link:hover {
+    color: #111827;
+  }
+  
+  .back-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+  }
+  
+  .title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  
+  .right-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .search-container {
+    position: relative;
+    flex: 1;
+    min-width: 150px;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #6b7280;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 1px #10b981;
+  }
+  
+  .create-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+  }
+  
+  .create-button:hover {
+    background-color: #059669;
+  }
+  
+  .button-text {
+    display: none;
+  }
+  
+  .button-icon {
+    display: inline;
+    font-size: 20px;
+  }
+  
+  /* Responsive styles */
+  @media (min-width: 480px) {
+    .button-text {
+      display: inline;
+    }
+  
+    .button-icon {
+      display: none;
+    }
+  }
+  
+  @media (min-width: 640px) {
+    .activity-container {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  
+    .right-section {
+      flex: 1;
+      justify-content: flex-end;
+    }
+  
+    .search-container {
+      max-width: 300px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .back-text {
+      display: inline;
+    }
+  
+    .title {
+      margin-left: 16px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .back-text {
+      display: none;
+    }
+  
+    .title {
+      margin-left: 0;
+    }
+  }
+  
+  
