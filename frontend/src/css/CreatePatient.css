@@ -1,0 +1,251 @@
+
+/****************************************************
+  2. CONTAINER PRINCIPALE (Centrato)
+*****************************************************/
+.create-patient-page {
+
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Assicura che sia centrato */
+  width: 100%;
+  padding: 20px;
+}
+
+/* Box principale del form */
+.main-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/****************************************************
+  3. HEADER
+*****************************************************/
+.back-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+  
+  .back-button svg {
+    margin-right: 8px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /****************************************************
+    4. FORM PRINCIPALE (Disposizione in 2 colonne)
+  *****************************************************/
+  .patient-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  /* Campi in colonna unica */
+  .full-width {
+    grid-column: span 2;
+  }
+  
+  /* Stile generale per input e select */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  input,
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+  }
+  
+  input:focus,
+  select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  /****************************************************
+    5. CHECKBOX DISABILITÀ
+  *****************************************************/
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 5px;
+    text-align: left; /* Forza l'allineamento a sinistra */
+  }
+  
+  .checkbox-container {
+
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .checkbox-container input {
+    margin-right: 5px;
+  }
+  
+  .checkbox-container label {
+    text-align: left;
+  }
+  
+  /* Descrizione della disabilità */
+  .disability-info {
+    font-size: 12px;
+    color: #555;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 0;
+  }
+  
+  /****************************************************
+    6. SEZIONE FOTO PROFILO
+  *****************************************************/
+  .profile-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    height: 150px;
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    grid-column: span 2;
+  }
+  
+  .profile-photo input {
+    margin-top: 10px;
+  }
+  
+  /****************************************************
+    7. BOTTONI AZIONI
+  *****************************************************/
+  .form-actions {
+    grid-column: span 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .left-actions,
+  .right-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* Pulsanti a sinistra */
+  .btn-green {
+    background-color: #00a86b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn-green:hover {
+    background-color: #008c5f;
+  }
+  
+  .btn-gray {
+    background-color: transparent;
+    border: 1px solid #333;
+    color: #333;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-gray:hover {
+    background-color: #333;
+    color: white;
+  }
+  
+  /* Pulsanti a destra */
+  .btn-yellow {
+    background-color: #f0c14b;
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn-yellow:hover {
+    background-color: #e5b937;
+  }
+  
+  /* Bottone Visualizza Disabilità */
+  .view-disability {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  /****************************************************
+    8. RESPONSIVITÀ (max-width: 768px)
+  *****************************************************/
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+      max-width: 95%;
+    }
+  
+    .patient-form {
+      grid-template-columns: 1fr;
+    }
+  
+    .form-actions {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .left-actions,
+    .right-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .btn-green,
+    .btn-gray,
+    .btn-yellow,
+    .view-disability {
+      width: 100%;
+    }
+  }
