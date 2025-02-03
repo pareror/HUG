@@ -9,6 +9,8 @@ import DayActivitiesPage from './DayActivitiesPage';
 import PatientsManagement from './PatientsManagement';
 import CaregiversManagement from './CaregiversManagement';
 import CreatePatient from './CreatePatient';
+import AttivitaInterne from './AttivitaInterne';
+
 
 const Website = () => {
     return ( 
@@ -52,12 +54,21 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
+
+            <Route path="/dashboard/attivita/interna" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <AttivitaInterne />
+                </ProtectedRoute>
+                 }
+                 />
+
             <Route path="/dashboard/utenza/pazienti/nuovo" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <CreatePatient />
                 </ProtectedRoute>
             }
             />
+
         </Routes>  
             
         </div>

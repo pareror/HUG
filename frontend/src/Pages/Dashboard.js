@@ -6,6 +6,8 @@ import UpcomingActivities from "../Components/UpcomingActivities"
 import '../css/UpcomingActivities.css';
 import PaymentsTable from "../Components/PaymentsTable"
 import '../css/PaymentsTable.css';
+import ButtonDashboard from "../Components/ButtonDashboard";    
+import '../css/ButtonDashboard.css';
 import { useState } from "react"
 
 import NavbarDashboard from "../Components/NavbarDashboard";
@@ -67,9 +69,11 @@ function Dashboard() {
       <div className="Dashboard">
         <NavbarDashboard />
           <div className="main-content">
-          <br />
-                <br />
+          
+                
                  <ActivityStats stats={stats} />
+            
+            <ButtonDashboard />
             <br />
             <UpcomingActivities activities={activities}/>
             <br />

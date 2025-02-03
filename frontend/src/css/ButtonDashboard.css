@@ -1,0 +1,61 @@
+.button-dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .dashboard-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem; 
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;  
+  }
+  
+  .dashboard-button.dark {
+    background-color: #111827;
+    color: white;
+    border-color: #111827;
+  }
+  
+  .dashboard-button.dark:hover {
+    background-color: #1f2937;
+  }
+  
+  .dashboard-button.light {
+    background-color: white;
+    color: #111827;
+  }
+  
+  .dashboard-button.light:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .button-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .button-dashboard-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Responsive adjustments */
+  /*@media (max-width: 900px) {
+    .button-dashboard-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }*/
+  
+  
