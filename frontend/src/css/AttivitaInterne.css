@@ -1,154 +1,113 @@
+/* Container principale che occupa l'intera altezza della viewport */
 .attivita-interne {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
+    min-height: 100vh; /* Altezza minima pari all'intera viewport */
+    background-color: #f8f9fa;
+    padding: 20px;
+}
   
-  /* Header Styles */
+  
+  /* Header della pagina organizzato in colonna con spazio tra gli elementi */
   .page-header {
+    /*display: flex;
+    flex-direction: column;*/ /* Organizza gli elementi in colonna */
+    /*gap: 1.5rem; *//* Spazio tra gli elementi dell'header */
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;          /* Organizza in una riga */
+    justify-content: space-between; /* Separa sinistra e destra */
     align-items: center;
-    margin-bottom: 1rem;
+    padding: 10px 0;
+
   }
   
+  /* Contenitore degli elementi a sinistra dell'header (bottone indietro e titolo) */
   .header-left {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: center; /* Allinea verticalmente gli elementi al centro */
+    gap: 1.25rem; /* Spazio tra il bottone indietro e il titolo */
   }
   
+  /* Stile del bottone "Torna indietro" */
   .back-button {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border: none;
-    background: none;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.2s;
+    align-items: center; /* Allinea l'icona e il testo verticalmente */
+    gap: 0.5rem; /* Spazio tra l'icona e il testo */
+    padding: 0.5rem 1rem; /* Padding interno del bottone */
+    border: none; /* Rimuove il bordo predefinito */
+    background: none; /* Rimuove lo sfondo predefinito */
+    color: #666; /* Colore grigio per il testo */
+    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
   }
   
-  .back-button:hover {
-    color: #333;
-  }
-  
+  /* Stile del titolo principale della pagina */
   .page-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #111;
+    font-size: 1.25rem; /* Dimensione del font */
+    font-weight: 600; /* Spessore del font */
+    color: #333; /* Colore scuro per il testo */
   }
   
+  /* Contenitore degli elementi a destra dell'header (ricerca e bottone crea) */
   .header-right {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: center; /* Allinea verticalmente gli elementi */
+    gap: 1rem; /* Spazio tra la barra di ricerca e il bottone */
   }
   
-  /* Search Bar Styles */
+  /* Contenitore della barra di ricerca con posizionamento relativo per l'icona */
   .search-container {
-    position: relative;
-    width: 300px;
+    position: relative; /* Necessario per posizionare l'icona di ricerca */
+    flex: 1; /* Permette al contenitore di espandersi */
   }
   
+  /* Posizionamento dell'icona di ricerca all'interno della barra */
   .search-icon {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-    height: 1.25rem;
-    color: #666;
+    position: absolute; /* Posizionamento assoluto rispetto al contenitore */
+    left: 1rem; /* Distanza dal bordo sinistro */
+    top: 50%; /* Centra verticalmente */
+    transform: translateY(-50%); /* Aggiustamento fine del centramento verticale */
+    color: #666; /* Colore grigio per l'icona */
+    width: 1.25rem; /* Larghezza dell'icona */
+    height: 1.25rem; /* Altezza dell'icona */
   }
   
+  /* Stile del campo di input per la ricerca */
   .search-input {
-    width: 100%;
-    padding: 0.75rem;
-    padding-left: 2.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
+    width: 200px; /* Larghezza fissa della barra di ricerca */
+    padding: 0.75rem 1rem 0.75rem 3rem; /* Padding con spazio extra a sinistra per l'icona */
+    border: 1px solid #e0e0e0; /* Bordo sottile grigio chiaro */
+    border-radius: 0.5rem; /* Bordi arrotondati */
+    font-size: 0.875rem; /* Dimensione del testo */
   }
   
-  .search-input:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-  }
-  
-  /* Create Button Styles */
+  /* Stile del bottone "Crea Attività" */
   .create-button {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background-color: #10b981;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    align-items: center; /* Allinea l'icona e il testo verticalmente */
+    gap: 0.5rem; /* Spazio tra l'icona e il testo */
+    padding: 0.75rem 1.5rem; /* Padding interno del bottone */
+    background-color: #0ea5e9; /* Colore di sfondo blu */
+    color: white; /* Testo bianco */
+    border: none; /* Rimuove il bordo */
+    border-radius: 0.5rem; /* Bordi arrotondati */
+    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
   }
   
-  .create-button:hover {
-    background-color: #059669;
-  }
-  
-  /* Subtitle Styles */
+  /* Stile del sottotitolo della pagina */
   .page-subtitle {
-    color: #666;
-    font-size: 0.875rem;
-    margin-bottom: 2rem;
+    color: #666; /* Colore grigio per il testo */
+    font-size: 0.875rem; /* Dimensione del font più piccola */
+    margin-top: 0.5rem; /* Spazio sopra il sottotitolo */
   }
   
-  /* Activities Grid Styles */
+  /* Griglia per le carte delle attività */
   .activities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    display: grid; /* Layout a griglia */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Griglia responsive */
+    gap: 1.5rem; /* Spazio tra le carte */
+    margin-top: 2rem; /* Spazio sopra la griglia */
   }
   
-  /* Placeholder Styles */
+  /* Stile del placeholder per le carte attività */
   .activity-card-placeholder {
-    background-color: #f3f4f6;
-    border-radius: 0.75rem;
-    height: 400px;
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-  
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .page-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-  
-    .header-right {
-      width: 100%;
-      flex-direction: column;
-    }
-  
-    .search-container {
-      width: 100%;
-    }
-  
-    .create-button {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-  
+    background-color: #e0e0e0; /* Colore grigio chiaro per i placeholder */
+    border-radius: 0.5rem; /* Bordi arrotondati */
+    height: 400px; /* Altezza fissa per i placeholder */  }
