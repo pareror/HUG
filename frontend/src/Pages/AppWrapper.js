@@ -11,6 +11,7 @@ import CaregiversManagement from './CaregiversManagement';
 import CreatePatient from './CreatePatient';
 import AttivitaInterne from './AttivitaInterne';
 import AttivitaEsterne from './AttivitaEsterne';
+import Notifiche from './Notifiche';
 
 const Website = () => {
     return ( 
@@ -75,6 +76,13 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
+
+            <Route path="/dashboard/notifiche" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <Notifiche />
+                </ProtectedRoute>
+                 }
+                 />
 
         </Routes>  
             
