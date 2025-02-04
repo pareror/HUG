@@ -48,6 +48,10 @@ const CreatePatient = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  const [showPatientInfoPopup, setShowPatientInfoPopup] = useState(false);
+  const [patientInfo, setPatientInfo] = useState({ id: "", username: "", password: "" });
+  
+
   // Pulizia automatica degli errori dopo 3 secondi
   useEffect(() => {
     if (error) {
@@ -57,16 +61,6 @@ const CreatePatient = () => {
       return () => clearTimeout(timer);
     }
   }, [error]);
-
-  // Dopo il successo, reindirizza alla pagina dei pazienti
-  useEffect(() => {
-    if (success) {
-      const timer = setTimeout(() => {
-        navigate("/dashboard/utenza/pazienti");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [success, navigate]);
 
   // Gestione aggiornamento campi
   const handleChange = (e) => {
@@ -105,15 +99,26 @@ const CreatePatient = () => {
           },
         }
       );
-
-      setSuccess(true); // Mostra il popup di successo
-
+        // ✅ Memorizziamo le informazioni del paziente per mostrarle nel popup
+        setPatientInfo({
+            id: response.data.id,
+            username: response.data.username,
+            password: response.data.password,
+        });
+        setSuccess(true); // Mostra il popup di successo
+        // Dopo 3 secondi mostra il popup con i dettagli del paziente
+        setTimeout(() => {
+            setShowPatientInfoPopup(true);
+        }, 1000);
     } catch (error) {
       setError(error.response?.data?.error || "Errore durante la creazione del paziente.");
       console.error("Errore:", error);
     }
   };
-
+  const handleClosePatientInfoPopup = () => {
+    setShowPatientInfoPopup(false);
+    navigate("/dashboard/utenza/pazienti"); // ✅ Dopo la chiusura, reindirizza alla lista pazienti
+  };
   return (
     <div className="create-patient-page">
       <NavbarDashboard />
@@ -205,6 +210,18 @@ const CreatePatient = () => {
           </div>
         </form>
       </div>
+      {/* Popup con i dettagli del paziente */}
+        {showPatientInfoPopup && (
+        <div className="popup-overlay">
+            <div className="popup-box">
+            <h3>Paziente creato con successo!</h3>
+            <p><strong>ID:</strong> {patientInfo.id}</p>
+            <p><strong>Username:</strong> {patientInfo.username}</p>
+            <p><strong>Password provvisoria:</strong> {patientInfo.password}</p>
+            <button className="btn-green" onClick={handleClosePatientInfoPopup}>OK</button>
+            </div>
+        </div>
+        )}
     </div>
   );
 };
