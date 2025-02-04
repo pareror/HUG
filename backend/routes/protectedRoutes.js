@@ -25,7 +25,8 @@ router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
         id,
         nome,
         cognome,
-        codiceFiscale
+        codiceFiscale,
+        disabilita
       FROM profiles
       WHERE role = 'paziente' AND centroDiurnoId = ?
     `;
@@ -51,10 +52,6 @@ const storage = multer.diskStorage({
   });
   const upload = multer({ storage });
   
-  // Funzione per generare una password casuale
-  const generatePassword = () => {
-    return Math.random().toString(36).slice(-8); // Genera una stringa di 8 caratteri
-  };
 // 📌 Funzione per generare username univoco con Promise
 const generateUniqueUsername = (nome, cognome) => {
     return new Promise((resolve, reject) => {
@@ -182,12 +179,12 @@ router.post(
                     console.log("📌 Inserimento del paziente nel database...");
                     db.run(
                         `INSERT INTO profiles 
-                        (username, password, role, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo, 
+                        (username, password, role, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo, disabilita,
                          disabilitaFisiche, disabilitaSensoriali, disabilitaPsichiche, assistenzaContinuativa)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 
                         [username, hashedPassword, "paziente", nome, cognome, email || null, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo, 
-                        disabilitaFisicheValue, disabilitaSensorialiValue, disabilitaPsichicheValue, assistenzaContinuativaValue],
+                        isDisabled, disabilitaFisicheValue, disabilitaSensorialiValue, disabilitaPsichicheValue, assistenzaContinuativaValue],
 
                         function (err) {
                             if (err) {
