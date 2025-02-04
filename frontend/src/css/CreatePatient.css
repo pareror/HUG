@@ -249,3 +249,18 @@
       width: 100%;
     }
   }
+
+  .popup-container {
+    position: fixed; /* Mantiene il popup fisso sulla pagina */
+    top: 10%; /* 🔹 Lo posiziona a metà pagina */
+    left: 50%; /* 🔹 Lo centra orizzontalmente */
+    transform: translate(-50%, -50%); /* 🔹 Lo centra esattamente */
+    width: 100%;
+    max-width: 600px; /* 🔹 Limita la larghezza */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* 🔹 Distanza tra i popup */
+    z-index: 100000; /* 🔹 Mantiene i popup sopra la navbar */
+    padding: 10px;
+}
