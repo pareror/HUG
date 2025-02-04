@@ -54,7 +54,6 @@ export default function NotificheTab() {
                         titolo={notification.titolo}
                         descrizione={notification.descrizione}
                         tempo={notification.tempo}
-                        nuovo={notification.nuovo}
                     />
                 ))}
 
