@@ -3,6 +3,7 @@
     border-bottom: 1px solid #e5e7eb;
     background-color: #ffffff;
     padding: 12px 16px;
+    border-radius: 1rem;
   }
   
   .activity-container {
@@ -21,10 +22,11 @@
   .back-link {
     display: flex;
     align-items: center;
-    color: #6b7280;
-    text-decoration: none;
+    background: none;
+    border: none;
     font-size: 14px;
-    white-space: nowrap;
+    color: #333;
+    cursor: pointer;
   }
   
   .back-link:hover {
@@ -83,6 +85,22 @@
   
   .create-button {
     background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 38px;
+  }
+
+  .manage-button {
+    background-color:darkred;
     color: white;
     border: none;
     border-radius: 6px;

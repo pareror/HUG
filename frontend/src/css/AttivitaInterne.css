@@ -5,109 +5,75 @@
     padding: 20px;
 }
   
-  
-  /* Header della pagina organizzato in colonna con spazio tra gli elementi */
-  .page-header {
-    /*display: flex;
-    flex-direction: column;*/ /* Organizza gli elementi in colonna */
-    /*gap: 1.5rem; *//* Spazio tra gli elementi dell'header */
-    display: flex;
-    flex-direction: row;          /* Organizza in una riga */
-    justify-content: space-between; /* Separa sinistra e destra */
-    align-items: center;
-    padding: 10px 0;
+.main-content-attivita {
+    margin: 1% auto 0;           /* Margine superiore del 3% e centrato orizzontalmente */
+    padding: 20px;               /* Padding di 20px su tutti i lati */
+    background-color: #ffffff;   /* Sfondo bianco */
+    display: flex;               /* Layout a flexbox */
+    flex-direction: column;      /* Elementi allineati in colonna */
+    gap: 1.5rem;                /* Spazio tra gli elementi figli */
+    max-width: 100%;            
+    border-radius: 0.5rem;           /* Larghezza massima al 100% (o imposta un valore fisso se necessario) */
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
 
-  }
+}
   
-  /* Contenitore degli elementi a sinistra dell'header (bottone indietro e titolo) */
-  .header-left {
-    display: flex;
-    align-items: center; /* Allinea verticalmente gli elementi al centro */
-    gap: 1.25rem; /* Spazio tra il bottone indietro e il titolo */
-  }
-  
-  /* Stile del bottone "Torna indietro" */
-  .back-button {
-    display: flex;
-    align-items: center; /* Allinea l'icona e il testo verticalmente */
-    gap: 0.5rem; /* Spazio tra l'icona e il testo */
-    padding: 0.5rem 1rem; /* Padding interno del bottone */
-    border: none; /* Rimuove il bordo predefinito */
-    background: none; /* Rimuove lo sfondo predefinito */
-    color: #666; /* Colore grigio per il testo */
-    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
-  }
-  
-  /* Stile del titolo principale della pagina */
+  /* Stile del titolo della pagina */
   .page-title {
-    font-size: 1.25rem; /* Dimensione del font */
-    font-weight: 600; /* Spessore del font */
-    color: #333; /* Colore scuro per il testo */
-  }
-  
-  /* Contenitore degli elementi a destra dell'header (ricerca e bottone crea) */
-  .header-right {
-    display: flex;
-    align-items: center; /* Allinea verticalmente gli elementi */
-    gap: 1rem; /* Spazio tra la barra di ricerca e il bottone */
-  }
-  
-  /* Contenitore della barra di ricerca con posizionamento relativo per l'icona */
-  .search-container {
-    position: relative; /* Necessario per posizionare l'icona di ricerca */
-    flex: 1; /* Permette al contenitore di espandersi */
-  }
-  
-  /* Posizionamento dell'icona di ricerca all'interno della barra */
-  .search-icon {
-    position: absolute; /* Posizionamento assoluto rispetto al contenitore */
-    left: 1rem; /* Distanza dal bordo sinistro */
-    top: 50%; /* Centra verticalmente */
-    transform: translateY(-50%); /* Aggiustamento fine del centramento verticale */
-    color: #666; /* Colore grigio per l'icona */
-    width: 1.25rem; /* Larghezza dell'icona */
-    height: 1.25rem; /* Altezza dell'icona */
-  }
-  
-  /* Stile del campo di input per la ricerca */
-  .search-input {
-    width: 200px; /* Larghezza fissa della barra di ricerca */
-    padding: 0.75rem 1rem 0.75rem 3rem; /* Padding con spazio extra a sinistra per l'icona */
-    border: 1px solid #e0e0e0; /* Bordo sottile grigio chiaro */
-    border-radius: 0.5rem; /* Bordi arrotondati */
-    font-size: 0.875rem; /* Dimensione del testo */
-  }
-  
-  /* Stile del bottone "Crea Attività" */
-  .create-button {
-    display: flex;
-    align-items: center; /* Allinea l'icona e il testo verticalmente */
-    gap: 0.5rem; /* Spazio tra l'icona e il testo */
-    padding: 0.75rem 1.5rem; /* Padding interno del bottone */
-    background-color: #0ea5e9; /* Colore di sfondo blu */
-    color: white; /* Testo bianco */
-    border: none; /* Rimuove il bordo */
-    border-radius: 0.5rem; /* Bordi arrotondati */
-    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
-  }
-  
+    color: #333; /* Colore nero per il testo */
+    font-size: 1.5rem; /* Dimensione del font più grande */
+    margin: 0; /* Rimuove il margine predefinito */
+ }
   /* Stile del sottotitolo della pagina */
   .page-subtitle {
     color: #666; /* Colore grigio per il testo */
-    font-size: 0.875rem; /* Dimensione del font più piccola */
-    margin-top: 0.5rem; /* Spazio sopra il sottotitolo */
+    font-size: 1rem; /* Dimensione del font più piccola */
+    margin-top: 0.1rem; /* Spazio sopra il sottotitolo */
   }
   
   /* Griglia per le carte delle attività */
   .activities-grid {
     display: grid; /* Layout a griglia */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Griglia responsive */
+    grid-template-columns: repeat(3, 1fr); /* Griglia responsive */
     gap: 1.5rem; /* Spazio tra le carte */
-    margin-top: 2rem; /* Spazio sopra la griglia */
+    margin-top: 0%; /* Spazio sopra la griglia */
   }
+    /* Quando la larghezza del viewport è inferiore a 900px, usa 2 colonne */
+    @media (max-width: 1000px) {
+    .activities-grid {
+      grid-template-columns: repeat(2, 1fr);
+        }
+    }
+  
+  /* Quando la larghezza del viewport è inferiore a 600px, usa 1 colonna */
+    @media (max-width: 700px) {
+    .activities-grid {
+      grid-template-columns: 1fr;
+     }
+    }
   
   /* Stile del placeholder per le carte attività */
   .activity-card-placeholder {
     background-color: #e0e0e0; /* Colore grigio chiaro per i placeholder */
     border-radius: 0.5rem; /* Bordi arrotondati */
-    height: 400px; /* Altezza fissa per i placeholder */  }
+    height: 500px; /* Altezza fissa per i placeholder */ 
+    width: auto; /* Larghezza automatica */
+}
+
+
+    /* Stile della carta attività */
+    .activity-card {
+        background-color: #fff; /* Colore bianco per la carta */
+        border-radius: 0.5rem; /* Bordi arrotondati */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombra leggera */
+        padding: 1rem; /* Spazio interno */
+        transition: transform 0.2s; /* Transizione per l'effetto hover */
+        cursor: pointer; /* Cambia il cursore al passaggio */
+     }
+  
+    /* Stile della carta attività al passaggio */
+    .activity-card:hover {
+     transform: translateY(-5px); /* Sposta la carta in alto */
+    }
+    /*activity card e activgity card hover non in funzione*/
