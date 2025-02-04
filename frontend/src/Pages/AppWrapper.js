@@ -11,6 +11,7 @@ import CaregiversManagement from './CaregiversManagement';
 import CreatePatient from './CreatePatient';
 import AttivitaInterne from './AttivitaInterne';
 import AttivitaEsterne from './AttivitaEsterne';
+import CreateActivity from './CreateActivity';
 
 const Website = () => {
     return ( 
@@ -75,6 +76,12 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
+            <Route path="/dashboard/attivita/interna/crea" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <CreateActivity />
+                </ProtectedRoute>
+                 }
+                 />
 
         </Routes>  
             

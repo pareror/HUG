@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/AttivitaInterne.css"
+import "../css/AttivitaIntEst.css"
 import NavbarDashboard from "../Components/NavbarDashboard"
 import ActivityBar from "../Components/ActivityBar";
 export default function AttivitaInterne() {
