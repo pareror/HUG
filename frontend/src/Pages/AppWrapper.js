@@ -12,6 +12,8 @@ import CreatePatient from './CreatePatient';
 import AttivitaInterne from './AttivitaInterne';
 import AttivitaEsterne from './AttivitaEsterne';
 import CreateActivity from './CreateActivity';
+import Notifiche from './Notifiche';
+
 
 const Website = () => {
     return ( 
@@ -79,6 +81,13 @@ const Website = () => {
             <Route path="/dashboard/attivita/interna/crea" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <CreateActivity />
+                </ProtectedRoute>
+                 }
+                 />
+
+            <Route path="/dashboard/notifiche" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <Notifiche />
                 </ProtectedRoute>
                  }
                  />

@@ -25,7 +25,8 @@ router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
         id,
         nome,
         cognome,
-        codiceFiscale
+        codiceFiscale,
+        disabilita
       FROM profiles
       WHERE role = 'paziente' AND centroDiurnoId = ?
     `;
@@ -51,10 +52,6 @@ const storage = multer.diskStorage({
   });
   const upload = multer({ storage });
   
-  // Funzione per generare una password casuale
-  const generatePassword = () => {
-    return Math.random().toString(36).slice(-8); // Genera una stringa di 8 caratteri
-  };
 // 📌 Funzione per generare username univoco con Promise
 const generateUniqueUsername = (nome, cognome) => {
     return new Promise((resolve, reject) => {
@@ -97,7 +94,12 @@ router.post(
             indirizzo,
             codiceFiscale,
             genere,
-            telefono
+            telefono,
+            disabilita, 
+            disabilitaFisiche,
+            disabilitaSensoriali,
+            disabilitaPsichiche,
+            assistenzaContinuativa
         } = req.body;
 
         // 📌 Estrarre centroDiurnoId dal JWT
@@ -129,6 +131,20 @@ router.post(
                     missingFields
                 });
             }
+
+            // 📌 Imposta le disabilità in base alla checkbox
+            const isDisabled = disabilita === "true"; // Converti la stringa in booleano
+            const disabilitaFisicheValue = isDisabled ? parseInt(disabilitaFisiche, 10) : 0;
+            const disabilitaSensorialiValue = isDisabled ? parseInt(disabilitaSensoriali, 10) : 0;
+            const disabilitaPsichicheValue = isDisabled ? parseInt(disabilitaPsichiche, 10) : 0;
+            const assistenzaContinuativaValue = isDisabled ? (assistenzaContinuativa === "true" ? 1 : 0) : 0;
+
+            console.log("📌 Stato delle disabilità:", {
+                disabilitaFisiche: disabilitaFisicheValue,
+                disabilitaSensoriali: disabilitaSensorialiValue,
+                disabilitaPsichiche: disabilitaPsichicheValue,
+                assistenzaContinuativa: assistenzaContinuativaValue,
+            });
 
             // 📌 Generazione password hashata
             console.log("🔑 Generazione password...");
@@ -163,9 +179,12 @@ router.post(
                     console.log("📌 Inserimento del paziente nel database...");
                     db.run(
                         `INSERT INTO profiles 
-                        (username, password, role, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                        [username, hashedPassword, "paziente", nome, cognome, email || null, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo],
+                        (username, password, role, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo, disabilita,
+                         disabilitaFisiche, disabilitaSensoriali, disabilitaPsichiche, assistenzaContinuativa)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+
+                        [username, hashedPassword, "paziente", nome, cognome, email || null, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo, 
+                        isDisabled, disabilitaFisicheValue, disabilitaSensorialiValue, disabilitaPsichicheValue, assistenzaContinuativaValue],
 
                         function (err) {
                             if (err) {

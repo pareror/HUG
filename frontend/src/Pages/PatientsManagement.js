@@ -19,8 +19,9 @@ const PatientsManagement = () => {
         },
       });
       setPatients(response.data.patients);
+      console.log("✅ Pazienti recuperati:", response.data.patients);
     } catch (error) {
-      console.error("Errore nel recupero dei pazienti:", error);
+      console.error("❌ Errore nel recupero dei pazienti:", error);
     }
   };
 
@@ -95,9 +96,10 @@ const PatientsManagement = () => {
                     <td>{patient.cognome}</td>
                     <td>{patient.codiceFiscale}</td>
                     <td className="actions-cell">
-                      {patient.disabled ? (
+                      {/* 🔹 Mostra l'icona Accessibilità solo se `disabilita` è true */}
+                      {Boolean(patient.disabilita) && (
                         <Accessibility size={16} color="#007bff" />
-                      ) : null}
+                      )}
                       <button
                         className="icon-button"
                         onClick={() =>
