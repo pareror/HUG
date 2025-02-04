@@ -10,7 +10,7 @@ import PatientsManagement from './PatientsManagement';
 import CaregiversManagement from './CaregiversManagement';
 import CreatePatient from './CreatePatient';
 import AttivitaInterne from './AttivitaInterne';
-
+import AttivitaEsterne from './AttivitaEsterne';
 
 const Website = () => {
     return ( 
@@ -58,6 +58,13 @@ const Website = () => {
             <Route path="/dashboard/attivita/interna" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <AttivitaInterne />
+                </ProtectedRoute>
+                 }
+                 />
+
+            <Route path="/dashboard/attivita/esterna" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <AttivitaEsterne />
                 </ProtectedRoute>
                  }
                  />
