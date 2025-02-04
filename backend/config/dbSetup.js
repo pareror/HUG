@@ -31,6 +31,7 @@ const createProfilesTable = () => {
       emailPec TEXT,
       
       -- Campi per le disabilità (applicabili, per esempio, ai pazienti)
+      disabilita INTEGER CHECK(disabilita IN (0, 1)) DEFAULT 0,
       disabilitaFisiche INTEGER CHECK(disabilitaFisiche BETWEEN 0 AND 5) DEFAULT 0,
       disabilitaSensoriali INTEGER CHECK(disabilitaSensoriali BETWEEN 0 AND 5) DEFAULT 0,
       disabilitaPsichiche INTEGER CHECK(disabilitaPsichiche BETWEEN 0 AND 5) DEFAULT 0,

@@ -87,7 +87,13 @@ const CreatePatient = () => {
     Object.keys(patientData).forEach((key) => {
       formData.append(key, patientData[key]);
     });
-
+    // Se la checkbox "Disabilità" è disattivata, inviamo i campi relativi con valori di default (0)
+    if (!patientData.disabilita) {
+        formData.set("disabilitaFisiche", "0");
+        formData.set("disabilitaSensoriali", "0");
+        formData.set("disabilitaPsichiche", "0");
+        formData.set("assistenzaContinuativa", "0");
+      }
     try {
       const response = await axios.post(
         "http://localhost:5000/api/aggiungi-paziente",
@@ -197,7 +203,26 @@ const CreatePatient = () => {
             <label htmlFor="disabilita">Disabilità</label>
             <input type="checkbox" name="disabilita" id="disabilita" onChange={handleChange} />
           </div>
-
+          {patientData.disabilita && (
+            <>
+              <div className="form-group">
+                <label>Disabilità Fisiche (0-5)</label>
+                <input type="number" name="disabilitaFisiche" min="0" max="5" onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label>Disabilità Sensoriali (0-5)</label>
+                <input type="number" name="disabilitaSensoriali" min="0" max="5" onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label>Disabilità Psichiche (0-5)</label>
+                <input type="number" name="disabilitaPsichiche" min="0" max="5" onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label>Assistenza Continuativa</label>
+                <input type="checkbox" name="assistenzaContinuativa" onChange={handleChange} />
+              </div>
+            </>
+          )}
           <div className="form-actions">
             <div className="left-actions">
               <button type="submit" className="btn-green">
