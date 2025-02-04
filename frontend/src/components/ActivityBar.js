@@ -36,7 +36,7 @@ function ActivityBar() {
             />
           </div>
           {isInternaRoute && (
-            <button className="create-button">
+            <button className="create-button" onClick={() => navigate("/dashboard/attivita/interna/crea")}>
               <span className="button-text">Crea Attività</span>
               <span className="button-icon">+</span>
             </button>
