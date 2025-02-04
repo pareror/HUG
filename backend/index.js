@@ -24,7 +24,7 @@ app.use(
   })
 );
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true })); // 🔹 Per supportare form-urlencoded
 // ✅ Route pubbliche (accessibili a tutti)
 app.use('/api', publicRoutes);
 app.use('/api', authRoutes);

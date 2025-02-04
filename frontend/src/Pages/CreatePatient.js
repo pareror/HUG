@@ -19,6 +19,11 @@ const CreatePatient = () => {
     telefono: "",
     disabilita: false,
     fotoProfilo: null,
+    // Campi per la disabilità (visibili solo se "disabilita" è true)
+    disabilitaFisiche: "",
+    disabilitaSensoriali: "",
+    disabilitaPsichiche: "",
+    assistenzaContinuativa: false,
   });
 
   // Aggiornamento dei campi del form
@@ -40,12 +45,21 @@ const CreatePatient = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Prepara i dati per la creazione del paziente (escludendo i campi di disabilità)
     const formData = new FormData();
     Object.keys(patientData).forEach((key) => {
-      formData.append(key, patientData[key]);
+      if (
+        key !== "disabilitaFisiche" &&
+        key !== "disabilitaSensoriali" &&
+        key !== "disabilitaPsichiche" &&
+        key !== "assistenzaContinuativa"
+      ) {
+        formData.append(key, patientData[key]);
+      }
     });
 
     try {
+      // Prima chiamata: creazione del paziente
       const response = await axios.post(
         "http://localhost:5000/api/aggiungi-paziente",
         formData,
@@ -56,6 +70,28 @@ const CreatePatient = () => {
           },
         }
       );
+
+      const patientId = response.data.id;
+
+      // Se la checkbox "Disabilità" è attiva, effettua la seconda chiamata per aggiornare i dati di disabilità
+      if (patientData.disabilita) {
+        const disabilityFormData = new FormData();
+        disabilityFormData.append("disabilitaFisiche", patientData.disabilitaFisiche);
+        disabilityFormData.append("disabilitaSensoriali", patientData.disabilitaSensoriali);
+        disabilityFormData.append("disabilitaPsichiche", patientData.disabilitaPsichiche);
+        disabilityFormData.append("assistenzaContinuativa", patientData.assistenzaContinuativa);
+
+        await axios.put(
+          `http://localhost:5000/api/gestisci-disabilita/${patientId}`,
+          disabilityFormData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
 
       alert(
         `Paziente creato con successo!\nID: ${response.data.id}\nUsername: ${response.data.username}\nPassword: ${response.data.password}`
@@ -77,7 +113,7 @@ const CreatePatient = () => {
         <h1>Crea Profilo Paziente</h1>
 
         <form onSubmit={handleSubmit} className="patient-form">
-          {/* Esempio di altri campi del form */}
+          {/* Campi principali */}
           <div className="form-group">
             <label>Nome</label>
             <input type="text" name="nome" required onChange={handleChange} />
@@ -119,27 +155,28 @@ const CreatePatient = () => {
             <label>Codice Fiscale</label>
             <input type="text" name="codiceFiscale" required onChange={handleChange} />
           </div>
-        {/* Sezione Foto Profilo */}
-            <div className="profile-photo">
-                <label>Foto Profilo</label>
-                <input
-                type="file"
-                name="fotoProfilo"
-                accept="image/*"
-                onChange={handleFileChange}
+
+          {/* Sezione Foto Profilo */}
+          <div className="profile-photo">
+            <label>Foto Profilo</label>
+            <input
+              type="file"
+              name="fotoProfilo"
+              accept="image/*"
+              onChange={handleFileChange}
             />
           </div>
+
           {/* Sezione Checkbox Disabilità */}
           <div className="form-group checkbox-group full-width">
             <div className="checkbox-container">
-            <label htmlFor="disabilita">Disabilità</label>
+              <label htmlFor="disabilita">Disabilità</label>
               <input
                 type="checkbox"
                 name="disabilita"
                 id="disabilita"
                 onChange={handleChange}
               />
-              
             </div>
             <p className="disability-info">
               Spunta la casella se il paziente soffre di qualsiasi tipologia di
@@ -148,7 +185,52 @@ const CreatePatient = () => {
             </p>
           </div>
 
-         
+          {/* Se la checkbox "Disabilità" è attiva, mostra i campi per i dettagli */}
+          {patientData.disabilita && (
+            <>
+              <div className="form-group full-width">
+                <label>Disabilità Fisiche (0-5)</label>
+                <input
+                  type="number"
+                  name="disabilitaFisiche"
+                  min="0"
+                  max="5"
+                  required
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Disabilità Sensoriali (0-5)</label>
+                <input
+                  type="number"
+                  name="disabilitaSensoriali"
+                  min="0"
+                  max="5"
+                  required
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Disabilità Psichiche (0-5)</label>
+                <input
+                  type="number"
+                  name="disabilitaPsichiche"
+                  min="0"
+                  max="5"
+                  required
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form-group full-width">
+                <label>Assistenza Continuativa</label>
+                <input
+                  type="checkbox"
+                  name="assistenzaContinuativa"
+                  onChange={handleChange}
+                />
+              </div>
+            </>
+          )}
 
           {/* Pulsanti Azione */}
           <div className="form-actions">
@@ -156,11 +238,7 @@ const CreatePatient = () => {
               <button type="submit" className="btn-green">
                 Crea Profilo
               </button>
-              <button
-                type="button"
-                className="btn-gray"
-                onClick={() => navigate(-1)}
-              >
+              <button type="button" className="btn-gray" onClick={() => navigate(-1)}>
                 Annulla
               </button>
             </div>

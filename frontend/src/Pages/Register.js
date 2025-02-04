@@ -11,7 +11,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     comuneDiResidenza: "",
-    tipologia: "centro",
+    role: "direttorecentro",
     ragioneSociale: "",
     pIva: "",
     telefono: "",
@@ -73,9 +73,13 @@ const Register = () => {
     e.preventDefault();
     setSuccess(false);
     if (!validateForm()) return; // Se ci sono errori, interrompe l'invio
-
+    console.log("Valore di tipologia", formData.role);
+    console.log("📤 Dati inviati al backend:", formData); // Log dei dati inviati
     try {
-      const response = await axios.post("http://localhost:5000/api/register", formData);
+      console.log("📤 Dati inviati al backend:", formData);
+      const response = await axios.post("http://localhost:5000/api/register", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
       if (response.status === 201) {
         setSuccess(true);
       }
@@ -119,10 +123,10 @@ const Register = () => {
 
           <form onSubmit={handleSubmit}>
             <label>Tipologia</label>
-            <select name="tipologia" value={formData.tipologia} onChange={handleChange}>
-              <option value="centro">Centro</option>
-              <option value="tour">Tour</option>
-              <option value="enti">Enti</option>
+            <select name="role" value={formData.role} onChange={handleChange}>
+              <option value="direttorecentro">Centro</option>
+              <option value="touroperator">Tour</option>
+              <option value="enteesterno">Enti</option>
             </select>
 
             {/* Nuovo campo Username */}

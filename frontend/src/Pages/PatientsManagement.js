@@ -1,38 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Accessibility, Key, Edit2, ArrowLeft, Plus } from "lucide-react";
 import "../css/PatientsManagement.css";
 import NavbarDashboard from "../Components/NavbarDashboard";
+import axios from "axios";
 
 const PatientsManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [patients, setPatients] = useState([]);
 
-  // Dati fittizi per i pazienti
-  const [patients, setPatients] = useState([
-    {
-      id: "000123",
-      nome: "Mario",
-      cognome: "Rossi",
-      codiceFiscale: "RSSMRA80A01H501U",
-      disabled: true,
-    },
-    {
-      id: "000124",
-      nome: "Luigi",
-      cognome: "Verdi",
-      codiceFiscale: "VRDLGU85B02H501X",
-      disabled: false,
-    },
-    {
-      id: "000125",
-      nome: "Anna",
-      cognome: "Bianchi",
-      codiceFiscale: "BNCHNN90C03H501Y",
-      disabled: false,
+  // Funzione per recuperare i pazienti dall'API
+  const fetchPatients = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/patients", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
+      setPatients(response.data.patients);
+    } catch (error) {
+      console.error("Errore nel recupero dei pazienti:", error);
     }
-    // Aggiungi altri pazienti se necessario
-  ]);
+  };
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
 
   // Filtra i pazienti in base al termine di ricerca (nome, cognome, codice fiscale, id)
   const filteredPatients = patients.filter(
@@ -40,7 +34,7 @@ const PatientsManagement = () => {
       patient.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.cognome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.codiceFiscale.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.id.toLowerCase().includes(searchTerm.toLowerCase())
+      patient.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -101,9 +95,9 @@ const PatientsManagement = () => {
                     <td>{patient.cognome}</td>
                     <td>{patient.codiceFiscale}</td>
                     <td className="actions-cell">
-                      {patient.disabled && (
+                      {patient.disabled ? (
                         <Accessibility size={16} color="#007bff" />
-                      )}
+                      ) : null}
                       <button
                         className="icon-button"
                         onClick={() =>

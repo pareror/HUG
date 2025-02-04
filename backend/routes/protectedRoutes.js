@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const multer = require('multer');
 const path = require('path');
+const db = require('../config/db');
 /*
 // 📌 Esempio di API protetta accessibile solo con un JWT valido
 router.get('/protected-info', authenticateJWT, (req, res) => {
@@ -36,7 +37,7 @@ router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
     });
   });
   
-  module.exports = router;
+
 // Configurazione multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -74,7 +75,7 @@ const storage = multer.diskStorage({
         telefono,
         centroDiurnoId
       } = req.body;
-  
+      console.log("ok")
       // Controllo che tutti i campi obbligatori siano presenti
       if (
         !nome || !cognome || !email || !dataNascita || !comuneResidenza ||
