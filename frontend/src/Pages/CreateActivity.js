@@ -8,7 +8,7 @@ import InstructorSection from "../Components/ActivityComponents/InstructorSectio
 import FormActions from "../Components/ActivityComponents/FormActions"
 import NavbarDashboard from "../Components/NavbarDashboard"
 import PopupAnnulla from "../Components/PopupAnnulla"
-import "../css/CreateActivity.css"
+import "../css/CreateActivity.module.css"
 
 function CreateActivity() {
     const [formData, setFormData] = useState({

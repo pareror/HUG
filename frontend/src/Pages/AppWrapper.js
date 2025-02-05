@@ -14,8 +14,7 @@ import AttivitaEsterne from './AttivitaEsterne';
 import Notifiche from './Notifiche';
 import CreateActivity from './CreateActivity';
 import PreventiviPage from './PreventiviPage';
-
-
+import EditPatient from './EditPatient';
 
 const Website = () => {
     return ( 
@@ -87,7 +86,12 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
-         
+            <Route path="/dashboard/utenza/pazienti/:id/modifica" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <EditPatient />
+                </ProtectedRoute>
+                 }
+            />
 
             <Route path="/dashboard/notifiche" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>

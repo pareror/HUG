@@ -114,7 +114,7 @@ const PatientsManagement = () => {
                         className="icon-button"
                         onClick={() =>
                           navigate(
-                            `/dashboard/utenza/pazienti/${patient.id}/profilo`
+                            `/dashboard/utenza/pazienti/${patient.id}/modifica`
                           )
                         }
                       >

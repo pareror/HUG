@@ -267,4 +267,165 @@ router.post(
         }
     }
 );
+
+router.get(
+    "/paziente/:id",
+    authenticateJWT,
+    authorizeRole(5), // Solo i direttori possono vedere i dettagli del paziente
+    async (req, res) => {
+      const patientId = req.params.id;
+      console.log("📌 Recupero dati per il paziente ID:", patientId);
+  
+      try {
+        // 1️⃣ Recupera i dati del paziente
+        db.get(
+          `SELECT id, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, genere, telefono, 
+                  fotoProfilo, disabilita, disabilitaFisiche, disabilitaSensoriali, disabilitaPsichiche, assistenzaContinuativa 
+           FROM profiles WHERE id = ? AND role = 'paziente'`,
+          [patientId],
+          (err, patient) => {
+            if (err) {
+              console.error("❌ Errore SQL nel recupero del paziente:", err.message);
+              return res.status(500).json({ error: "Errore nel recupero del paziente." });
+            }
+  
+            if (!patient) {
+              console.error("❌ Paziente non trovato con ID:", patientId);
+              return res.status(404).json({ error: "Paziente non trovato." });
+            }
+  
+            console.log("✅ Paziente trovato:", patient);
+  
+            // 2️⃣ Recupera i contatti di emergenza associati
+            db.all(
+              `SELECT ec.id, ec.nome, ec.cognome, ec.telefono, ec.relazione 
+               FROM emergency_contacts ec
+               JOIN patient_emergency_contacts pec ON ec.id = pec.contactId
+               WHERE pec.patientId = ?`,
+              [patientId],
+              (err, emergencyContacts) => {
+                if (err) {
+                  console.error("❌ Errore SQL nel recupero dei contatti di emergenza:", err.message);
+                  return res.status(500).json({ error: "Errore nel recupero dei contatti di emergenza." });
+                }
+  
+                console.log("✅ Contatti di emergenza trovati:", emergencyContacts);
+  
+                // 3️⃣ Ritorna i dati del paziente con i contatti di emergenza
+                res.json({
+                  patient,
+                  emergencyContacts,
+                });
+              }
+            );
+          }
+        );
+      } catch (error) {
+        console.error("❌ Errore generale nel recupero del paziente:", error);
+        res.status(500).json({ error: "Errore interno del server." });
+      }
+    }
+  );
+  router.put(
+    "/paziente/:id",
+    authenticateJWT,
+    authorizeRole(5), // Solo i direttori possono modificare i pazienti
+    async (req, res) => {
+      const patientId = req.params.id;
+      const {
+        nome,
+        cognome,
+        email,
+        dataNascita,
+        comuneDiResidenza,
+        indirizzo,
+        codiceFiscale,
+        genere,
+        telefono,
+        disabilita,
+        disabilitaFisiche,
+        disabilitaSensoriali,
+        disabilitaPsichiche,
+        assistenzaContinuativa
+        // eventuali altri campi (es. emergencyContacts) se gestiti in questo endpoint
+      } = req.body;
+      console.log(req.body)
+      // Validazione minima: controlla che i campi obbligatori siano presenti
+      if (!nome || !cognome) {
+        return res.status(400).json({ error: "I campi nome e cognome sono obbligatori." });
+      }
+      
+      // Forza i campi testuali a stringa (se null o undefined)
+      const nomeSafe = nome || "";
+      const cognomeSafe = cognome || "";
+      const emailSafe = email || "";
+      const dataNascitaSafe = dataNascita || "";
+      const comuneSafe = comuneDiResidenza || "";
+      const indirizzoSafe = indirizzo || "";
+      const codiceFiscaleSafe = codiceFiscale || "";
+      const genereSafe = genere || "";
+      const telefonoSafe = telefono || "";
+      
+      // Gestione dei campi booleani e numerici:
+      // Se il frontend manda ad esempio "true" o "false" (o anche stringhe) usiamo un controllo
+      const disabilitaSafe = disabilita ? 1 : 0;
+      const assistenzaSafe = assistenzaContinuativa ? 1 : 0;
+      // Se i campi di disabilità numerici non sono validi, forziamo a "0"
+      const disabilitaFisicheSafe = disabilitaFisiche || "0";
+      const disabilitaSensorialiSafe = disabilitaSensoriali || "0";
+      const disabilitaPsichicheSafe = disabilitaPsichiche || "0";
+  
+      const params = [
+        nomeSafe,
+        cognomeSafe,
+        emailSafe,
+        dataNascitaSafe,
+        comuneSafe,
+        indirizzoSafe,
+        codiceFiscaleSafe,
+        genereSafe,
+        telefonoSafe,
+        disabilitaSafe,
+        disabilitaFisicheSafe,
+        disabilitaSensorialiSafe,
+        disabilitaPsichicheSafe,
+        assistenzaSafe,
+        patientId
+      ];
+      
+      try {
+        db.run(
+          `UPDATE profiles
+           SET nome = ?,
+               cognome = ?,
+               email = ?,
+               dataNascita = ?,
+               comuneDiResidenza = ?,
+               indirizzo = ?,
+               codiceFiscale = ?,
+               genere = ?,
+               telefono = ?,
+               disabilita = ?,
+               disabilitaFisiche = ?,
+               disabilitaSensoriali = ?,
+               disabilitaPsichiche = ?,
+               assistenzaContinuativa = ?
+           WHERE id = ?`,
+          params,
+          function (err) {
+            if (err) {
+              console.error("❌ Errore SQL:", err.message);
+              return res.status(500).json({ error: "Errore durante l'aggiornamento del paziente." });
+            }
+            console.log("✅ Paziente aggiornato con successo.");
+            res.json({ message: "Paziente aggiornato con successo!" });
+          }
+        );
+      } catch (error) {
+        console.error("❌ Errore generale:", error);
+        res.status(500).json({ error: "Errore interno del server." });
+      }
+    }
+  );
+  
   module.exports = router;
