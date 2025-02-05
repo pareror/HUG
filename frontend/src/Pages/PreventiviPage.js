@@ -17,9 +17,9 @@ export default function PreventiviPage() {
       <NavbarDashboard />    
       <div className = "main-content">
          {/* Bottone per tornare indietro */}
-         <button onClick={() => navigate(-1)} className="back-link">
-            <ArrowLeft className="back-icon" />
-            <span className="back-text">Torna indietro</span>
+          <button className="back-button" onClick={() => navigate(-1)}>
+              <ArrowLeft size={20} />
+              Torna indietro
           </button>
 
           <PreventiviTab />

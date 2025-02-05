@@ -65,7 +65,7 @@
 }
 
 /* Gruppo di elementi del form */
-.form-group {
+.profilo-form-group {
     display: flex;
     flex-direction: column;
 }
@@ -78,8 +78,8 @@ label {
 }
 
 /* Stile per gli input e select del form */
-input,
-select {
+.profilo input, 
+.profilo select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -89,8 +89,8 @@ select {
 }
 
 /* Stile per gli input e select quando sono in focus */
-input:focus,
-select:focus {
+.proflo input:focus,
+.profilo select:focus {
     border-color: #007bff;
     outline: none;
 }
@@ -111,7 +111,7 @@ select:focus {
     grid-column: span 2; /* Occupa entrambe le colonne nella griglia */
 }
 
-.edit-button {
+.profile-edit-button {
     background-color: #28a745; /* Verde */
     color: white;
     border: none;

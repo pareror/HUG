@@ -3,8 +3,6 @@ import NavbarDashboard from "../Components/NavbarDashboard"
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import "../css/PagamentiPazienti.css";
-import "../css/ActivityBar.css";
-
 
 export default function PagamentiPazienti() {
 
@@ -16,9 +14,13 @@ export default function PagamentiPazienti() {
       <div className = "main-content">
          {/* Bottone per tornare indietro */}
          <button className="back-button" onClick={() => navigate(-1)}>
-            <ArrowLeft className="back-icon" />
-            <span className="back-text">Torna indietro</span>
-          </button>
+              <ArrowLeft size={20} />
+              Torna indietro
+            </button>
+
+            <div className="container">
+              {/* Add your content here */}
+            </div>
 
 
         

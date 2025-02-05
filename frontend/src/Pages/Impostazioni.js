@@ -15,10 +15,11 @@ const Impostazioni = () => {
             <div className='impostazioni-content'>
                 <div className='impostazioni-header'>
                      {/* Bottone per tornare indietro */}
-                    <button onClick={() => navigate(-1)} className="back-link">
-                        <ArrowLeft className="back-icon" />
-                        <span className="back-text">Torna indietro</span>
-                    </button>
+         {/* Bottone per tornare indietro */}
+          <button className="back-button" onClick={() => navigate(-1)}>
+              <ArrowLeft size={20} />
+              Torna indietro
+          </button>
                 </div>
 
                 <ImpostazioniTab />              
