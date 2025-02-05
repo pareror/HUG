@@ -218,4 +218,53 @@ router.post(
         }
     }
 );
+router.post(
+    "/aggiungi-contatto-emergenza",
+    authenticateJWT,
+    authorizeRole(5), // Solo i direttori di centri possono aggiungere contatti di emergenza
+    async (req, res) => {
+        console.log("📥 Dati ricevuti dal frontend:", req.body);
+
+        const { patientId, nome, cognome, telefono, relazione } = req.body;
+
+        // Controllo dei campi obbligatori
+        if (!patientId || !nome || !cognome || !telefono || !relazione) {
+            return res.status(400).json({ error: "Tutti i campi sono obbligatori." });
+        }
+
+        try {
+            // Inseriamo sempre un nuovo contatto senza verificare se esiste già
+            db.run(
+                `INSERT INTO emergency_contacts (nome, cognome, telefono, relazione) VALUES (?, ?, ?, ?)`,
+                [nome, cognome, telefono, relazione],
+                function (err) {
+                    if (err) {
+                        console.error("❌ Errore nella creazione del contatto di emergenza:", err.message);
+                        return res.status(500).json({ error: "Errore nella creazione del contatto di emergenza." });
+                    }
+
+                    const newContactId = this.lastID; // ID del contatto appena creato
+
+                    // Ora associamo il nuovo contatto al paziente
+                    db.run(
+                        `INSERT INTO patient_emergency_contacts (patientId, contactId) VALUES (?, ?)`,
+                        [patientId, newContactId],
+                        function (err) {
+                            if (err) {
+                                console.error("❌ Errore nell'associazione contatto-paziente:", err.message);
+                                return res.status(500).json({ error: "Errore nell'associazione del contatto di emergenza." });
+                            }
+
+                            console.log("✅ Contatto di emergenza aggiunto e associato al paziente.");
+                            res.json({ message: "Contatto di emergenza aggiunto con successo!", contactId: newContactId });
+                        }
+                    );
+                }
+            );
+        } catch (error) {
+            console.error("❌ Errore generale:", error);
+            res.status(500).json({ error: "Errore nell'aggiunta del contatto di emergenza." });
+        }
+    }
+);
   module.exports = router;

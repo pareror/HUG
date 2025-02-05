@@ -1,0 +1,131 @@
+/* Overlay scuro */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  }
+  
+  /* Contenitore popup */
+  .popup-box {
+    background: white;
+    padding: 20px;
+    width: 400px;
+    max-width: 90%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  /* Header del popup */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .popup-header h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .close-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: 0.3s;
+  }
+  
+  .close-button:hover { color: red; }
+  
+  /* Contatti di emergenza */
+  .emergency-contact {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+  }
+  
+  /* Intestazione contatto */
+  .contact-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 5px;
+    font-weight: bold;
+    background: #e3e3e3;
+    border-radius: 5px;
+    align-items: center;
+  }
+  
+  /* Animazione apertura/chiusura dettagli */
+  .contact-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  /* Quando un contatto è espanso */
+  .contact-details.expanded {
+    max-height: 500px; /* Sufficiente per contenere i dettagli */
+    transition: max-height 0.3s ease-in;
+  }
+  
+  /* Stile per gli input */
+  .contact-details input,
+  .contact-details select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  /* Pulsante per rimuovere un contatto */
+  .remove-contact {
+    background: #dc3545;
+    color: white;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .remove-contact:hover { background: #c82333; }
+  
+  /* Pulsante per aggiungere un contatto */
+  .btn-green {
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .btn-green:hover { background: #218838; }
+  

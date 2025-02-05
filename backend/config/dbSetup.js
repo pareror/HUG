@@ -49,10 +49,52 @@ const createProfilesTable = () => {
   );
 };
 
+// 🔹 **Tabella per i contatti di emergenza**
+const createEmergencyContactsTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS emergency_contacts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      cognome TEXT NOT NULL,
+      telefono TEXT NOT NULL,
+      relazione TEXT NOT NULL
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'emergency_contacts':", err.message);
+      } else {
+        console.log("✅ Tabella 'emergency_contacts' creata con successo.");
+      }
+    }
+  );
+};
+
+// 🔹 **Tabella di associazione tra pazienti e contatti di emergenza**
+const createPatientEmergencyContactsTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS patient_emergency_contacts (
+      patientId INTEGER,
+      contactId INTEGER,
+      PRIMARY KEY (patientId, contactId),
+      FOREIGN KEY (patientId) REFERENCES profiles(id) ON DELETE CASCADE,
+      FOREIGN KEY (contactId) REFERENCES emergency_contacts(id) ON DELETE CASCADE
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'patient_emergency_contacts':", err.message);
+      } else {
+        console.log("✅ Tabella 'patient_emergency_contacts' creata con successo.");
+      }
+    }
+  );
+};
+
 // Funzione principale per inizializzare il database
 const initializeDatabase = () => {
   console.log("🔄 Inizializzazione del database...");
   createProfilesTable();
+  createEmergencyContactsTable();
+  createPatientEmergencyContactsTable();
 };
 
 initializeDatabase();
