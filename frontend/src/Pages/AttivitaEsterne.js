@@ -16,7 +16,9 @@ export default function AttivitaInterne() {
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
-      
+        <div className="activity-card-placeholder" />
+        <div className="activity-card-placeholder" />
+        <div className="activity-card-placeholder" />
         {/* Altri placeholder se necessario */}
       </div>
       </header>

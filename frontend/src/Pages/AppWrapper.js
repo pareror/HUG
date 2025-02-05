@@ -11,8 +11,8 @@ import CaregiversManagement from './CaregiversManagement';
 import CreatePatient from './CreatePatient';
 import AttivitaInterne from './AttivitaInterne';
 import AttivitaEsterne from './AttivitaEsterne';
-import CreateActivity from './CreateActivity';
 import Notifiche from './Notifiche';
+import CreateActivity from './CreateActivity';
 
 
 const Website = () => {
@@ -65,6 +65,13 @@ const Website = () => {
                  }
                  />
 
+            <Route path="/dashboard/attivita/interna/crea" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <CreateActivity />
+                </ProtectedRoute>
+                 }
+                 />
+
             <Route path="/dashboard/attivita/esterna" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <AttivitaEsterne />
@@ -78,12 +85,7 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
-            <Route path="/dashboard/attivita/interna/crea" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
-                <CreateActivity />
-                </ProtectedRoute>
-                 }
-                 />
+         
 
             <Route path="/dashboard/notifiche" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
