@@ -7,7 +7,7 @@ import "../css/ErrorPopup.css"; // Per popup di errore
 import "../css/SuccessPopup.css"; // Per popup di successo
 import NavbarDashboard from "../Components/NavbarDashboard";
 import { jwtDecode } from "jwt-decode";
-
+import "../css/EmergencyContactsPopup.css"; // Per popup contatti di emergenza
 const CreatePatient = () => {
   const navigate = useNavigate();
 

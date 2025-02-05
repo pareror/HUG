@@ -1,0 +1,130 @@
+/* Sfondo scuro trasparente quando il popup è aperto */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Sfocatura */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  }
+  
+  /* Contenitore principale del popup */
+  .popup-box {
+    background: white;
+    padding: 20px;
+    width: 400px;
+    max-width: 90%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Animazione di apertura */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Header del popup */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Titolo */
+  .popup-header h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  /* Pulsante di chiusura */
+  .close-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: 0.3s;
+  }
+  
+  .close-button:hover {
+    color: red;
+  }
+  
+  /* Contenuto principale */
+  .popup-content {
+    margin-top: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  /* Contatto di emergenza */
+  .emergency-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  /* Stile per gli input */
+  .emergency-contact input,
+  .emergency-contact select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  /* Pulsante per aggiungere un contatto */
+  .btn-green {
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+  
+  .btn-green:hover {
+    background: #218838;
+  }
+  
+  /* Pulsante per rimuovere un contatto */
+  .remove-contact {
+    background: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    align-self: flex-end;
+  }
+  
+  .remove-contact:hover {
+    background: #c82333;
+  }
+  
+  
