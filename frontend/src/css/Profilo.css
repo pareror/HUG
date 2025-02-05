@@ -1,0 +1,128 @@
+/* Stile generale per il contenitore del profilo */
+.profilo {
+    padding: 20px;
+    min-height: 100vh; /* Altezza minima pari all'intera viewport */
+    background-color: #e7ebee;
+}
+
+/* Contenuto del profilo con stile per layout e scroll */
+.profilo-content {
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding-right: 10px; /* Evita che lo scroll copra il testo */
+}
+
+/* Contenitore principale del profilo */
+.profilo-container {
+    max-width: 90%;
+    margin: 25px auto;
+    padding: 20px 20px 8px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Evita che il contenuto esca dal contenitore */
+}
+
+/* Titolo della sezione del profilo */
+.profilo-title {
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+/* Intestazione del profilo con allineamento degli elementi */
+.profilo-header {
+    display: flex;
+    align-items: center;
+}
+
+/* Stile per il pulsante "Torna indietro" */
+.back-linkk {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+/* Icona della freccia nel pulsante "Torna indietro" */
+.back-icon {
+    margin-right: 8px;
+}
+
+/* Form del profilo con layout a griglia */
+.profilo-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Gruppo di elementi del form */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stile per le etichette del form */
+label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Stile per gli input e select del form */
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+}
+
+/* Stile per gli input e select quando sono in focus */
+input:focus,
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Stile per la sezione della foto del profilo */
+.profile-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    height: 150px;
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    grid-column: span 2; /* Occupa entrambe le colonne nella griglia */
+}
+
+.edit-button {
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 20px; /* Spazio sopra il pulsante */
+    align-self: center; /* Centra il pulsante orizzontalmente */
+}
+
+.edit-button:hover {
+    background-color: #218838; /* Verde scuro per l'hover */
+}

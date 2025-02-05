@@ -47,9 +47,9 @@ export default function PreventiviTab() {
         <p>Qui troverai la lista delle attività esterne e i loro preventivi</p>
       </div>
 
-      <div className="search-container">
+      <div className="search-containerr">
         <Search className="search-icon" />
-        <input type="text" placeholder="Cerca attività..." className="search-input" />
+        <input type="text" placeholder="Cerca attività..." className="search-inputt" />
       </div>
 
       <div className="activities-list">

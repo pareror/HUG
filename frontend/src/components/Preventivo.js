@@ -18,7 +18,7 @@ function Preventivo({ titoloPreventivo, data, numeroPreventivi, status }) {
           </div>
         </div>
         <div className="activity-actions">
-          {status && <span className="status">{status}</span>}
+          <span className="status">{status}</span>
           <button className="manage-button">Gestisci preventivi</button>
         </div>
       </div>
