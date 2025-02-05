@@ -1,18 +1,18 @@
-/* Sfondo scuro trasparente quando il popup è aperto */
+/* Overlay scuro */
 .popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Sfocatura */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 10000;
   }
   
-  /* Contenitore principale del popup */
+  /* Contenitore popup */
   .popup-box {
     background: white;
     padding: 20px;
@@ -24,16 +24,9 @@
     animation: fadeIn 0.3s ease-in-out;
   }
   
-  /* Animazione di apertura */
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
   }
   
   /* Header del popup */
@@ -45,14 +38,12 @@
     border-bottom: 1px solid #ddd;
   }
   
-  /* Titolo */
   .popup-header h3 {
     font-size: 18px;
     font-weight: bold;
     margin: 0;
   }
   
-  /* Pulsante di chiusura */
   .close-button {
     background: transparent;
     border: none;
@@ -62,37 +53,67 @@
     transition: 0.3s;
   }
   
-  .close-button:hover {
-    color: red;
-  }
+  .close-button:hover { color: red; }
   
-  /* Contenuto principale */
-  .popup-content {
-    margin-top: 15px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  /* Contatto di emergenza */
+  /* Contatti di emergenza */
   .emergency-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     background: #f9f9f9;
-    padding: 15px;
+    padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
+    transition: 0.3s;
+  }
+  
+  /* Intestazione contatto */
+  .contact-header {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 5px;
+    font-weight: bold;
+    background: #e3e3e3;
+    border-radius: 5px;
+    align-items: center;
+  }
+  
+  /* Animazione apertura/chiusura dettagli */
+  .contact-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  /* Quando un contatto è espanso */
+  .contact-details.expanded {
+    max-height: 500px; /* Sufficiente per contenere i dettagli */
+    transition: max-height 0.3s ease-in;
   }
   
   /* Stile per gli input */
-  .emergency-contact input,
-  .emergency-contact select {
+  .contact-details input,
+  .contact-details select {
+    width: 100%;
     padding: 8px;
-    font-size: 14px;
+    margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: 100%;
+    font-size: 14px;
   }
+  
+  /* Pulsante per rimuovere un contatto */
+  .remove-contact {
+    background: #dc3545;
+    color: white;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .remove-contact:hover { background: #c82333; }
   
   /* Pulsante per aggiungere un contatto */
   .btn-green {
@@ -104,27 +125,7 @@
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
-    transition: 0.3s;
   }
   
-  .btn-green:hover {
-    background: #218838;
-  }
-  
-  /* Pulsante per rimuovere un contatto */
-  .remove-contact {
-    background: #dc3545;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 12px;
-    align-self: flex-end;
-  }
-  
-  .remove-contact:hover {
-    background: #c82333;
-  }
-  
+  .btn-green:hover { background: #218838; }
   

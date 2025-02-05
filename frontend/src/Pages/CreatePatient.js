@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { ArrowLeft, Plus, X, ChevronDown, ChevronUp } from "lucide-react";
 import "../css/CreatePatient.css";
 import "../css/ErrorPopup.css"; // Per popup di errore
 import "../css/SuccessPopup.css"; // Per popup di successo
@@ -54,7 +54,7 @@ const CreatePatient = () => {
    // Gestione popup contatti di emergenza
    const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
    const [emergencyContacts, setEmergencyContacts] = useState([]);
-
+   const [expandedContactIndex, setExpandedContactIndex] = useState(null);
   // Pulizia automatica degli errori dopo 3 secondi
   useEffect(() => {
     if (error) {
@@ -79,12 +79,16 @@ const CreatePatient = () => {
     const file = e.target.files[0];
     setPatientData((prev) => ({ ...prev, fotoProfilo: file }));
   };
-  // Funzione per aggiungere un nuovo contatto di emergenza
+  // Aggiungi nuovo contatto e collassa i precedenti
   const addEmergencyContact = () => {
-    setEmergencyContacts([...emergencyContacts, { nome: "", cognome: "", telefono: "", relazione: "" }]);
+    setEmergencyContacts([
+      ...emergencyContacts,
+      { nome: "", cognome: "", telefono: "", relazione: "" },
+    ]);
+    setExpandedContactIndex(emergencyContacts.length); // Espande solo il nuovo contatto
   };
   
-  // Funzione per aggiornare un contatto di emergenza
+  // Modifica dati del contatto
   const handleEmergencyContactChange = (index, e) => {
     const { name, value } = e.target;
     setEmergencyContacts((prev) => {
@@ -94,10 +98,14 @@ const CreatePatient = () => {
     });
   };
 
-    // Funzione per rimuovere un contatto di emergenza
-    const removeEmergencyContact = (index) => {
-      setEmergencyContacts((prev) => prev.filter((_, i) => i !== index));
-    };
+  // Funzione per rimuovere un contatto di emergenza
+  const removeEmergencyContact = (index) => {
+    setEmergencyContacts((prev) => prev.filter((_, i) => i !== index));
+  };
+  // Toggle per mostrare/nascondere dettagli del contatto
+  const toggleContactDetails = (index) => {
+    setExpandedContactIndex(expandedContactIndex === index ? null : index);
+  };
   // Invio dati al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -276,32 +284,71 @@ const CreatePatient = () => {
         </form>
       </div>
        {/* Popup Contatti di Emergenza */}
-       {showEmergencyPopup && (
+       {/* Popup Contatti di Emergenza */}
+      {showEmergencyPopup && (
         <div className="popup-overlay">
           <div className="popup-box">
-            <h3>Contatti di Emergenza</h3>
-            <button className="close-button" onClick={() => setShowEmergencyPopup(false)}>
-              <X size={20} />
-            </button>
+            <div className="popup-header">
+              <h3>Contatti di Emergenza</h3>
+              <button className="close-button" onClick={() => setShowEmergencyPopup(false)}>
+                <X size={20} />
+              </button>
+            </div>
 
-            {emergencyContacts.map((contact, index) => (
-              <div key={index} className="emergency-contact">
-                <input type="text" name="nome" placeholder="Nome" value={contact.nome} onChange={(e) => handleEmergencyContactChange(index, e)} />
-                <input type="text" name="cognome" placeholder="Cognome" value={contact.cognome} onChange={(e) => handleEmergencyContactChange(index, e)} />
-                <input type="text" name="telefono" placeholder="Numero di telefono" value={contact.telefono} onChange={(e) => handleEmergencyContactChange(index, e)} />
-                <select name="relazione" value={contact.relazione} onChange={(e) => handleEmergencyContactChange(index, e)}>
-                  <option value="">Seleziona il grado di parentela</option>
-                  <option value="Genitore">Genitore</option>
-                  <option value="Fratello/Sorella">Fratello/Sorella</option>
-                  <option value="Figlio">Figlio</option>
-                </select>
-                <button className="remove-contact" onClick={() => removeEmergencyContact(index)}>Rimuovi</button>
-              </div>
-            ))}
+            <div className="popup-content">
+              {emergencyContacts.map((contact, index) => (
+                <div key={index} className="emergency-contact">
+                  <div
+                    className="contact-header"
+                    onClick={() => toggleContactDetails(index)}
+                  >
+                    <span>Contatto {index + 1}</span>
+                    {expandedContactIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </div>
 
-            <button className="btn-green" onClick={addEmergencyContact}>
-              <Plus size={16} /> Aggiungi Contatto
-            </button>
+                  {/* Se il contatto è espanso, mostra i dettagli */}
+                  <div className={`contact-details ${expandedContactIndex === index ? "expanded" : ""}`}>
+                    <input
+                      type="text"
+                      name="nome"
+                      placeholder="Nome"
+                      value={contact.nome}
+                      onChange={(e) => handleEmergencyContactChange(index, e)}
+                    />
+                    <input
+                      type="text"
+                      name="cognome"
+                      placeholder="Cognome"
+                      value={contact.cognome}
+                      onChange={(e) => handleEmergencyContactChange(index, e)}
+                    />
+                    <input
+                      type="text"
+                      name="telefono"
+                      placeholder="Numero di telefono"
+                      value={contact.telefono}
+                      onChange={(e) => handleEmergencyContactChange(index, e)}
+                    />
+                    <select
+                      name="relazione"
+                      value={contact.relazione}
+                      onChange={(e) => handleEmergencyContactChange(index, e)}
+                    >
+                      <option value="">Seleziona il grado di parentela</option>
+                      <option value="Genitore">Genitore</option>
+                      <option value="Fratello/Sorella">Fratello/Sorella</option>
+                      <option value="Figlio">Figlio</option>
+                    </select>
+                    <button className="remove-contact" onClick={() => removeEmergencyContact(index)}>
+                      Rimuovi
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button className="btn-green" onClick={addEmergencyContact}>
+                <Plus size={16} /> Aggiungi Contatto
+              </button>
+            </div>
           </div>
         </div>
       )}
