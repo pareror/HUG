@@ -102,6 +102,24 @@ const CreatePatient = () => {
   const removeEmergencyContact = (index) => {
     setEmergencyContacts((prev) => prev.filter((_, i) => i !== index));
   };
+  // Verifica se tutti i campi sono compilati
+  const areContactsValid = () => {
+    return emergencyContacts.every(
+      (contact) =>
+        contact.nome.trim() !== "" &&
+        contact.cognome.trim() !== "" &&
+        contact.telefono.trim() !== "" &&
+        contact.relazione.trim() !== ""
+    );
+  };
+  // Tentativo di chiusura del popup
+  const handleCloseEmergencyPopup = () => {
+    if (!areContactsValid()) {
+      setError("Tutti i campi dei contatti di emergenza devono essere compilati.");
+      return;
+    }
+    setShowEmergencyPopup(false);
+  };
   // Toggle per mostrare/nascondere dettagli del contatto
   const toggleContactDetails = (index) => {
     setExpandedContactIndex(expandedContactIndex === index ? null : index);
@@ -290,7 +308,7 @@ const CreatePatient = () => {
           <div className="popup-box">
             <div className="popup-header">
               <h3>Contatti di Emergenza</h3>
-              <button className="close-button" onClick={() => setShowEmergencyPopup(false)}>
+              <button className="close-button" onClick={handleCloseEmergencyPopup}>
                 <X size={20} />
               </button>
             </div>
