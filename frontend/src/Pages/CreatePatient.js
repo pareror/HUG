@@ -77,7 +77,9 @@ const CreatePatient = () => {
   // Gestione caricamento file
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setPatientData((prev) => ({ ...prev, fotoProfilo: file }));
+    if (file) {
+      setPatientData((prev) => ({ ...prev, fotoProfilo: file }));
+    }
   };
   // Aggiungi nuovo contatto e collassa i precedenti
   const addEmergencyContact = () => {
@@ -132,7 +134,11 @@ const CreatePatient = () => {
 
     const formData = new FormData();
     Object.keys(patientData).forEach((key) => {
-      formData.append(key, patientData[key]);
+      if (key === "fotoProfilo" && patientData[key]) {
+        formData.append("fotoProfilo", patientData[key]);
+      } else {
+        formData.append(key, patientData[key]);
+      }
     });
     // Se la checkbox "Disabilità" è disattivata, inviamo i campi relativi con valori di default (0)
     if (!patientData.disabilita) {
