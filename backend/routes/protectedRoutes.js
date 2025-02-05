@@ -298,9 +298,9 @@ router.get(
   
             // 2️⃣ Recupera i contatti di emergenza associati
             db.all(
-              `SELECT ec.id, ec.nome, ec.cognome, ec.telefono, ec.relazione 
+              `SELECT ec.id, ec.nome, ec.cognome, ec.telefono, ec.relazione
                FROM emergency_contacts ec
-               JOIN patient_emergency_contacts pec ON ec.id = pec.contactId
+               INNER JOIN patient_emergency_contacts pec ON ec.id = pec.contactId
                WHERE pec.patientId = ?`,
               [patientId],
               (err, emergencyContacts) => {
@@ -314,7 +314,7 @@ router.get(
                 // 3️⃣ Ritorna i dati del paziente con i contatti di emergenza
                 res.json({
                   patient,
-                  emergencyContacts,
+                  emergencyContacts: emergencyContacts.length > 0 ? emergencyContacts : [],
                 });
               }
             );
@@ -325,13 +325,17 @@ router.get(
         res.status(500).json({ error: "Errore interno del server." });
       }
     }
-  );
+  );  
   router.put(
     "/paziente/:id",
     authenticateJWT,
-    authorizeRole(5), // Solo i direttori possono modificare i pazienti
+    authorizeRole(5),
+    upload.none(), // Assicura che multer gestisca il multipart/form-data
     async (req, res) => {
+      console.log("📥 Dati ricevuti dal frontend:", req.body);
+        
       const patientId = req.params.id;
+      console.log("📌 Aggiornamento paziente ID:", patientId);
       const {
         nome,
         cognome,
@@ -346,70 +350,42 @@ router.get(
         disabilitaFisiche,
         disabilitaSensoriali,
         disabilitaPsichiche,
-        assistenzaContinuativa
-        // eventuali altri campi (es. emergencyContacts) se gestiti in questo endpoint
+        assistenzaContinuativa,
+        emergencyContacts
       } = req.body;
-      console.log(req.body)
-      // Validazione minima: controlla che i campi obbligatori siano presenti
+  
+      console.log("📥 Contatti ricevuti:", emergencyContacts);
+  
       if (!nome || !cognome) {
         return res.status(400).json({ error: "I campi nome e cognome sono obbligatori." });
       }
-      
-      // Forza i campi testuali a stringa (se null o undefined)
-      const nomeSafe = nome || "";
-      const cognomeSafe = cognome || "";
-      const emailSafe = email || "";
-      const dataNascitaSafe = dataNascita || "";
-      const comuneSafe = comuneDiResidenza || "";
-      const indirizzoSafe = indirizzo || "";
-      const codiceFiscaleSafe = codiceFiscale || "";
-      const genereSafe = genere || "";
-      const telefonoSafe = telefono || "";
-      
-      // Gestione dei campi booleani e numerici:
-      // Se il frontend manda ad esempio "true" o "false" (o anche stringhe) usiamo un controllo
-      const disabilitaSafe = disabilita ? 1 : 0;
-      const assistenzaSafe = assistenzaContinuativa ? 1 : 0;
-      // Se i campi di disabilità numerici non sono validi, forziamo a "0"
-      const disabilitaFisicheSafe = disabilitaFisiche || "0";
-      const disabilitaSensorialiSafe = disabilitaSensoriali || "0";
-      const disabilitaPsichicheSafe = disabilitaPsichiche || "0";
   
       const params = [
-        nomeSafe,
-        cognomeSafe,
-        emailSafe,
-        dataNascitaSafe,
-        comuneSafe,
-        indirizzoSafe,
-        codiceFiscaleSafe,
-        genereSafe,
-        telefonoSafe,
-        disabilitaSafe,
-        disabilitaFisicheSafe,
-        disabilitaSensorialiSafe,
-        disabilitaPsichicheSafe,
-        assistenzaSafe,
+        nome,
+        cognome,
+        email,
+        dataNascita,
+        comuneDiResidenza,
+        indirizzo,
+        codiceFiscale,
+        genere,
+        telefono,
+        disabilita === "1" ? 1 : 0,
+        disabilitaFisiche || "0",
+        disabilitaSensoriali || "0",
+        disabilitaPsichiche || "0",
+        assistenzaContinuativa === "1" ? 1 : 0,
         patientId
       ];
-      
+  
       try {
+        // **Aggiorna i dati del paziente**
         db.run(
           `UPDATE profiles
-           SET nome = ?,
-               cognome = ?,
-               email = ?,
-               dataNascita = ?,
-               comuneDiResidenza = ?,
-               indirizzo = ?,
-               codiceFiscale = ?,
-               genere = ?,
-               telefono = ?,
-               disabilita = ?,
-               disabilitaFisiche = ?,
-               disabilitaSensoriali = ?,
-               disabilitaPsichiche = ?,
-               assistenzaContinuativa = ?
+           SET nome = ?, cognome = ?, email = ?, dataNascita = ?, comuneDiResidenza = ?, 
+               indirizzo = ?, codiceFiscale = ?, genere = ?, telefono = ?, 
+               disabilita = ?, disabilitaFisiche = ?, disabilitaSensoriali = ?, 
+               disabilitaPsichiche = ?, assistenzaContinuativa = ?
            WHERE id = ?`,
           params,
           function (err) {
@@ -417,8 +393,39 @@ router.get(
               console.error("❌ Errore SQL:", err.message);
               return res.status(500).json({ error: "Errore durante l'aggiornamento del paziente." });
             }
+  
             console.log("✅ Paziente aggiornato con successo.");
-            res.json({ message: "Paziente aggiornato con successo!" });
+            
+            // **Aggiorna i contatti di emergenza**
+            if (emergencyContacts) {
+              try {
+                const contactsArray = JSON.parse(emergencyContacts); // 👈 Converti la stringa JSON in array
+                
+                db.run(`DELETE FROM patient_emergency_contacts WHERE patientId = ?`, [patientId], (deleteErr) => {
+                  if (deleteErr) {
+                    console.error("❌ Errore eliminando contatti esistenti:", deleteErr.message);
+                    return res.status(500).json({ error: "Errore durante l'aggiornamento dei contatti di emergenza." });
+                  }
+  
+                  const insertStmt = db.prepare(
+                    `INSERT INTO emergency_contacts (nome, cognome, telefono, relazione) VALUES (?, ?, ?, ?)`
+                  );
+  
+                  contactsArray.forEach(contact => {
+                    insertStmt.run([contact.nome, contact.cognome, contact.telefono, contact.relazione]);
+                  });
+  
+                  insertStmt.finalize();
+                  console.log("✅ Contatti di emergenza aggiornati con successo.");
+                  res.json({ message: "Paziente e contatti di emergenza aggiornati con successo!" });
+                });
+              } catch (parseError) {
+                console.error("❌ Errore nel parsing dei contatti:", parseError);
+                return res.status(400).json({ error: "Formato contatti di emergenza non valido." });
+              }
+            } else {
+              res.json({ message: "Paziente aggiornato con successo!" });
+            }
           }
         );
       } catch (error) {

@@ -45,6 +45,7 @@ const EditPatient = () => {
         data.disabilitaPsichiche = data.disabilitaPsichiche || "0";
         data.assistenzaContinuativa = data.assistenzaContinuativa || false;
         setPatientData(data);
+        console.log("contatti:", response.data.emergencyContacts)
         setEmergencyContacts(response.data.emergencyContacts || []);
         setLoading(false);
       } catch (err) {
@@ -130,13 +131,15 @@ const EditPatient = () => {
       formData.append(key, patientData[key]);
     });
     // Includiamo i contatti di emergenza come stringa JSON
-    formData.append("emergencyContacts", JSON.stringify(emergencyContacts));
+    const emergencyContactsJSON = JSON.stringify(emergencyContacts);
+    formData.append("emergencyContacts", emergencyContactsJSON);
     // Se la checkbox "Disabilità" è disattivata, forziamo i relativi campi a "0"
     if (!patientData.disabilita) {
-      formData.set("disabilitaFisiche", "0");
-      formData.set("disabilitaSensoriali", "0");
-      formData.set("disabilitaPsichiche", "0");
-      formData.set("assistenzaContinuativa", "0");
+        // **Assicura che i campi delle disabilità siano inviati correttamente**
+        formData.set("disabilitaFisiche", "0");
+        formData.set("disabilitaSensoriali", "0");
+        formData.set("disabilitaPsichiche", "0");
+        formData.set("assistenzaContinuativa", "0");
     }
     for (let [key, value] of formData.entries()) {
         console.log(key, value);
@@ -144,9 +147,8 @@ const EditPatient = () => {
     try {
       await axios.put(`http://localhost:5000/api/paziente/${id}`, formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          "Content-Type": "multipart/form-data",
-        },
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`
+        }
       });
       setSuccess(true);
       setTimeout(() => navigate("/dashboard/utenza/pazienti"), 2000);
