@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/NotificheTab.css"; // Usa lo stesso CSS della lista
 
-const Notifica = ({ titolo, descrizione, tempo, nuovo }) => {
+const Notifica = ({ titolo, descrizione, tempo }) => {
     return (
         <div className="notification-item">
             <div className="notification-header">
