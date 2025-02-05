@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const multer = require('multer');
 const path = require('path');
 const db = require('../config/db');
+const fs = require("fs");
 /*
 // 📌 Esempio di API protetta accessibile solo con un JWT valido
 router.get('/protected-info', authenticateJWT, (req, res) => {
@@ -43,13 +44,18 @@ router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
 // Configurazione multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, '../uploads/'); // La cartella in cui salvare i file
+      const uploadPath = path.join(__dirname, "../uploads/");
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+      }
+      cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
       const ext = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + Date.now() + ext);
-    }
+      cb(null, "fotoProfilo-" + Date.now() + ext);
+    },
   });
+  
   const upload = multer({ storage });
   
 // 📌 Funzione per generare username univoco con Promise
@@ -153,8 +159,8 @@ router.post(
             console.log("✅ Password hashata");
 
             // 📌 Se viene caricata una foto, salva il percorso
-            const fotoProfilo = req.file ? req.file.path : null;
-            console.log("📷 Foto profilo:", fotoProfilo ? "Presente" : "Assente");
+            const fotoProfilo = req.file ? `/uploads/${req.file.filename}` : null;
+            console.log("📷 Foto profilo:", fotoProfilo ? fotoProfilo : "Assente");
 
             // 📌 Controlliamo se esiste già un paziente con lo stesso codice fiscale o email
             console.log("🔍 Controllo duplicati...");
