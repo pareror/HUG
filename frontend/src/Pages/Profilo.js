@@ -41,16 +41,17 @@ const Profilo = () => {
             <NavbarDashboard />
             <div className='profilo-content'>
                 <div className='profilo-header'>
-                    <button onClick={() => navigate(-1)} className="back-linkk">
-                        <ArrowLeft className="back-icon" />
-                        <span className="back-text">Torna indietro</span>
-                    </button>
+         {/* Bottone per tornare indietro */}
+          <button className="back-button" onClick={() => navigate(-1)}>
+              <ArrowLeft size={20} />
+              Torna indietro
+          </button>
                 </div>
 
                 <div className="profilo-container">
                     <h2 className="profilo-title">Profilo Aziendale</h2>
                     <form className="profilo-form" onSubmit={handleSaveClick}>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="ragioneSociale">Ragione Sociale</label>
                             <input
                                 type="text"
@@ -60,7 +61,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="codiceSDI">Codice SDI</label>
                             <input
                                 type="text"
@@ -70,7 +71,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="email">Email</label>
                             <input
                                 type="email"
@@ -80,7 +81,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="telefono">Telefono</label>
                             <input
                                 type="tel"
@@ -90,7 +91,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="comuneResidenza">Comune di Residenza</label>
                             <input
                                 type="text"
@@ -100,7 +101,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="username">Username</label>
                             <input
                                 type="text"
@@ -110,7 +111,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="password">Password</label>
                             <input
                                 type="password"
@@ -120,7 +121,7 @@ const Profilo = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        <div className="profilo-form-group">
                             <label htmlFor="partitaIVA">Partita IVA</label>
                             <input
                                 type="text"
@@ -141,7 +142,7 @@ const Profilo = () => {
                             />
                         </div>
                         <div className="bottone">
-                            <button type="button" onClick={handleEditClick} className="edit-button">
+                            <button type="button" onClick={handleEditClick} className="profile-edit-button">
                                 Modifica
                             </button>
                         </div>
