@@ -232,6 +232,11 @@ const CreatePatient = () => {
                 Annulla
               </button>
             </div>
+            <div className="left-actions">
+              <button type="button" className="btn-yellow">
+                Contatti di Emergenza
+              </button>
+            </div>
           </div>
         </form>
       </div>

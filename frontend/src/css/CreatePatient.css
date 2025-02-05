@@ -305,4 +305,18 @@
     cursor: pointer;
     margin-top: 10px;
   }
+  .btn-yellow {
+    display: inline-block; /* Assicura che sia visibile */
+    background-color: #f0c14b;
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
   
+  .btn-yellow:hover {
+    background-color: #e5b937;
+  }
