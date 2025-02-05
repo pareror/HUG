@@ -68,10 +68,10 @@
     margin-bottom: 8px;
   }
   
-  input[type="text"],
-  input[type="number"],
-  input[type="date"],
-  input[type="time"] {
+  input[type="itext"],
+  input[type="inumber"],
+  input[type="idate"],
+  input[type="itime"] {
     width: 100%;
     padding: 8px 12px;
     padding-right: 36px; /* Spazio per l'icona */

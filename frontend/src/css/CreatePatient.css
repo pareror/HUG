@@ -44,48 +44,93 @@
     margin-bottom: 20px;
   }
   
-  /****************************************************
-    4. FORM PRINCIPALE (Disposizione in 2 colonne)
-  *****************************************************/
-  .patient-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  
-  /* Campi in colonna unica */
-  .full-width {
-    grid-column: span 2;
-  }
-  
-  /* Stile generale per input e select */
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  input,
-  select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    background-color: white;
-  }
-  
-  input:focus,
-  select:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
+/****************************************************
+  4. FORM PRINCIPALE (Disposizione in 2 colonne)
+*****************************************************/
+.patient-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Campi in colonna unica */
+.full-width {
+  grid-column: span 2;
+}
+
+/* Stile generale per input e select */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: white;
+}
+
+/* Stili specifici per l'input date */
+input[type="date"] {
+  cursor: pointer;
+  position: relative;
+  background-color: white;
+}
+
+/* Rimuovi lo stile predefinito del browser */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Stile per il placeholder della data */
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #666;
+}
+
+/* Stile per quando la data è selezionata */
+input[type="date"]:valid::-webkit-datetime-edit-text,
+input[type="date"]:valid::-webkit-datetime-edit-month-field,
+input[type="date"]:valid::-webkit-datetime-edit-day-field,
+input[type="date"]:valid::-webkit-datetime-edit-year-field {
+  color: #333;
+}
+
+/* Rimuovi gli spinner interni */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-clear-button {
+  display: none;
+}
+
+/* Focus state */
+input[type="date"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+
+
+
   /****************************************************
     5. CHECKBOX DISABILITÀ
   *****************************************************/
