@@ -13,6 +13,8 @@ import AttivitaInterne from './AttivitaInterne';
 import AttivitaEsterne from './AttivitaEsterne';
 import Notifiche from './Notifiche';
 import PreventiviPage from './PreventiviPage';
+import Impostazioni from './Impostazioni';
+import Profilo from './Profilo';
 
 
 const Website = () => {
@@ -93,6 +95,18 @@ const Website = () => {
                  }
                  />
 
+            <Route path="/dashboard/impostazioni" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <Impostazioni />
+                </ProtectedRoute>
+                 }
+                 />
+            <Route path="/dashboard/profilo" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <Profilo />
+                </ProtectedRoute>
+                 }
+                 />
 
         </Routes>  
             
