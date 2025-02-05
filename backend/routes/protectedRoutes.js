@@ -330,12 +330,13 @@ router.get(
     "/paziente/:id",
     authenticateJWT,
     authorizeRole(5),
-    upload.none(), // Assicura che multer gestisca il multipart/form-data
+    upload.none(),
     async (req, res) => {
       console.log("📥 Dati ricevuti dal frontend:", req.body);
-        
+  
       const patientId = req.params.id;
       console.log("📌 Aggiornamento paziente ID:", patientId);
+  
       const {
         nome,
         cognome,
@@ -378,7 +379,7 @@ router.get(
         patientId
       ];
   
-      try {
+      db.serialize(() => {
         // **Aggiorna i dati del paziente**
         db.run(
           `UPDATE profiles
@@ -395,27 +396,52 @@ router.get(
             }
   
             console.log("✅ Paziente aggiornato con successo.");
-            
-            // **Aggiorna i contatti di emergenza**
+  
             if (emergencyContacts) {
               try {
-                const contactsArray = JSON.parse(emergencyContacts); // 👈 Converti la stringa JSON in array
-                
+                const contactsArray = JSON.parse(emergencyContacts);
+  
+                // **Elimina solo le relazioni dalla tabella patient_emergency_contacts**
                 db.run(`DELETE FROM patient_emergency_contacts WHERE patientId = ?`, [patientId], (deleteErr) => {
                   if (deleteErr) {
-                    console.error("❌ Errore eliminando contatti esistenti:", deleteErr.message);
+                    console.error("❌ Errore eliminando relazioni esistenti:", deleteErr.message);
                     return res.status(500).json({ error: "Errore durante l'aggiornamento dei contatti di emergenza." });
                   }
   
                   const insertStmt = db.prepare(
-                    `INSERT INTO emergency_contacts (nome, cognome, telefono, relazione) VALUES (?, ?, ?, ?)`
+                    `INSERT INTO emergency_contacts (nome, cognome, telefono, relazione) 
+                     VALUES (?, ?, ?, ?)`
+                  );
+  
+                  const linkStmt = db.prepare(
+                    `INSERT INTO patient_emergency_contacts (patientId, contactId) VALUES (?, ?)`
                   );
   
                   contactsArray.forEach(contact => {
-                    insertStmt.run([contact.nome, contact.cognome, contact.telefono, contact.relazione]);
+                    db.get(
+                      `SELECT id FROM emergency_contacts WHERE nome = ? AND cognome = ? AND telefono = ?`,
+                      [contact.nome, contact.cognome, contact.telefono],
+                      (err, row) => {
+                        if (err) {
+                          console.error("❌ Errore nel controllo esistenza contatto:", err);
+                          return;
+                        }
+  
+                        if (row) {
+                          console.log(`🔁 Contatto già esistente: ${contact.nome} ${contact.cognome}`);
+                          linkStmt.run([patientId, row.id]);
+                        } else {
+                          insertStmt.run([contact.nome, contact.cognome, contact.telefono, contact.relazione], function () {
+                            console.log(`✅ Contatto creato: ${contact.nome} ${contact.cognome}`);
+                            linkStmt.run([patientId, this.lastID]); // Collega il nuovo contatto al paziente
+                          });
+                        }
+                      }
+                    );
                   });
   
-                  insertStmt.finalize();
+                
+  
                   console.log("✅ Contatti di emergenza aggiornati con successo.");
                   res.json({ message: "Paziente e contatti di emergenza aggiornati con successo!" });
                 });
@@ -428,11 +454,10 @@ router.get(
             }
           }
         );
-      } catch (error) {
-        console.error("❌ Errore generale:", error);
-        res.status(500).json({ error: "Errore interno del server." });
-      }
+      });
     }
   );
+  
+  
   
   module.exports = router;
