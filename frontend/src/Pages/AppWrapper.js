@@ -17,6 +17,7 @@ import PreventiviPage from './PreventiviPage';
 import Impostazioni from './Impostazioni';
 import Profilo from './Profilo';
 import EditPatient from './EditPatient';
+import PagamentiPazienti from './PagamentiPazienti';
 
 const Website = () => {
     return ( 
@@ -118,6 +119,13 @@ const Website = () => {
             <Route path="/dashboard/profilo" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <Profilo />
+                </ProtectedRoute>
+                 }
+                 />
+
+            <Route path="/dashboard/pagamenti/paziente" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PagamentiPazienti />
                 </ProtectedRoute>
                  }
                  />

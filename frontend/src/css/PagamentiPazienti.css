@@ -1,0 +1,5 @@
+.pagamenti-pazienti {
+    min-height: 100vh; /* Altezza minima pari all'intera viewport */
+    background-color: #e7ebee;
+    padding: 20px;
+  }

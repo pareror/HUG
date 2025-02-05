@@ -100,6 +100,7 @@
     background-color: white; /* Add background color for better visibility */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
   margin-bottom: 16px; /* Add space between cards */
+  margin-top: 5px;
   }
   
   .activity-content {
