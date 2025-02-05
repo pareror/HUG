@@ -1,71 +1,69 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft, Plus, X, ChevronDown, ChevronUp } from "lucide-react";
-import "../css/CreatePatient.css";
-import "../css/ErrorPopup.css"; // Per popup di errore
-import "../css/SuccessPopup.css"; // Per popup di successo
 import NavbarDashboard from "../Components/NavbarDashboard";
 import { jwtDecode } from "jwt-decode";
-import "../css/EmergencyContactsPopup.css"; // Per popup contatti di emergenza
-const CreatePatient = () => {
+import "../css/CreatePatient.css"; 
+import "../css/ErrorPopup.css"; 
+import "../css/SuccessPopup.css"; 
+import "../css/EmergencyContactsPopup.css"; 
+
+const EditPatient = () => {
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
-  // Funzione per estrarre l'ID dal JWT
-  const getUserIdFromJWT = () => {
-    const token = localStorage.getItem("jwt");
-    if (!token) return null; // Se non c'è token, ritorna null
-
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.id; // Assumiamo che il JWT abbia un campo "id"
-    } catch (error) {
-      console.error("Errore nella decodifica del JWT:", error);
-      return null;
-    }
-  };
-
-  const [patientData, setPatientData] = useState({
-    nome: "",
-    cognome: "",
-    email: "",
-    dataNascita: "",
-    comuneDiResidenza: "",
-    indirizzo: "",
-    codiceFiscale: "",
-    genere: "",
-    telefono: "",
-    fotoProfilo: null,
-    centroDiurnoId: getUserIdFromJWT(),
-    disabilita: false,
-    disabilitaFisiche: "0",
-    disabilitaSensoriali: "0",
-    disabilitaPsichiche: "0",
-    assistenzaContinuativa: false,
-  });
-
-  // Stato per messaggi di successo o errore
+  const [patientData, setPatientData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const [showPatientInfoPopup, setShowPatientInfoPopup] = useState(false);
-  const [patientInfo, setPatientInfo] = useState({ id: "", username: "", password: "" });
-  
-   // Gestione popup contatti di emergenza
-   const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
-   const [emergencyContacts, setEmergencyContacts] = useState([]);
-   const [expandedContactIndex, setExpandedContactIndex] = useState(null);
+  // Stato per la gestione del popup dei contatti di emergenza
+  const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
+  const [emergencyContacts, setEmergencyContacts] = useState([]);
+  const [expandedContactIndex, setExpandedContactIndex] = useState(null);
+
+  // Carica i dati del paziente e forza alcuni campi a stringa (se null)
+  useEffect(() => {
+    const fetchPatient = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/paziente/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+        });
+        const data = response.data.patient;
+        // Forza i campi testuali a stringa (se null)
+        data.genere = data.genere || "";
+        data.comuneDiResidenza = data.comuneDiResidenza || "";
+        data.indirizzo = data.indirizzo || "";
+        data.telefono = data.telefono || "";
+        data.email = data.email || "";
+        data.codiceFiscale = data.codiceFiscale || "";
+        // Campi relativi alle disabilità
+        data.disabilita = data.disabilita || false;
+        data.disabilitaFisiche = data.disabilitaFisiche || "0";
+        data.disabilitaSensoriali = data.disabilitaSensoriali || "0";
+        data.disabilitaPsichiche = data.disabilitaPsichiche || "0";
+        data.assistenzaContinuativa = data.assistenzaContinuativa || false;
+        setPatientData(data);
+        setEmergencyContacts(response.data.emergencyContacts || []);
+        setLoading(false);
+      } catch (err) {
+        setError("Errore nel caricamento dei dati del paziente.");
+        setLoading(false);
+      }
+    };
+    fetchPatient();
+  }, [id]);
+
   // Pulizia automatica degli errori dopo 3 secondi
   useEffect(() => {
     if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 3000);
+      const timer = setTimeout(() => setError(null), 3000);
       return () => clearTimeout(timer);
     }
   }, [error]);
 
-  // Gestione aggiornamento campi
+  // Aggiornamento dei campi del form
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setPatientData((prev) => ({
@@ -74,21 +72,13 @@ const CreatePatient = () => {
     }));
   };
 
-  // Gestione caricamento file
+  // Gestione caricamento file per la foto di profilo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setPatientData((prev) => ({ ...prev, fotoProfilo: file }));
   };
-  // Aggiungi nuovo contatto e collassa i precedenti
-  const addEmergencyContact = () => {
-    setEmergencyContacts([
-      ...emergencyContacts,
-      { nome: "", cognome: "", telefono: "", relazione: "" },
-    ]);
-    setExpandedContactIndex(emergencyContacts.length); // Espande solo il nuovo contatto
-  };
-  
-  // Modifica dati del contatto
+
+  // Gestione dei contatti di emergenza nel popup
   const handleEmergencyContactChange = (index, e) => {
     const { name, value } = e.target;
     setEmergencyContacts((prev) => {
@@ -98,11 +88,15 @@ const CreatePatient = () => {
     });
   };
 
-  // Funzione per rimuovere un contatto di emergenza
+  const addEmergencyContact = () => {
+    setEmergencyContacts([...emergencyContacts, { nome: "", cognome: "", telefono: "", relazione: "" }]);
+    setExpandedContactIndex(emergencyContacts.length);
+  };
+
   const removeEmergencyContact = (index) => {
     setEmergencyContacts((prev) => prev.filter((_, i) => i !== index));
   };
-  // Verifica se tutti i campi sono compilati
+
   const areContactsValid = () => {
     return emergencyContacts.every(
       (contact) =>
@@ -112,7 +106,7 @@ const CreatePatient = () => {
         contact.relazione.trim() !== ""
     );
   };
-  // Tentativo di chiusura del popup
+
   const handleCloseEmergencyPopup = () => {
     if (!areContactsValid()) {
       setError("Tutti i campi dei contatti di emergenza devono essere compilati.");
@@ -120,11 +114,12 @@ const CreatePatient = () => {
     }
     setShowEmergencyPopup(false);
   };
-  // Toggle per mostrare/nascondere dettagli del contatto
+
   const toggleContactDetails = (index) => {
     setExpandedContactIndex(expandedContactIndex === index ? null : index);
   };
-  // Invio dati al backend
+
+  // Invio dei dati aggiornati al backend in un'unica chiamata PUT
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -134,101 +129,102 @@ const CreatePatient = () => {
     Object.keys(patientData).forEach((key) => {
       formData.append(key, patientData[key]);
     });
-    // Se la checkbox "Disabilità" è disattivata, inviamo i campi relativi con valori di default (0)
+    // Includiamo i contatti di emergenza come stringa JSON
+    formData.append("emergencyContacts", JSON.stringify(emergencyContacts));
+    // Se la checkbox "Disabilità" è disattivata, forziamo i relativi campi a "0"
     if (!patientData.disabilita) {
-        formData.set("disabilitaFisiche", "0");
-        formData.set("disabilitaSensoriali", "0");
-        formData.set("disabilitaPsichiche", "0");
-        formData.set("assistenzaContinuativa", "0");
+      formData.set("disabilitaFisiche", "0");
+      formData.set("disabilitaSensoriali", "0");
+      formData.set("disabilitaPsichiche", "0");
+      formData.set("assistenzaContinuativa", "0");
+    }
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
       }
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/aggiungi-paziente",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-        // ✅ Memorizziamo le informazioni del paziente per mostrarle nel popup
-        setPatientInfo({
-            id: response.data.id,
-            username: response.data.username,
-            password: response.data.password,
-        });
-         // Dopo il successo, inviamo i contatti di emergenza
-        if (emergencyContacts.length > 0) {
-          for (const contact of emergencyContacts) {
-            await axios.post("http://localhost:5000/api/aggiungi-contatto-emergenza", {
-              patientId: response.data.id,
-              ...contact,
-            }, 
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-              },
-            });
-          }
-        }
-        setSuccess(true); // Mostra il popup di successo
-        // Dopo 3 secondi mostra il popup con i dettagli del paziente
-        setTimeout(() => {
-            setShowPatientInfoPopup(true);
-        }, 1000);
-    } catch (error) {
-      setError(error.response?.data?.error || "Errore durante la creazione del paziente.");
-      console.error("Errore:", error);
+      await axios.put(`http://localhost:5000/api/paziente/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setSuccess(true);
+      setTimeout(() => navigate("/dashboard/utenza/pazienti"), 2000);
+    } catch (err) {
+      setError(err.response?.data?.error || "Errore durante l'aggiornamento del paziente.");
+      console.error("Errore:", err);
     }
   };
-  const handleClosePatientInfoPopup = () => {
-    setShowPatientInfoPopup(false);
-    navigate("/dashboard/utenza/pazienti"); // ✅ Dopo la chiusura, reindirizza alla lista pazienti
-  };
-  return (
-    <div className="create-patient-page">
-      <NavbarDashboard />
-    
-      <div className="main-content">
-      <div className="popup-container">
-      {/* Popup di errore */}
-      {error && (
-        <div className="error-popup">
-          <div className="error-text">{error}</div>
-          <div className="error-bar"></div>
-        </div>
-      )}
 
-      {/* Popup di successo */}
-      {success && (
-        <div className="success-popup">
-          <div className="success-text">Paziente creato con successo!</div>
-          <div className="success-bar"></div>
+  if (loading) return <p>Caricamento...</p>;
+
+  return (
+    <div className="edit-patient-page">
+      <NavbarDashboard />
+
+      <div className="main-content">
+        <div className="popup-container">
+          {/* Popup di errore */}
+          {error && (
+            <div className="error-popup">
+              <div className="error-text">{error}</div>
+              <div className="error-bar"></div>
+            </div>
+          )}
+
+          {/* Popup di successo */}
+          {success && (
+            <div className="success-popup">
+              <div className="success-text">Paziente aggiornato con successo!</div>
+              <div className="success-bar"></div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+
         <button className="back-button" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} /> Torna indietro
         </button>
-        <h1>Crea Profilo Paziente</h1>
+        <h1>Modifica Profilo Paziente</h1>
 
         <form onSubmit={handleSubmit} className="patient-form">
           <div className="form-group">
             <label>Nome</label>
-            <input type="text" name="nome" required onChange={handleChange} />
+            <input
+              type="text"
+              name="nome"
+              required
+              value={patientData.nome || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Cognome</label>
-            <input type="text" name="cognome" required onChange={handleChange} />
+            <input
+              type="text"
+              name="cognome"
+              required
+              value={patientData.cognome || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Data di nascita</label>
-            <input type="text" name="dataNascita" required onChange={handleChange} />
+            <input
+              type="text"
+              name="dataNascita"
+              required
+              value={patientData.dataNascita || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Genere</label>
-            <select name="genere" required onChange={handleChange}>
+            <select
+              name="genere"
+              required
+              value={patientData.genere}
+              onChange={handleChange}
+            >
               <option value="">Seleziona il genere</option>
               <option value="M">Maschio</option>
               <option value="F">Femmina</option>
@@ -237,23 +233,53 @@ const CreatePatient = () => {
           </div>
           <div className="form-group">
             <label>Comune di Residenza</label>
-            <input type="text" name="comuneDiResidenza" required onChange={handleChange} />
+            <input
+              type="text"
+              name="comuneDiResidenza"
+              required
+              value={patientData.comuneDiResidenza || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Indirizzo</label>
-            <input type="text" name="indirizzo" required onChange={handleChange} />
+            <input
+              type="text"
+              name="indirizzo"
+              required
+              value={patientData.indirizzo || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Telefono</label>
-            <input type="text" name="telefono" required onChange={handleChange} />
+            <input
+              type="text"
+              name="telefono"
+              required
+              value={patientData.telefono || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Email</label>
-            <input type="email" name="email" required onChange={handleChange} />
+            <input
+              type="email"
+              name="email"
+              required
+              value={patientData.email || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>Codice Fiscale</label>
-            <input type="text" name="codiceFiscale" required onChange={handleChange} />
+            <input
+              type="text"
+              name="codiceFiscale"
+              required
+              value={patientData.codiceFiscale || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="profile-photo">
             <label>Foto Profilo</label>
@@ -262,47 +288,84 @@ const CreatePatient = () => {
 
           <div className="form-group checkbox-group full-width">
             <label htmlFor="disabilita">Disabilità</label>
-            <input type="checkbox" name="disabilita" id="disabilita" onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="disabilita"
+              id="disabilita"
+              checked={patientData.disabilita || false}
+              onChange={handleChange}
+            />
           </div>
           {patientData.disabilita && (
             <>
               <div className="form-group">
                 <label>Disabilità Fisiche (0-5)</label>
-                <input type="number" name="disabilitaFisiche" min="0" max="5" onChange={handleChange} />
+                <input
+                  type="number"
+                  name="disabilitaFisiche"
+                  min="0"
+                  max="5"
+                  value={patientData.disabilitaFisiche || "0"}
+                  onChange={handleChange}
+                />
               </div>
               <div className="form-group">
                 <label>Disabilità Sensoriali (0-5)</label>
-                <input type="number" name="disabilitaSensoriali" min="0" max="5" onChange={handleChange} />
+                <input
+                  type="number"
+                  name="disabilitaSensoriali"
+                  min="0"
+                  max="5"
+                  value={patientData.disabilitaSensoriali || "0"}
+                  onChange={handleChange}
+                />
               </div>
               <div className="form-group">
                 <label>Disabilità Psichiche (0-5)</label>
-                <input type="number" name="disabilitaPsichiche" min="0" max="5" onChange={handleChange} />
+                <input
+                  type="number"
+                  name="disabilitaPsichiche"
+                  min="0"
+                  max="5"
+                  value={patientData.disabilitaPsichiche || "0"}
+                  onChange={handleChange}
+                />
               </div>
               <div className="form-group">
                 <label>Assistenza Continuativa</label>
-                <input type="checkbox" name="assistenzaContinuativa" onChange={handleChange} />
+                <input
+                  type="checkbox"
+                  name="assistenzaContinuativa"
+                  checked={patientData.assistenzaContinuativa || false}
+                  onChange={handleChange}
+                />
               </div>
             </>
           )}
+
           <div className="form-actions">
             <div className="left-actions">
               <button type="submit" className="btn-green">
-                Crea Profilo
+                Salva Modifiche
               </button>
               <button type="button" className="btn-gray" onClick={() => navigate(-1)}>
                 Annulla
               </button>
             </div>
             <div className="left-actions">
-              <button type="button" className="btn-yellow" onClick={() => setShowEmergencyPopup(true)}>
+              <button
+                type="button"
+                className="btn-yellow"
+                onClick={() => setShowEmergencyPopup(true)}
+              >
                 Contatti di Emergenza
               </button>
             </div>
           </div>
         </form>
       </div>
-       {/* Popup Contatti di Emergenza */}
-       {/* Popup Contatti di Emergenza */}
+
+      {/* Popup per la gestione dei contatti di emergenza */}
       {showEmergencyPopup && (
         <div className="popup-overlay">
           <div className="popup-box">
@@ -312,7 +375,6 @@ const CreatePatient = () => {
                 <X size={20} />
               </button>
             </div>
-
             <div className="popup-content">
               {emergencyContacts.map((contact, index) => (
                 <div key={index} className="emergency-contact">
@@ -323,8 +385,6 @@ const CreatePatient = () => {
                     <span>Contatto {index + 1}</span>
                     {expandedContactIndex === index ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </div>
-
-                  {/* Se il contatto è espanso, mostra i dettagli */}
                   <div className={`contact-details ${expandedContactIndex === index ? "expanded" : ""}`}>
                     <input
                       type="text"
@@ -370,20 +430,8 @@ const CreatePatient = () => {
           </div>
         </div>
       )}
-      {/* Popup con i dettagli del paziente */}
-        {showPatientInfoPopup && (
-        <div className="popup-overlay">
-            <div className="popup-box">
-            <h3>Paziente creato con successo!</h3>
-            <p><strong>ID:</strong> {patientInfo.id}</p>
-            <p><strong>Username:</strong> {patientInfo.username}</p>
-            <p><strong>Password provvisoria:</strong> {patientInfo.password}</p>
-            <button className="btn-green" onClick={handleClosePatientInfoPopup}>OK</button>
-            </div>
-        </div>
-        )}
     </div>
   );
 };
 
-export default CreatePatient;
+export default EditPatient;
