@@ -1,25 +1,38 @@
 .create-activity {
-    max-width: 1200px;
+    max-width: 1200pz, 0 auto;
     margin: 0 auto;
     padding: 20px;
   }
   
   .create-activity-header {
-    margin-bottom: 24px;
+    margin-bottom: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .back-link {
+  .back-button {
     display: flex;
     align-items: center;
     color: #6b7280;
-    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
     font-size: 14px;
-    margin-bottom: 12px;
+    cursor: pointer;
+    outline: inherit;
+    margin-bottom: 1%;
+    margin-top: 1%;
+  }
+  
+  .back-button:hover {
+    color: #374151;
   }
   
   .back-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     margin-right: 8px;
   }
   
@@ -32,13 +45,14 @@
   .create-activity-form {
     background: white;
     border-radius: 8px;
-    padding: 24px;
+    padding: 1%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
   .form-group {
     margin-bottom: 20px;
     flex: 1;
+    min-width: 200px; /* Assicura una larghezza minima consistente */
   }
   
   .form-row {
@@ -57,18 +71,25 @@
   input[type="text"],
   input[type="number"],
   input[type="date"],
-  input[type="time"],
+  input[type="time"] {
+    width: 100%;
+    padding: 8px 12px;
+    padding-right: 36px; /* Spazio per l'icona */
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    height: 40px; /* Altezza fissa per tutti gli input */
+  }
+  
   textarea {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     font-size: 14px;
-  }
-  
-  textarea {
     min-height: 120px;
     resize: vertical;
+    height: 40px; /* Altezza fissa per tutti gli input */
   }
   
   .input-counter-wrapper {
@@ -84,18 +105,60 @@
   }
   
   .input-icon-wrapper {
-    position: relative;
+    position:relative;
+    display: flex;
+    align-items: center;
   }
   
   .input-icon {
     position: absolute;
     right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
     width: 16px;
     height: 16px;
     color: #6b7280;
     pointer-events: none;
+  }
+  
+  /* Rimuovi gli stili predefiniti dei browser per date e time */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  
+  /* Rimuovi lo stile predefinito dell'icona del calendario/orologio in Firefox */
+  input[type="date"]::-moz-calendar-picker-indicator,
+  input[type="time"]::-moz-calendar-picker-indicator {
+    background-color: transparent;
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  /* Rimuovi lo stile predefinito dell'icona del calendario/orologio in Edge */
+  input[type="date"]::-ms-clear,
+  input[type="time"]::-ms-clear {
+    display: none;
+  }
+  
+  input[type="date"]::-webkit-datetime-edit,
+  input[type="time"]::-webkit-datetime-edit {
+    padding: 0;
+  }
+  
+  /* Stili specifici per il campo durata */ /* Rimuove le frecce in Firefox */
+  /*.duration-input {
+    -moz-appearance: textfield; 
+  }*/
+  
+  .duration-input::-webkit-outer-spin-button,
+  .duration-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
   
   .image-upload-group {
@@ -105,13 +168,11 @@
   .image-upload-container {
     display: flex;
     gap: 20px;
-  }
-  
-  .file-input {
-    display: none;
+    align-items: flex-start;
   }
   
   .file-select-button {
+    display: inline-block;
     padding: 8px 16px;
     background-color: #f3f4f6;
     border: 1px solid #e5e7eb;
@@ -120,19 +181,24 @@
     cursor: pointer;
     white-space: nowrap;
   }
-  
-  .image-preview {
+
+  .image-preview-wrapper {
+    position: relative;
     flex: 1;
-    aspect-ratio: 16 / 9;
-    background-color: #f3f4f6;
-    border-radius: 6px;
-    overflow: hidden;
   }
-  
+
+  .image-preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
   .image-preview img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit:contain ;
   }
   
   .image-placeholder {
@@ -141,20 +207,49 @@
     background-color: #e5e7eb;
   }
   
+  .remove-image-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+
+  .remove-image-button:hover {
+    background-color: #fff;
+    color: #ef4444;
+    border-color: #ef4444;
+  }
+
   .form-actions {
     display: flex;
     gap: 12px;
     margin-top: 24px;
   }
   
-  .submit-button {
+  .submit-button,
+  .cancel-button {
     padding: 8px 16px;
-    background-color: #10b981;
-    color: white;
-    border: none;
     border-radius: 6px;
     font-size: 14px;
     cursor: pointer;
+    min-width: 120px;
+  }
+  
+  .submit-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
   }
   
   .submit-button:hover {
@@ -162,16 +257,13 @@
   }
   
   .cancel-button {
-    padding: 8px 16px;
-    background-color: white;
+    background-color: #f3f4f6;
     border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
+    color: #374151;
   }
   
   .cancel-button:hover {
-    background-color: #f3f4f6;
+    background-color:red;
   }
   
   /* Responsive styles */
@@ -187,6 +279,7 @@
   
     .image-preview {
       width: 100%;
+      max-width: 300px;
     }
   }
   
@@ -210,3 +303,13 @@
   }
   
   
+  .error-message {
+    color: #ef4444;
+    font-size: 14px;
+    margin-top: 8px;
+    width: 100%;
+  }
+  
+  input[aria-invalid="true"] {
+    border-color: #ef4444;
+  }
