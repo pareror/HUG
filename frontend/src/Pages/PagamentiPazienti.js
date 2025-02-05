@@ -1,8 +1,11 @@
 import React from "react";
 import NavbarDashboard from "../Components/NavbarDashboard"
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import "../css/PagamentiPazienti.css";
+import PagamentoPaziente from "../Components/PagamentoPaziente";
+import PagamentiPazientiTab from "../Components/PagamentiPazientiTab";
+
 
 export default function PagamentiPazienti() {
 
@@ -17,14 +20,9 @@ export default function PagamentiPazienti() {
               <ArrowLeft size={20} />
               Torna indietro
             </button>
+            
+              <PagamentiPazientiTab/>
 
-            <div className="container">
-              {/* Add your content here */}
-            </div>
-
-
-        
-     
         </div> 
     </div>
   );
