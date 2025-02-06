@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft, Plus, X, ChevronDown, ChevronUp } from "lucide-react";
@@ -10,7 +10,7 @@ import "../css/SuccessPopup.css";
 import "../css/EmergencyContactsPopup.css"; 
 
 const EditPatient = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [patientData, setPatientData] = useState(null);
@@ -18,12 +18,16 @@ const EditPatient = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Stato per la gestione del popup dei contatti di emergenza
+  // Stato per la gestione dei contatti di emergenza
   const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
   const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [expandedContactIndex, setExpandedContactIndex] = useState(null);
 
-  // Carica i dati del paziente e forza alcuni campi a stringa (se null)
+  // Stati per i popup di eliminazione
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showDeleteSuccessPopup, setShowDeleteSuccessPopup] = useState(false);
+
+  // Carica i dati del paziente dal backend
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -45,7 +49,7 @@ const EditPatient = () => {
         data.disabilitaPsichiche = data.disabilitaPsichiche || "0";
         data.assistenzaContinuativa = data.assistenzaContinuativa || false;
         setPatientData(data);
-        console.log("contatti:", response.data.emergencyContacts)
+        console.log("Contatti:", response.data.emergencyContacts);
         setEmergencyContacts(response.data.emergencyContacts || []);
         setLoading(false);
       } catch (err) {
@@ -135,20 +139,19 @@ const EditPatient = () => {
     formData.append("emergencyContacts", emergencyContactsJSON);
     // Se la checkbox "Disabilità" è disattivata, forziamo i relativi campi a "0"
     if (!patientData.disabilita) {
-        // **Assicura che i campi delle disabilità siano inviati correttamente**
-        formData.set("disabilitaFisiche", "0");
-        formData.set("disabilitaSensoriali", "0");
-        formData.set("disabilitaPsichiche", "0");
-        formData.set("assistenzaContinuativa", "0");
+      formData.set("disabilitaFisiche", "0");
+      formData.set("disabilitaSensoriali", "0");
+      formData.set("disabilitaPsichiche", "0");
+      formData.set("assistenzaContinuativa", "0");
     }
     for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
+      console.log(key, value);
+    }
     try {
       await axios.put(`http://localhost:5000/api/paziente/${id}`, formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
       });
       setSuccess(true);
       setTimeout(() => navigate("/dashboard/utenza/pazienti"), 2000);
@@ -158,23 +161,46 @@ const EditPatient = () => {
     }
   };
 
+  // Funzione per eliminare il profilo (richiede conferma)
+  const handleDeleteProfile = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/profilo/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
+      setShowConfirmDelete(false);
+      setShowDeleteSuccessPopup(true);
+      setTimeout(() => navigate("/dashboard/utenza/pazienti"), 2000);
+    } catch (err) {
+      setError(err.response?.data?.error || "Errore durante l'eliminazione del profilo.");
+      console.error("Errore:", err);
+    }
+  };
+
+  // Funzione per aprire il popup di conferma eliminazione
+  const handleConfirmDelete = () => {
+    setShowConfirmDelete(true);
+  };
+
+  // Funzione per chiudere il popup di conferma eliminazione
+  const handleCancelDelete = () => {
+    setShowConfirmDelete(false);
+  };
+
   if (loading) return <p>Caricamento...</p>;
 
   return (
     <div className="edit-patient-page">
       <NavbarDashboard />
-
       <div className="main-content">
         <div className="popup-container">
-          {/* Popup di errore */}
           {error && (
             <div className="error-popup">
               <div className="error-text">{error}</div>
               <div className="error-bar"></div>
             </div>
           )}
-
-          {/* Popup di successo */}
           {success && (
             <div className="success-popup">
               <div className="success-text">Paziente aggiornato con successo!</div>
@@ -182,12 +208,10 @@ const EditPatient = () => {
             </div>
           )}
         </div>
-
         <button className="back-button" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} /> Torna indietro
         </button>
         <h1>Modifica Profilo Paziente</h1>
-
         <form onSubmit={handleSubmit} className="patient-form">
           <div className="form-group">
             <label>Nome</label>
@@ -285,9 +309,13 @@ const EditPatient = () => {
           </div>
           <div className="profile-photo">
             <label>Foto Profilo</label>
-            <input type="file" name="fotoProfilo" accept="image/*" onChange={handleFileChange} />
+            <input
+              type="file"
+              name="fotoProfilo"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </div>
-
           <div className="form-group checkbox-group full-width">
             <label htmlFor="disabilita">Disabilità</label>
             <input
@@ -344,7 +372,6 @@ const EditPatient = () => {
               </div>
             </>
           )}
-
           <div className="form-actions">
             <div className="left-actions">
               <button type="submit" className="btn-green">
@@ -355,12 +382,13 @@ const EditPatient = () => {
               </button>
             </div>
             <div className="left-actions">
-              <button
-                type="button"
-                className="btn-yellow"
-                onClick={() => setShowEmergencyPopup(true)}
-              >
+              <button type="button" className="btn-yellow" onClick={() => setShowEmergencyPopup(true)}>
                 Contatti di Emergenza
+              </button>
+            </div>
+            <div className="left-actions">
+              <button type="button" className="btn-red" onClick={handleConfirmDelete}>
+                Elimina Profilo
               </button>
             </div>
           </div>
@@ -373,11 +401,12 @@ const EditPatient = () => {
           <div className="popup-box">
             <div className="popup-header">
               <h3>Contatti di Emergenza</h3>
-              <button className="close-button" onClick={handleCloseEmergencyPopup}>
+              <button className="close-button" onClick={() => setShowEmergencyPopup(false)}>
                 <X size={20} />
               </button>
             </div>
             <div className="popup-content">
+              {/* Il codice per i contatti di emergenza rimane invariato */}
               {emergencyContacts.map((contact, index) => (
                 <div key={index} className="emergency-contact">
                   <div
@@ -429,6 +458,36 @@ const EditPatient = () => {
                 <Plus size={16} /> Aggiungi Contatto
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup di conferma eliminazione */}
+      {showConfirmDelete && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>Conferma Eliminazione</h3>
+            <p>Sei sicuro di voler eliminare il profilo? Questa operazione è irreversibile.</p>
+            <div className="popup-actions">
+              <button className="btn-red" onClick={handleDeleteProfile}>
+                Conferma
+              </button>
+              <button className="btn-gray" onClick={handleCancelDelete}>
+                Annulla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup di successo eliminazione */}
+      {showDeleteSuccessPopup && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>Profilo eliminato con successo!</h3>
+            <button className="btn-green" onClick={() => navigate("/dashboard/utenza/pazienti")}>
+              OK
+            </button>
           </div>
         </div>
       )}
