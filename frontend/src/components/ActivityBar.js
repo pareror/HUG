@@ -20,7 +20,7 @@ function ActivityBar() {
         <div className="left-section">
           {/* Bottone per tornare indietro */}
           <button onClick={() => navigate(-1)} className="back-link">
-            <ArrowLeft className="back-icon" />
+            <ArrowLeft className="activity-bar-back-icon" />
             <span className="back-text">Torna indietro</span>
           </button>
           <h1 className="title">{title}</h1>
@@ -42,7 +42,7 @@ function ActivityBar() {
             </button>
           )}
           {isEsternaRoute && (
-            <button className="manage-button">
+            <button className="activity-bar-manage-button">
               <span className="button-text">Gestisci Attività</span>
               <span className="button-icon">+</span>
             </button>

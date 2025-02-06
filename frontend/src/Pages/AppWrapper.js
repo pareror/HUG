@@ -18,6 +18,9 @@ import Impostazioni from './Impostazioni';
 import Profilo from './Profilo';
 import EditPatient from './EditPatient';
 import PagamentiPazienti from './PagamentiPazienti';
+import PagamentiAttivita from './PagamentiAttivita';
+import DettaglioPagamenti from './DettaglioPagamenti';
+
 
 const Website = () => {
     return ( 
@@ -130,6 +133,19 @@ const Website = () => {
                  }
                  />
 
+            <Route path="/dashboard/pagamenti/attivita" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PagamentiAttivita />
+                </ProtectedRoute>
+                 }
+                 />
+            
+            <Route path="/dashboard/pagamenti/attivita/:activityId" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <DettaglioPagamenti />
+                </ProtectedRoute>
+                 }
+                />
         </Routes>  
             
         </div>

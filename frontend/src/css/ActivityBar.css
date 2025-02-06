@@ -4,6 +4,7 @@
     background-color: #ffffff;
     padding: 12px 16px;
     border-radius: 1rem;
+    font-family: Arial, sans-serif;
   }
   
   .activity-container {
@@ -33,7 +34,7 @@
     color: #111827;
   }
   
-  .back-icon {
+  .activity-bar-back-icon {
     width: 16px;
     height: 16px;
     margin-right: 4px;
@@ -99,7 +100,7 @@
     height: 38px;
   }
 
-  .manage-button {
+  .activity-bar-manage-button {
     background-color:darkred;
     color: white;
     border: none;
