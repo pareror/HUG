@@ -24,6 +24,7 @@
     outline: inherit;
     margin-bottom: 1%;
     margin-top: 1%;
+    gap: 8px;
   }
   
   .create-activity-back-button:hover {
