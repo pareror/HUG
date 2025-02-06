@@ -5,8 +5,6 @@ import { ArrowLeft, Search } from "lucide-react";
 import "../css/PagamentiPaziente.css";
 import PagamentoPerPaziente from "../Components/PagamentoPerPaziente";
 
-
-
 export default function PagamentiPaziente() {
 
     const navigate = useNavigate(); //Inizializza navigate
