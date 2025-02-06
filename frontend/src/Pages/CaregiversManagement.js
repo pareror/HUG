@@ -1,35 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Key, Edit2, ArrowLeft, Plus } from "lucide-react";
-import "../css/PatientsManagement.css"; // Puoi riutilizzare questo file CSS
+import { ArrowLeft, Plus, Key, Edit2 } from "lucide-react";
+import "../css/PatientsManagement.css"; // Puoi rinominarlo se vuoi, ad es. CaregiverManagement.css
 import NavbarDashboard from "../Components/NavbarDashboard";
+import axios from "axios";
 
-const CaregiversManagement = () => {
+const CaregiverManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [caregivers, setCaregivers] = useState([]);
 
-  // Dati fittizi per i caregiver
-  const [caregivers, setCaregivers] = useState([
-    {
-      id: "000223",
-      nome: "Francesca",
-      cognome: "Bianchi",
-      codiceFiscale: "BNCHNC70D12F205Z",
-    },
-    {
-      id: "000224",
-      nome: "Giovanni",
-      cognome: "Verdi",
-      codiceFiscale: "VRDGNN65E14F205X",
-    },
-    {
-      id: "000225",
-      nome: "Luca",
-      cognome: "Neri",
-      codiceFiscale: "NRILCU80F15F205Y",
-    },
-    // Aggiungi altri caregiver se necessario
-  ]);
+  // Funzione per recuperare i caregiver dall'API
+  const fetchCaregivers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/caregivers", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
+      setCaregivers(response.data.caregivers);
+      console.log("✅ Caregiver recuperati:", response.data.caregivers);
+    } catch (error) {
+      console.error("❌ Errore nel recupero dei caregiver:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCaregivers();
+  }, []);
 
   // Filtra i caregiver in base al termine di ricerca (nome, cognome, codice fiscale, id)
   const filteredCaregivers = caregivers.filter(
@@ -37,7 +35,7 @@ const CaregiversManagement = () => {
       caregiver.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       caregiver.cognome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       caregiver.codiceFiscale.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      caregiver.id.toLowerCase().includes(searchTerm.toLowerCase())
+      caregiver.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -78,9 +76,7 @@ const CaregiversManagement = () => {
 
         <div className="pm-table-container">
           {filteredCaregivers.length === 0 ? (
-            <p className="no-data">
-              Nessun caregiver presente nella lista.
-            </p>
+            <p className="no-data">Nessun caregiver presente nella lista.</p>
           ) : (
             <table className="pm-table">
               <thead>
@@ -100,6 +96,7 @@ const CaregiversManagement = () => {
                     <td>{caregiver.cognome}</td>
                     <td>{caregiver.codiceFiscale}</td>
                     <td className="actions-cell">
+                      {/* Ad esempio: se vuoi mostrare le credenziali */}
                       <button
                         className="icon-button"
                         onClick={() =>
@@ -114,7 +111,7 @@ const CaregiversManagement = () => {
                         className="icon-button"
                         onClick={() =>
                           navigate(
-                            `/dashboard/utenza/caregiver/${caregiver.id}/profilo`
+                            `/dashboard/utenza/caregiver/${caregiver.id}/modifica`
                           )
                         }
                       >
@@ -132,4 +129,4 @@ const CaregiversManagement = () => {
   );
 };
 
-export default CaregiversManagement;
+export default CaregiverManagement;

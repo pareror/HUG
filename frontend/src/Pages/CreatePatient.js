@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft, Plus, X, ChevronDown, ChevronUp } from "lucide-react";
@@ -10,6 +10,8 @@ import { jwtDecode } from "jwt-decode";
 import "../css/EmergencyContactsPopup.css"; // Per popup contatti di emergenza
 const CreatePatient = () => {
   const navigate = useNavigate();
+
+  const fileInputRef = useRef(null);
 
   // Funzione per estrarre l'ID dal JWT
   const getUserIdFromJWT = () => {
@@ -55,6 +57,10 @@ const CreatePatient = () => {
    const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
    const [emergencyContacts, setEmergencyContacts] = useState([]);
    const [expandedContactIndex, setExpandedContactIndex] = useState(null);
+
+  // Gestione anteprima immagine profilo
+   const [previewImage, setPreviewImage] = useState(null);
+
   // Pulizia automatica degli errori dopo 3 secondi
   useEffect(() => {
     if (error) {
@@ -79,6 +85,14 @@ const CreatePatient = () => {
     const file = e.target.files[0];
     if (file) {
       setPatientData((prev) => ({ ...prev, fotoProfilo: file }));
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+  const handleRemovePhoto = () => {
+    setPreviewImage(null);
+    setPatientData((prev) => ({ ...prev, fotoProfilo: null }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Resetta l'input file
     }
   };
   // Aggiungi nuovo contatto e collassa i precedenti
@@ -261,10 +275,29 @@ const CreatePatient = () => {
             <label>Codice Fiscale</label>
             <input type="text" name="codiceFiscale" required onChange={handleChange} />
           </div>
-          <div className="profile-photo">
-            <label>Foto Profilo</label>
-            <input type="file" name="fotoProfilo" accept="image/*" onChange={handleFileChange} />
-          </div>
+            <div className="profile-photo">
+              <label>Foto Profilo</label>
+              <input
+                type="file"
+                name="fotoProfilo"
+                accept="image/*"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+              />
+
+              {previewImage && (
+                <div className="preview-container">
+                  <img src={previewImage} alt="Anteprima Foto Profilo" className="preview-image" />
+                  <button
+                    type="button"
+                    className="remove-preview"
+                    onClick={handleRemovePhoto}
+                  >
+                    Rimuovi Foto
+                  </button>
+                </div>
+              )}
+            </div>
 
           <div className="form-group checkbox-group full-width">
             <label htmlFor="disabilita">Disabilità</label>
