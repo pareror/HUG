@@ -18,6 +18,36 @@ router.get('/admin', authenticateJWT, authorizeRole(3), (req, res) => {
   });
   */
 // 📌 API per ottenere tutti i pazienti
+router.delete(
+    "/profilo/:id",
+    authenticateJWT,
+    authorizeRole(5), // oppure il ruolo appropriato per autorizzare l'operazione
+    async (req, res) => {
+      // Prendi l'ID del profilo da eliminare dalla rotta, non da req.user
+      const profileId = req.params.id;
+      console.log(`📌 Richiesta di eliminazione del profilo per ID: ${profileId}`);
+  
+      // Esegui la query per eliminare il profilo
+      db.run(
+        "DELETE FROM profiles WHERE id = ?",
+        [profileId],
+        function (err) {
+          if (err) {
+            console.error("❌ Errore durante l'eliminazione del profilo:", err.message);
+            return res.status(500).json({ error: "Errore durante l'eliminazione del profilo." });
+          }
+          // Verifica se qualche record è stato eliminato
+          if (this.changes === 0) {
+            console.warn("⚠️ Nessun profilo trovato per eliminare con ID:", profileId);
+            return res.status(404).json({ error: "Profilo non trovato." });
+          }
+          console.log("✅ Profilo eliminato con successo.");
+          res.json({ message: "Profilo eliminato con successo." });
+        }
+      );
+    }
+  );
+  
 router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
     const centroDiurnoId = req.user.id; // ID estratto dal JWT
     console.log("📌 Centro ID dal JWT:", centroDiurnoId);

@@ -22,6 +22,11 @@ const EditCaregiver = () => {
   // Stato per la preview dell'immagine
   const [previewImage, setPreviewImage] = useState(null);
 
+  // Stato per il popup di conferma eliminazione
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  // Stato per il popup di successo dell'eliminazione
+  const [showDeleteSuccessPopup, setShowDeleteSuccessPopup] = useState(false);
+
   // Carica i dati del caregiver dal backend
   useEffect(() => {
     const fetchCaregiver = async () => {
@@ -30,7 +35,7 @@ const EditCaregiver = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
         });
         const data = response.data.caregiver;
-        // Forza i campi testuali a stringa (se null)
+        // Imposta valori di default se null
         data.genere = data.genere || "";
         data.comuneDiResidenza = data.comuneDiResidenza || "";
         data.indirizzo = data.indirizzo || "";
@@ -38,7 +43,7 @@ const EditCaregiver = () => {
         data.email = data.email || "";
         data.codiceFiscale = data.codiceFiscale || "";
         setCaregiverData(data);
-        // Se esiste già una foto, impostala come preview
+        // Se esiste già una foto, impostala come anteprima
         if (data.fotoProfilo) {
           setPreviewImage(data.fotoProfilo);
         }
@@ -68,7 +73,7 @@ const EditCaregiver = () => {
     }));
   };
 
-  // Gestione del caricamento file e anteprima
+  // Gestione caricamento file e anteprima
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -86,7 +91,7 @@ const EditCaregiver = () => {
     }
   };
 
-  // Invio dati aggiornati al backend
+  // Invio dei dati aggiornati al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -120,7 +125,35 @@ const EditCaregiver = () => {
     }
   };
 
-  if (loading) return <p>Caricamento...</p>;
+  // Funzione per eliminare il profilo (richiede conferma)
+  const handleDeleteProfile = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/profilo/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      });
+      setShowConfirmDelete(false);
+      // Mostra il popup di successo per l'eliminazione
+      setShowDeleteSuccessPopup(true);
+      setTimeout(() => navigate("/dashboard/utenza/caregiver"), 2000);
+    } catch (err) {
+      setError(err.response?.data?.error || "Errore durante l'eliminazione del profilo.");
+      console.error("Errore:", err);
+    }
+  };
+
+  // Funzione per aprire il popup di conferma eliminazione
+  const handleConfirmDelete = () => {
+    setShowConfirmDelete(true);
+  };
+
+  // Funzione per chiudere il popup di conferma eliminazione
+  const handleCancelDelete = () => {
+    setShowConfirmDelete(false);
+  };
+
+  if (loading || !caregiverData) return <p>Caricamento...</p>;
 
   return (
     <div className="edit-patient-page">
@@ -243,16 +276,8 @@ const EditCaregiver = () => {
             />
             {previewImage && (
               <div className="preview-container">
-                <img
-                  src={previewImage}
-                  alt="Anteprima Foto Profilo"
-                  className="preview-image"
-                />
-                <button
-                  type="button"
-                  className="remove-preview"
-                  onClick={handleRemovePhoto}
-                >
+                <img src={previewImage} alt="Anteprima Foto Profilo" className="preview-image" />
+                <button type="button" className="remove-preview" onClick={handleRemovePhoto}>
                   Rimuovi Foto
                 </button>
               </div>
@@ -267,9 +292,40 @@ const EditCaregiver = () => {
                 Annulla
               </button>
             </div>
+            <div className="left-actions">
+              <button type="button" className="btn-red" onClick={handleConfirmDelete}>
+                Elimina Profilo
+              </button>
+            </div>
           </div>
         </form>
       </div>
+
+      {/* Popup di conferma eliminazione */}
+      {showConfirmDelete && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>Conferma Eliminazione</h3>
+            <p>Sei sicuro di voler eliminare il profilo? Questa operazione è irreversibile.</p>
+            <div className="popup-actions">
+              <button className="btn-red" onClick={handleDeleteProfile}>Conferma</button>
+              <button className="btn-gray" onClick={handleCancelDelete}>Annulla</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup di successo eliminazione */}
+      {showDeleteSuccessPopup && (
+        <div className="popup-overlay">
+          <div className="popup-box">
+            <h3>Profilo eliminato con successo!</h3>
+            <button className="btn-green" onClick={() => navigate("/dashboard/utenza/caregiver")}>
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
