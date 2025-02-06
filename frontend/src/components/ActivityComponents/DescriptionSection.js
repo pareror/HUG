@@ -1,8 +1,8 @@
 function DescriptionSection({ value, onChange }) {
     return (
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="description">Descrizione</label>
-        <div className="input-counter-wrapper">
+        <div className="create-activity-input-counter-wrapper">
           <textarea
             id="description"
             placeholder="Inserisci la descrizione"
@@ -10,7 +10,7 @@ function DescriptionSection({ value, onChange }) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />
-          <span className="character-counter">{value.length}/500</span>
+          <span className="create-activity-character-counter">{value.length}/500</span>
         </div>
       </div>
     )

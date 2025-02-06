@@ -53,7 +53,7 @@ function CreateActivity() {
     }
   
     return (
-      <div className="create-activity">
+      <div className="primary-create-activity">
         <NavbarDashboard />
         <Header />
   

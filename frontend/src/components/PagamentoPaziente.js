@@ -1,0 +1,21 @@
+import "../css/PagamentiPazienti.css"
+import { useNavigate } from "react-router-dom";
+
+export default function ActivityCard({ name, activitiesCount, totalAmount, amountToPay}) {
+  const navigate = useNavigate();
+  return (
+    <div className="activity-card">
+      <div className="card-content">
+        <div className="user-info">
+          <h3 className="user-name">{name}</h3>
+          <p className="activity-count">Attività partecipate: {activitiesCount}</p>
+        </div>
+        <div className="payment-info">
+          <span className="total-amount">€{totalAmount}</span>
+          <button className="pay-button" onClick={() => navigate("/dashboard/pagamenti/paziente/paziente")}>€{amountToPay} da pagare</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+

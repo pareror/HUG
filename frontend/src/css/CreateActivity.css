@@ -1,4 +1,4 @@
-.create-activity {
+.primary-create-activity {
     max-width: 1200pz, 0 auto;
     margin: 0 auto;
     padding: 20px;
@@ -11,7 +11,7 @@
     align-items: flex-start;
   }
   
-  .back-button {
+  .create-activity-back-button {
     display: flex;
     align-items: center;
     color: #6b7280;
@@ -26,14 +26,14 @@
     margin-top: 1%;
   }
   
-  .back-button:hover {
+  .create-activity-back-button:hover {
     color: #374151;
   }
   
-  .back-icon {
+  .create-activity-back-icon {
     width: 14px;
     height: 14px;
-    margin-right: 8px;
+
   }
   
   .create-activity-header h1 {
@@ -49,29 +49,29 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .form-group {
+  .create-activity-form-group {
     margin-bottom: 20px;
     flex: 1;
     min-width: 200px; /* Assicura una larghezza minima consistente */
   }
   
-  .form-row {
+  .create-activity-form-row {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
   }
   
-  label {
+  .create-activity-label {
     display: block;
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 8px;
   }
   
-  input[type="itext"],
-  input[type="inumber"],
-  input[type="idate"],
-  input[type="itime"] {
+  .create-activity input[type="text"],
+  .create-activity input[type="number"],
+  .create-activity input[type="date"],
+  .create-activity input[type="time"] {
     width: 100%;
     padding: 8px 12px;
     padding-right: 36px; /* Spazio per l'icona */
@@ -92,11 +92,11 @@
     height: 40px; /* Altezza fissa per tutti gli input */
   }
   
-  .input-counter-wrapper {
+  .create-activity-input-counter-wrapper {
     position: relative;
   }
   
-  .character-counter {
+  .create-activity-character-counter {
     position: absolute;
     right: 8px;
     bottom: 8px;
@@ -104,13 +104,13 @@
     color: #6b7280;
   }
   
-  .input-icon-wrapper {
+  .create-activity-input-icon-wrapper {
     position:relative;
     display: flex;
     align-items: center;
   }
   
-  .input-icon {
+  .create-activity-input-icon {
     position: absolute;
     right: 12px;
     width: 16px;
@@ -120,8 +120,8 @@
   }
   
   /* Rimuovi gli stili predefiniti dei browser per date e time */
-  input[type="date"]::-webkit-calendar-picker-indicator,
-  input[type="time"]::-webkit-calendar-picker-indicator {
+  create-activity input[type="date"]::-webkit-calendar-picker-indicator,
+  create-activity input[type="time"]::-webkit-calendar-picker-indicator {
     opacity: 0;
     position: absolute;
     right: 0;
@@ -132,28 +132,28 @@
   }
   
   /* Rimuovi lo stile predefinito dell'icona del calendario/orologio in Firefox */
-  input[type="date"]::-moz-calendar-picker-indicator,
-  input[type="time"]::-moz-calendar-picker-indicator {
+  create-activity input[type="date"]::-moz-calendar-picker-indicator,
+  create-activity input[type="time"]::-moz-calendar-picker-indicator {
     background-color: transparent;
     padding: 8px;
     cursor: pointer;
   }
   
   /* Rimuovi lo stile predefinito dell'icona del calendario/orologio in Edge */
-  input[type="date"]::-ms-clear,
-  input[type="time"]::-ms-clear {
+  create-activity input[type="date"]::-ms-clear,
+  create-activity input[type="time"]::-ms-clear {
     display: none;
   }
   
-  input[type="date"]::-webkit-datetime-edit,
-  input[type="time"]::-webkit-datetime-edit {
+  create-activity input[type="date"]::-webkit-datetime-edit,
+  create-activity input[type="time"]::-webkit-datetime-edit {
     padding: 0;
   }
   
   /* Stili specifici per il campo durata */ /* Rimuove le frecce in Firefox */
-  /*.duration-input {
+  .create-activity-duration-input {
     -moz-appearance: textfield; 
-  }*/
+  }
   
   .duration-input::-webkit-outer-spin-button,
   .duration-input::-webkit-inner-spin-button {
@@ -161,17 +161,17 @@
     margin: 0;
   }
   
-  .image-upload-group {
+  .create-activity-image-upload-group {
     flex: 2;
   }
   
-  .image-upload-container {
+  .create-activity-image-upload-container {
     display: flex;
     gap: 20px;
     align-items: flex-start;
   }
   
-  .file-select-button {
+  .create-activity-file-select-button {
     display: inline-block;
     padding: 8px 16px;
     background-color: #f3f4f6;
@@ -182,12 +182,12 @@
     white-space: nowrap;
   }
 
-  .image-preview-wrapper {
+  .create-activity-image-preview-wrapper {
     position: relative;
     flex: 1;
   }
 
-  .image-preview {
+  .create-activity-image-preview {
   position: relative;
   aspect-ratio: 16 / 9;
   background-color: #f3f4f6;
@@ -195,19 +195,19 @@
   overflow: hidden;
 }
 
-  .image-preview img {
+  .create-activity-image-preview img {
     width: 100%;
     height: 100%;
     object-fit:contain ;
   }
   
-  .image-placeholder {
+  .create-activity-image-placeholder {
     width: 100%;
     height: 100%;
     background-color: #e5e7eb;
   }
   
-  .remove-image-button {
+  .create-activity-remove-image-button {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -225,7 +225,7 @@
     transition: all 0.2s ease;
   }
 
-  .remove-image-button:hover {
+  .create-activity-remove-image-button:hover {
     background-color: #fff;
     color: #ef4444;
     border-color: #ef4444;
@@ -237,8 +237,8 @@
     margin-top: 24px;
   }
   
-  .submit-button,
-  .cancel-button {
+  .create-activity-submit-button,
+  .create-activity-cancel-button {
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 14px;
@@ -246,70 +246,70 @@
     min-width: 120px;
   }
   
-  .submit-button {
+  .create-activity-submit-button {
     background-color: #10b981;
     color: white;
     border: none;
   }
   
-  .submit-button:hover {
+  .create-activity-cancel-button:hover {
     background-color: #059669;
   }
   
-  .cancel-button {
+  .create-activity-cancel-button {
     background-color: #f3f4f6;
     border: 1px solid #e5e7eb;
     color: #374151;
   }
   
-  .cancel-button:hover {
+  .create-activity-cancel-button:hover {
     background-color:red;
   }
   
   /* Responsive styles */
   @media (max-width: 768px) {
-    .form-row {
+    .create-activity-form-row {
       flex-direction: column;
       gap: 12px;
     }
   
-    .image-upload-container {
+    .create-activity-image-upload-container {
       flex-direction: column;
     }
   
-    .image-preview {
+    .create-activity-image-preview {
       width: 100%;
       max-width: 300px;
     }
   }
   
   @media (max-width: 480px) {
-    .create-activity {
+    .create-activity-create-activity {
       padding: 12px;
     }
   
-    .create-activity-form {
+    .create-activity-create-activity-form {
       padding: 16px;
     }
   
-    .form-actions {
+    .create-activity-form-actions {
       flex-direction: column;
     }
   
-    .submit-button,
-    .cancel-button {
+    .create-activity-submit-button,
+    .create-activity-cancel-button {
       width: 100%;
     }
   }
   
   
-  .error-message {
+  .create-activity-error-message {
     color: #ef4444;
     font-size: 14px;
     margin-top: 8px;
     width: 100%;
   }
   
-  input[aria-invalid="true"] {
+  icreate-activity-input[aria-invalid="true"] {
     border-color: #ef4444;
   }

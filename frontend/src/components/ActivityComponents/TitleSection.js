@@ -1,8 +1,8 @@
 function TitleSection({ value, onChange }) {
     return (
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="title">Titolo</label>
-        <div className="input-counter-wrapper">
+        <div className="create-activity-input-counter-wrapper">
           <input
             type="text"
             id="title"
@@ -11,7 +11,7 @@ function TitleSection({ value, onChange }) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />
-          <span className="character-counter">{value.length}/100</span>
+          <span className="create-activity-character-counter">{value.length}/100</span>
         </div>
       </div>
     )

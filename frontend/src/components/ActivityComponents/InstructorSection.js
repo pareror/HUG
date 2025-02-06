@@ -28,8 +28,8 @@ function InstructorSection({ instructor, image, onChange }) {
   }
 
   return (
-    <div className="form-row">
-      <div className="form-group">
+    <div className="create-activity-form-row">
+      <div className="create-activity-form-group">
         <label htmlFor="instructor">Istruttore</label>
         <input
           type="text"
@@ -39,9 +39,9 @@ function InstructorSection({ instructor, image, onChange }) {
         />
       </div>
 
-      <div className="form-group image-upload-group">
+      <div className="create-activity-form-group create-activity-image-upload-group">
         <label>Immagine attuale</label>
-        <div className="image-upload-container">
+        <div className="create-activity-image-upload-container">
           <input
             type="file"
             ref={fileInputRef}
@@ -49,17 +49,17 @@ function InstructorSection({ instructor, image, onChange }) {
             style={{ display: "none" }}
             accept="image/*"
           />
-          <button type="button" onClick={handleFileButtonClick} className="file-select-button">
+          <button type="button" onClick={handleFileButtonClick} className="create-activity-file-select-button">
             Scegli file
           </button>
-          <div className="image-preview-wrapper">
-            <div className="image-preview">
+          <div className="create-activity-image-preview-wrapper">
+            <div className="create-activity-image-preview">
               {imagePreview ? (
                 <>
                   <img src={imagePreview || "/placeholder.svg"} alt="Preview" />
                   <button
                     type="button"
-                    className="remove-image-button"
+                    className="create-activity-remove-image-button"
                     onClick={handleRemoveImage}
                     aria-label="Rimuovi immagine"
                   >
@@ -67,7 +67,7 @@ function InstructorSection({ instructor, image, onChange }) {
                   </button>
                 </>
               ) : (
-                <div className="image-placeholder"></div>
+                <div className="create-activity-image-placeholder"></div>
               )}
             </div>
           </div>
