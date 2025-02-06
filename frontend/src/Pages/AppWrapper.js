@@ -19,6 +19,7 @@ import Profilo from './Profilo';
 import EditPatient from './EditPatient';
 import PagamentiPazienti from './PagamentiPazienti';
 import PagamentiPaziente from './PagamentiPaziente';
+import CreateCaregiver from './CreateCaregiver';
 
 const Website = () => {
     return ( 
@@ -62,7 +63,12 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
-
+            <Route path="/dashboard/utenza/caregiver/nuovo" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <CreateCaregiver />
+                </ProtectedRoute>
+            }
+            />
             <Route path="/dashboard/attivita/interna" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <AttivitaInterne />
@@ -96,6 +102,7 @@ const Website = () => {
                 </ProtectedRoute>
                  }
             />
+            
 
             <Route path="/dashboard/notifiche" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
