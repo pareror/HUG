@@ -38,10 +38,10 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
   }
 
   return (
-    <div className="form-row date-time-section">
-      <div className="form-group">
+    <div className="create-activity-form-row date-time-section">
+      <div className="create-activity-form-group">
         <label htmlFor="date">Data</label>
-        <div className="input-icon-wrapper">
+        <div className="create-activity-input-icon-wrapper">
           <input
             type="date"
             id="date"
@@ -50,13 +50,13 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
             className="date-input"
             aria-invalid={error ? "true" : "false"}
           />
-          <Calendar className="input-icon" />
+          <Calendar className="create-activity-input-icon" />
         </div>
       </div>
 
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="time">Ora</label>
-        <div className="input-icon-wrapper">
+        <div className="create-activity-input-icon-wrapper">
           <input
             type="time"
             id="time"
@@ -64,11 +64,11 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
             onChange={(e) => handleChange("time", e.target.value)}
             className="time-input"
           />
-          <Clock className="input-icon" />
+          <Clock className="create-activity-input-icon" />
         </div>
       </div>
 
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="duration">Durata (ore)</label>
         <input
           type="number"
@@ -76,13 +76,13 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
           min="0"
           value={duration}
           onChange={(e) => handleChange("duration", e.target.value)}
-          className="duration-input"
+          className="create-activity-duration-input"
         />
       </div>
 
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="deadline">Scadenza iscrizioni</label>
-        <div className="input-icon-wrapper">
+        <div className="create-activity-input-icon-wrapper">
           <input
             type="date"
             id="deadline"
@@ -91,12 +91,12 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
             className="date-input"
             aria-invalid={error ? "true" : "false"}
           />
-          <Calendar className="input-icon" />
+          <Calendar className="create-activity-input-icon" />
         </div>
       </div>
 
       {error && (
-        <div className="error-message" role="alert">
+        <div className="create-activity-error-message" role="alert">
           {error}
         </div>
       )}

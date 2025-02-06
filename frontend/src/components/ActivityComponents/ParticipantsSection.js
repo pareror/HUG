@@ -26,8 +26,8 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
   }
 
   return (
-    <div className="form-row">
-      <div className="form-group">
+    <div className="create-activity-form-row">
+      <div className="create-activity-form-group">
         <label htmlFor="minParticipants">Numero minimo partecipanti</label>
         <input
           type="number"
@@ -39,7 +39,7 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
         />
       </div>
 
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="maxParticipants">Numero massimo partecipanti</label>
         <input
           type="number"
@@ -51,13 +51,13 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
         />
       </div>
 
-      <div className="form-group">
+      <div className="create-activity-form-group">
         <label htmlFor="location">Luogo</label>
         <input type="text" id="location" value={location} onChange={(e) => handleChange("location", e.target.value)} />
       </div>
 
       {error && (
-        <div className="error-message" role="alert">
+        <div className="create-activity-error-message" role="alert">
           {error}
         </div>
       )}

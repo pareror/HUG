@@ -81,52 +81,7 @@ select {
   background-color: white;
 }
 
-/* Stili specifici per l'input date */
-input[type="date"] {
-  cursor: pointer;
-  position: relative;
-  background-color: white;
-}
 
-/* Rimuovi lo stile predefinito del browser */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: transparent;
-  background: transparent;
-  cursor: pointer;
-}
-
-/* Stile per il placeholder della data */
-input[type="date"]::-webkit-datetime-edit-text,
-input[type="date"]::-webkit-datetime-edit-month-field,
-input[type="date"]::-webkit-datetime-edit-day-field,
-input[type="date"]::-webkit-datetime-edit-year-field {
-  color: #666;
-}
-
-/* Stile per quando la data è selezionata */
-input[type="date"]:valid::-webkit-datetime-edit-text,
-input[type="date"]:valid::-webkit-datetime-edit-month-field,
-input[type="date"]:valid::-webkit-datetime-edit-day-field,
-input[type="date"]:valid::-webkit-datetime-edit-year-field {
-  color: #333;
-}
-
-/* Rimuovi gli spinner interni */
-input[type="date"]::-webkit-inner-spin-button,
-input[type="date"]::-webkit-clear-button {
-  display: none;
-}
-
-/* Focus state */
-input[type="date"]:focus {
-  border-color: #007bff;
-  outline: none;
-}
 
 
 
