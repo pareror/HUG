@@ -1,0 +1,139 @@
+.button-title-header{
+    display: flex;
+    justify-content:left;
+    gap: 10px;
+}
+.container {
+    max-width: 90%;
+    margin: 0px auto;
+    padding: 20px 20px 8px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.pagamenti-back-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+    padding: 0;
+    margin-top: 11px;
+  }
+  .pagamenti-back-button svg {
+    margin-right: 8px;
+  }
+
+
+
+  .container-header-title h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .container-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .container-header-info{
+    margin-top: 50px;
+    margin-right: 25px;
+  }
+
+
+/**
+ * sezione stile CSS per tabella pagamenti
+ */
+
+
+
+ .payment-table-container {
+    padding: 20px;
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  
+  .payment-table th {
+    color: #666;
+    font-weight: normal;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .payment-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .payment-needed {
+    background-color: #b91c1c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  /* Remove bottom border from last row */
+.payment-table tr:last-child td {
+    border-bottom: none;
+  }
+
+
+  .payment-done {
+    background-color: white;
+    color: black;
+    border: 1px solid #e0e0e0;
+    padding: 8px 16px;
+    border-radius: 20px;
+  }
+  
+  .register-payment {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .register-payment:hover {
+    background-color: #333;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .payment-table {
+      font-size: 14px;
+    }
+  
+    .payment-table td,
+    .payment-table th {
+      padding: 12px 8px;
+    }
+  
+    .payment-needed,
+    .payment-done,
+    .register-payment {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+  
+  
+  

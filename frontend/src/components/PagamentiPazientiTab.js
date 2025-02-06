@@ -9,33 +9,33 @@ export default function PagamentiPazientiTab() {
     const pagamenti = [
         {
           name: "Mario Rossi",
-          totalAmount: 2,
+          totalAmount: 200,
           activitiesCount: 2,
-          amountToPay: 240,
+          amountToPay: 60,
         },
         {
             name: "Mario Rossi",
-            totalAmount: 2,
+            totalAmount: 200,
             activitiesCount: 2,
-            amountToPay: 240,
+            amountToPay: 60,
         },
         {
             name: "Mario Rossi",
-            totalAmount: 2,
+            totalAmount: 200,
             activitiesCount: 2,
-            amountToPay: 240,
+            amountToPay: 60,
         },
         {
             name: "Mario Rossi",
-            totalAmount: 2,
+            totalAmount: 200,
             activitiesCount: 2,
-            amountToPay: 240,
+            amountToPay: 60,
           },
           {
             name: "Mario Rossi",
-            totalAmount: 2,
+            totalAmount: 200,
             activitiesCount: 2,
-            amountToPay: 240,
+            amountToPay: 60,
           },
           
       ];
