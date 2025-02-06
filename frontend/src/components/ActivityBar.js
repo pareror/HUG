@@ -27,7 +27,7 @@ function ActivityBar() {
         </div>
 
         <div className="right-section">
-          <div className="search-container">
+          <div className="activity-search-container">
             <Search className="search-icon" />
             <input
               type="search"
