@@ -1,7 +1,6 @@
 import React from 'react';
 import '../css/PagamentiPaziente.css';
 
-
 const PagamentoPerPaziente = () => {
 
     const payments = [

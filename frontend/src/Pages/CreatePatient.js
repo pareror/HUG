@@ -319,7 +319,7 @@ const CreatePatient = () => {
               </div>
               <div className="form-group">
                 <label>Assistenza Continuativa</label>
-                <input type="checkbox" name="assistenzaContinuativa" onChange={handleChange} />
+                <input type="checkbox" name="assistenzaContinuativa" id="disabilita" onChange={handleChange} />
               </div>
             </>
           )}

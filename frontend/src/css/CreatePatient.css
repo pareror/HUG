@@ -91,11 +91,15 @@ select {
   *****************************************************/
   .checkbox-group {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
     margin-top: 5px;
     text-align: left; /* Forza l'allineamento a sinistra */
   }
+
+  input#disabilita {
+    width: 20px;
+}
   
   .checkbox-container {
 
@@ -258,6 +262,7 @@ select {
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    margin-top:10px;
   }
   
   .btn-gray:hover {
