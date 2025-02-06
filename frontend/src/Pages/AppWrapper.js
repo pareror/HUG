@@ -18,7 +18,13 @@ import Impostazioni from './Impostazioni';
 import Profilo from './Profilo';
 import EditPatient from './EditPatient';
 import PagamentiPazienti from './PagamentiPazienti';
+<<<<<<< HEAD
+import PagamentiAttivita from './PagamentiAttivita';
+import DettaglioPagamenti from './DettaglioPagamenti';
+
+=======
 import PagamentiPaziente from './PagamentiPaziente';
+>>>>>>> 938e89e22b4c6d5751d193b5de570cab05faf954
 
 const Website = () => {
     return ( 
@@ -131,6 +137,21 @@ const Website = () => {
                  }
                  />
 
+<<<<<<< HEAD
+            <Route path="/dashboard/pagamenti/attivita" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PagamentiAttivita />
+                </ProtectedRoute>
+                 }
+                 />
+            
+            <Route path="/dashboard/pagamenti/attivita/:activityId" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <DettaglioPagamenti />
+                </ProtectedRoute>
+                 }
+                />
+=======
             <Route path="/dashboard/pagamenti/paziente/paziente" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <PagamentiPaziente />
@@ -138,6 +159,7 @@ const Website = () => {
                  }
                  />
 
+>>>>>>> 938e89e22b4c6d5751d193b5de570cab05faf954
         </Routes>  
             
         </div>
