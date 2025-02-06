@@ -4,3 +4,21 @@
     background-color: #e7ebee;
     padding: 20px;
   }
+
+  .back-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
