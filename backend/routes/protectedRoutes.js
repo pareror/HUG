@@ -619,4 +619,176 @@ router.get(
       }
     }
   );
+  router.get(
+    "/caregiver/:id",
+    authenticateJWT,
+    authorizeRole(5), // Solo gli utenti autorizzati (ad es. direttori) possono vedere i dettagli del caregiver
+    async (req, res) => {
+      const caregiverId = req.params.id;
+      console.log("📌 Recupero dati per il caregiver ID:", caregiverId);
+  
+      try {
+        // Recupera i dati del caregiver dal database
+        db.get(
+          `SELECT id, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, genere, telefono, fotoProfilo
+           FROM profiles
+           WHERE id = ? AND role = 'caregiver'`,
+          [caregiverId],
+          (err, caregiver) => {
+            if (err) {
+              console.error("❌ Errore SQL nel recupero del caregiver:", err.message);
+              return res.status(500).json({ error: "Errore nel recupero del caregiver." });
+            }
+  
+            if (!caregiver) {
+              console.error("❌ Caregiver non trovato con ID:", caregiverId);
+              return res.status(404).json({ error: "Caregiver non trovato." });
+            }
+  
+            console.log("✅ Caregiver trovato:", caregiver);
+  
+            // Se il campo fotoProfilo è presente ed è un percorso relativo, lo prefissa con il dominio del backend.
+            const backendUrl = process.env.BACKEND_URL || "http://localhost:5000";
+            if (caregiver.fotoProfilo && caregiver.fotoProfilo.startsWith("/uploads")) {
+              caregiver.fotoProfilo = backendUrl + caregiver.fotoProfilo;
+            }
+  
+            // Restituisci i dati del caregiver
+            res.json({ caregiver });
+          }
+        );
+      } catch (error) {
+        console.error("❌ Errore generale nel recupero del caregiver:", error);
+        res.status(500).json({ error: "Errore interno del server." });
+      }
+    }
+  );
+  
+
+  router.put(
+    "/caregiver/:id",
+    authenticateJWT,
+    authorizeRole(5), // Solo utenti autorizzati possono modificare i caregiver
+    upload.single("fotoProfilo"), // Gestisce l'upload del file se presente
+    async (req, res) => {
+      console.log("📥 Dati ricevuti dal frontend:", req.body);
+      const caregiverId = req.params.id;
+      console.log("📌 Aggiornamento caregiver ID:", caregiverId);
+  
+      // Estrai i campi inviati dal frontend
+      const {
+        nome,
+        cognome,
+        email,
+        dataNascita,
+        comuneDiResidenza,
+        indirizzo,
+        codiceFiscale,
+        genere,
+        telefono,
+        removeFotoProfilo, // Flag per indicare la rimozione della foto (es. "true")
+      } = req.body;
+  
+      // Controlla i campi obbligatori
+      if (!nome || !cognome) {
+        return res.status(400).json({ error: "I campi nome e cognome sono obbligatori." });
+      }
+  
+      // Variabile che conterrà il nuovo valore per fotoProfilo, se aggiornato
+      let nuovoPercorsoFoto;
+  
+      // Se viene caricato un nuovo file, usalo
+      if (req.file) {
+        nuovoPercorsoFoto = `/uploads/${req.file.filename}`;
+      }
+      // Altrimenti, se il flag removeFotoProfilo è "true", rimuovi la foto esistente
+      else if (removeFotoProfilo === "true") {
+        nuovoPercorsoFoto = null;
+        // Recupera l'attuale percorso della foto dal database e prova a cancellare il file dal disco
+        db.get("SELECT fotoProfilo FROM profiles WHERE id = ?", [caregiverId], (err, row) => {
+          if (err) {
+            console.error("❌ Errore nel recupero della foto attuale:", err.message);
+          }
+          if (row && row.fotoProfilo) {
+            const filePath = path.join(__dirname, "../", row.fotoProfilo);
+            fs.unlink(filePath, (unlinkErr) => {
+              if (unlinkErr) {
+                console.error("❌ Errore nella rimozione della foto:", unlinkErr.message);
+              } else {
+                console.log("✅ Foto rimossa dal disco");
+              }
+            });
+          }
+        });
+      }
+      // Se non viene caricato un nuovo file e non viene inviato il flag, il campo fotoProfilo non verrà aggiornato
+  
+      // Costruisci la query UPDATE: se è presente nuovoPercorsoFoto (anche se null per rimozione), aggiorna quel campo,
+      // altrimenti, esegui una query che non tocca il campo fotoProfilo.
+      let sql, params;
+      if (req.file || removeFotoProfilo === "true") {
+        params = [
+          nome,
+          cognome,
+          email,
+          dataNascita,
+          comuneDiResidenza,
+          indirizzo,
+          codiceFiscale,
+          genere,
+          telefono,
+          // Altri eventuali campi, se presenti…
+          nuovoPercorsoFoto, // Questo sarà un nuovo percorso oppure null se si rimuove la foto
+          caregiverId,
+        ];
+        sql = `UPDATE profiles
+               SET nome = ?,
+                   cognome = ?,
+                   email = ?,
+                   dataNascita = ?,
+                   comuneDiResidenza = ?,
+                   indirizzo = ?,
+                   codiceFiscale = ?,
+                   genere = ?,
+                   telefono = ?,
+                   fotoProfilo = ?
+               WHERE id = ? AND role = 'caregiver'`;
+      } else {
+        // Nessuna modifica alla foto: aggiorna solo gli altri campi
+        params = [
+          nome,
+          cognome,
+          email,
+          dataNascita,
+          comuneDiResidenza,
+          indirizzo,
+          codiceFiscale,
+          genere,
+          telefono,
+          caregiverId,
+        ];
+        sql = `UPDATE profiles
+               SET nome = ?,
+                   cognome = ?,
+                   email = ?,
+                   dataNascita = ?,
+                   comuneDiResidenza = ?,
+                   indirizzo = ?,
+                   codiceFiscale = ?,
+                   genere = ?,
+                   telefono = ?
+               WHERE id = ? AND role = 'caregiver'`;
+      }
+  
+      db.run(sql, params, function (err) {
+        if (err) {
+          console.error("❌ Errore SQL durante l'aggiornamento del caregiver:", err.message);
+          return res.status(500).json({ error: "Errore durante l'aggiornamento del caregiver." });
+        }
+        console.log("✅ Caregiver aggiornato con successo.");
+        res.json({ message: "Caregiver aggiornato con successo!" });
+      });
+    }
+  );
+  
   module.exports = router;
