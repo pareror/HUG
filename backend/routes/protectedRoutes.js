@@ -528,6 +528,24 @@ router.get(
     upload.single("fotoProfilo"),
     async (req, res) => {
       console.log("📥 Dati ricevuti dal frontend:", req.body);
+
+  
+      const {
+        nome,
+        cognome,
+        email,
+        dataNascita,
+        comuneDiResidenza,
+        indirizzo,
+        codiceFiscale,
+        genere,
+        telefono,
+      } = req.body;
+  
+      // Estrarre centroId dal JWT (ad esempio, il direttore che crea il caregiver)
+      const centroId = req.user.id;
+      console.log("📌 Centro ID dal JWT:", centroId);
+
   
       const {
         nome,
@@ -821,4 +839,108 @@ router.get(
     }
   );
   
+      try {
+        // Genera un username univoco per il caregiver (implementa la funzione generateUniqueUsername come preferisci)
+        console.log("🔹 Generazione username...");
+        const username = await generateUniqueUsername(nome, cognome);
+        console.log("✅ Username generato:", username);
+  
+        // Controllo dei campi obbligatori
+        const missingFields = [];
+        if (!nome) missingFields.push("nome");
+        if (!cognome) missingFields.push("cognome");
+        if (!dataNascita) missingFields.push("dataNascita");
+        if (!comuneDiResidenza) missingFields.push("comuneDiResidenza");
+        if (!indirizzo) missingFields.push("indirizzo");
+        if (!codiceFiscale) missingFields.push("codiceFiscale");
+        if (!genere) missingFields.push("genere");
+        if (!telefono) missingFields.push("telefono");
+        if (!centroId) missingFields.push("centroId");
+  
+        if (missingFields.length > 0) {
+          console.error("⛔ Campi mancanti:", missingFields);
+          return res.status(400).json({
+            error: "Tutti i campi obbligatori devono essere compilati.",
+            missingFields,
+          });
+        }
+  
+        // Genera una password casuale e hashala
+        console.log("🔑 Generazione password...");
+        const password = Math.random().toString(36).slice(-8);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        console.log("✅ Password hashata");
+  
+        // Se viene caricata una foto, salva il percorso
+        const fotoProfilo = req.file ? `/uploads/${req.file.filename}` : null;
+        console.log("📷 Foto profilo:", fotoProfilo ? fotoProfilo : "Assente");
+  
+        // Controlla duplicati (email o codice fiscale già presenti)
+        console.log("🔍 Controllo duplicati...");
+        db.get(
+          "SELECT id FROM profiles WHERE codiceFiscale = ? OR email = ?",
+          [codiceFiscale, email],
+          (err, existingUser) => {
+            if (err) {
+              console.error("❌ Errore SQL durante il controllo duplicati:", err.message);
+              return res.status(500).json({ error: "Errore nel controllo del database." });
+            }
+  
+            if (existingUser) {
+              console.error("❌ Errore: Codice fiscale o email già registrata.");
+              return res.status(400).json({
+                error: "Codice fiscale o email già registrata.",
+                duplicateField: existingUser.codiceFiscale === codiceFiscale ? "codiceFiscale" : "email",
+              });
+            }
+  
+            // Inseriamo il caregiver nella tabella profiles con ruolo "caregiver"
+            console.log("📌 Inserimento del caregiver nel database...");
+            db.run(
+              `INSERT INTO profiles 
+                (username, password, role, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, telefono, centroDiurnoId, fotoProfilo)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              [
+                username,
+                hashedPassword,
+                "caregiver",
+                nome,
+                cognome,
+                email || null,
+                dataNascita,
+                comuneDiResidenza,
+                indirizzo,
+                codiceFiscale,
+                telefono,
+                centroId,
+                fotoProfilo,
+              ],
+              function (err) {
+                if (err) {
+                  console.error("❌ Errore SQL nell'inserimento:", err.message);
+                  if (err.message.includes("UNIQUE constraint failed")) {
+                    return res.status(400).json({
+                      error: "Errore di duplicazione: username, email o codice fiscale già presenti.",
+                      details: err.message,
+                    });
+                  }
+                  return res.status(500).json({ error: "Errore nell'aggiunta del caregiver." });
+                }
+                console.log("✅ Caregiver aggiunto con successo:", username);
+                res.json({
+                  message: "Caregiver aggiunto con successo!",
+                  id: this.lastID,
+                  username,
+                  password,
+                });
+              }
+            );
+          }
+        );
+      } catch (error) {
+        console.error("❌ Errore generale:", error);
+        res.status(500).json({ error: "Errore durante la registrazione del caregiver." });
+      }
+    }
+  );
   module.exports = router;

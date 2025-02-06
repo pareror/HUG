@@ -427,7 +427,9 @@ select {
   .btn-yellow:hover {
     background-color: #e5b937;
   }
+
   .btn-red:hover {
     background-color: rgb(201, 53, 53);
   }
+
 
