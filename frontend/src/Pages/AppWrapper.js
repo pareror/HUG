@@ -18,6 +18,8 @@ import Impostazioni from './Impostazioni';
 import Profilo from './Profilo';
 import EditPatient from './EditPatient';
 import PagamentiPazienti from './PagamentiPazienti';
+import PagamentiAttivita from './PagamentiAttivita';
+import DettaglioPagamenti from './DettaglioPagamenti';
 import PagamentiPaziente from './PagamentiPaziente';
 import CreateCaregiver from './CreateCaregiver';
 
@@ -138,6 +140,19 @@ const Website = () => {
                  }
                  />
 
+            <Route path="/dashboard/pagamenti/attivita" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PagamentiAttivita />
+                </ProtectedRoute>
+                 }
+                 />
+            
+            <Route path="/dashboard/pagamenti/attivita/:activityId" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <DettaglioPagamenti />
+                </ProtectedRoute>
+                 }
+                />
             <Route path="/dashboard/pagamenti/paziente/paziente" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <PagamentiPaziente />
