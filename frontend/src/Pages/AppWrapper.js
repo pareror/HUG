@@ -18,13 +18,10 @@ import Impostazioni from './Impostazioni';
 import Profilo from './Profilo';
 import EditPatient from './EditPatient';
 import PagamentiPazienti from './PagamentiPazienti';
-<<<<<<< HEAD
 import PagamentiAttivita from './PagamentiAttivita';
 import DettaglioPagamenti from './DettaglioPagamenti';
-
-=======
 import PagamentiPaziente from './PagamentiPaziente';
->>>>>>> 938e89e22b4c6d5751d193b5de570cab05faf954
+import CreateCaregiver from './CreateCaregiver';
 
 const Website = () => {
     return ( 
@@ -68,7 +65,12 @@ const Website = () => {
                 </ProtectedRoute>
             }
             />
-
+            <Route path="/dashboard/utenza/caregiver/nuovo" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <CreateCaregiver />
+                </ProtectedRoute>
+            }
+            />
             <Route path="/dashboard/attivita/interna" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <AttivitaInterne />
@@ -102,6 +104,7 @@ const Website = () => {
                 </ProtectedRoute>
                  }
             />
+            
 
             <Route path="/dashboard/notifiche" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
@@ -137,7 +140,6 @@ const Website = () => {
                  }
                  />
 
-<<<<<<< HEAD
             <Route path="/dashboard/pagamenti/attivita" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <PagamentiAttivita />
@@ -151,7 +153,6 @@ const Website = () => {
                 </ProtectedRoute>
                  }
                 />
-=======
             <Route path="/dashboard/pagamenti/paziente/paziente" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <PagamentiPaziente />
@@ -159,7 +160,6 @@ const Website = () => {
                  }
                  />
 
->>>>>>> 938e89e22b4c6d5751d193b5de570cab05faf954
         </Routes>  
             
         </div>
