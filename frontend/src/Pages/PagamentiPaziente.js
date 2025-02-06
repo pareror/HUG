@@ -2,12 +2,10 @@ import React from "react";
 import NavbarDashboard from "../Components/NavbarDashboard"
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Search } from "lucide-react";
-import "../css/PagamentiPazienti.css";
-import PagamentoPaziente from "../Components/PagamentoPaziente";
-import PagamentiPazientiTab from "../Components/PagamentiPazientiTab";
+import "../css/PagamentiPaziente.css";
+import PagamentoPerPaziente from "../Components/PagamentoPerPaziente";
 
-
-export default function PagamentiPazienti() {
+export default function PagamentiPaziente() {
 
     const navigate = useNavigate(); //Inizializza navigate
 
@@ -16,13 +14,14 @@ export default function PagamentiPazienti() {
       <NavbarDashboard />    
       <div className = "main-content">
          {/* Bottone per tornare indietro */}
-         <button className="back-button" onClick={() => navigate(-1)}>
+         <div className="button-title-header">
+         <button className="pagamenti-back-button" onClick={() => navigate(-1)}>
               <ArrowLeft size={20} />
               Torna indietro
             </button>
-            
-              <PagamentiPazientiTab/>
-
+            <h1>Mario Rossi</h1>
+            </div>  
+                <PagamentoPerPaziente/>
         </div> 
     </div>
   );
