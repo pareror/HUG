@@ -1,4 +1,4 @@
-.dettaglio-pagamenti-container {
+.det-pag-container {
     padding: 20px;
     max-width: 1200px 0 auto;
     margin: 0 auto;
@@ -6,28 +6,29 @@
     min-height: 100vh;
   }
   
-  .dettaglio-pagamenti-header {
+  .det-pag-header {
     margin-bottom: 24px;
   }
   
-  .dettaglio-pagamenti-back-button {
+  .det-pag-back-button {
     display: flex;
     align-items: center;
-    gap: 8px;
     background: none;
     border: none;
-    color: #6b7280;
     font-size: 14px;
+    color: #333;
     cursor: pointer;
-    padding: 0;
-    margin-bottom: 16px;
+    margin-top: px;
+    margin-bottom: 15px;
   }
   
-  .dp-back-button:hover {
+  .det-pag-back-button:hover {
     color: #374151;
   }
+
+
   
-  .dp-title {
+  .det-pag-title {
     font-size: 24px;
     font-weight: 600;
     color: #111827;
@@ -35,31 +36,31 @@
     margin-bottom: 8px;
   }
   
-  .dp-date {
+  .det-pag-date {
     color: #6b7280;
     font-size: 14px;
     margin: 0;
   }
   
-  .dp-payment-status-card {
+  .det-pag-payment-status-card {
     background-color: white;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .dp-status-header {
+  .det-pag-status-header {
     margin-bottom: 24px;
   }
   
-  .dp-status-header h2 {
+  .det-pag-status-header h2 {
     font-size: 18px;
     font-weight: 600;
     color: #111827;
     margin: 0 0 16px 0;
   }
   
-  .dp-total-info {
+  .det-pag-total-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -67,22 +68,22 @@
     font-size: 14px;
   }
   
-  .dp-total-amount {
+  .det-pag-total-amount {
     display: flex;
     align-items: center;
     gap: 8px;
   }
   
-  .dp-amount {
+  .det-pag-amount {
     font-weight: 600;
     color: #111827;
   }
   
-  .dp-payments-table {
+  .det-pag-payments-table {
     width: 100%;
   }
   
-  .dp-table-header {
+  .det-pag-table-header {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1.5fr 1.5fr;
     gap: 16px;
@@ -94,11 +95,11 @@
     font-size: 14px;
   }
   
-  .dp-table-body {
+  .det-pag-table-body {
     margin-top: 8px;
   }
   
-  .dp-table-row {
+  .det-pag-table-row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1.5fr 1.5fr;
     gap: 16px;
@@ -107,11 +108,11 @@
     align-items: center;
   }
   
-  .dp-table-row:last-child {
+  .det-pag-table-row:last-child {
     border-bottom: none;
   }
   
-  .dp-status-badge {
+  .det-pag-status-badge {
     display: inline-flex;
     padding: 4px 12px;
     border-radius: 9999px;
@@ -119,17 +120,17 @@
     font-weight: 500;
   }
   
-  .dp-status-badge.pending {
+  .det-pag-status-badge.pending {
     background-color: #fee2e2;
     color: #dc2626;
   }
   
-  .dp-status-badge.paid {
+  .det-pag-status-badge.paid {
     background-color: #f3f4f6;
     color: #374151;
   }
   
-  .dp-register-payment-button {
+  .det-pag-register-payment-button {
     background-color: #111827;
     color: white;
     border: none;
@@ -140,22 +141,22 @@
     transition: background-color 0.2s;
   }
   
-  .dp-register-payment-button:hover {
+  .det-pag-register-payment-button:hover {
     background-color: #1f2937;
   }
   
   @media (max-width: 768px) {
-    .dp-total-info {
+    .det-pag-total-info {
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
     }
   
-    .dp-table-header {
+    .det-pag-table-header {
       display: none;
     }
   
-    .dp-table-row {
+    .det-pag-table-row {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -163,57 +164,57 @@
       position: relative;
     }
   
-    .dp-col-participant {
+    .det-pag-col-participant {
       font-weight: 600;
       font-size: 16px;
     }
   
-    .dp-col-amount,
-    .dp-col-status,
-    .dp-col-date {
+    .det-pag-col-amount,
+    .det-pag-col-status,
+    .det-pag-col-date {
       display: flex;
       justify-content: space-between;
       width: 100%;
     }
   
-    .dp-col-amount::before {
+    .det-pag-col-amount::before {
       content: "Importo:";
       color: #6b7280;
     }
   
-    .dp-col-status::before {
+    .det-pag-col-status::before {
       content: "Stato:";
       color: #6b7280;
     }
   
-    .dp-col-date::before {
+    .det-pag-col-date::before {
       content: "Data pagamento:";
       color: #6b7280;
     }
   
-    .dp-col-actions {
+    .det-pag-col-actions {
       margin-top: 8px;
     }
   
-    .dp-register-payment-button {
+    .det-pag-register-payment-button {
       width: 100%;
     }
   }
   
   @media (max-width: 480px) {
-    .dp-container {
+    .det-pag-container {
       padding: 16px;
     }
   
-    .dp-payment-status-card {
+    .det-pag-payment-status-card {
       padding: 16px;
     }
   
-    .dp-title {
+    .det-pag-title {
       font-size: 20px;
     }
   
-    .dp-status-header h2 {
+    .det-pag-status-header h2 {
       font-size: 16px;
     }
   }
