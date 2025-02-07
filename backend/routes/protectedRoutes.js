@@ -1125,5 +1125,68 @@ router.get(
       });
     }
   );
+  router.post('/attivita-interna', authenticateJWT, upload.single('image'), (req, res) => {
+    const {
+      title,
+      description,
+      date,
+      time,
+      duration,
+      deadline,
+      minParticipants,
+      maxParticipants,
+      location,
+      instructor,
+    } = req.body;
+
+    const BACKEND_URL = process.env.BACKEND_URL;
+    const image = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
+    const createdBy = req.user.id; // ID dell'utente dal JWT
+  
+    const sql = `
+      INSERT INTO internal_activities (
+        titolo, descrizione, datainizio, orainizio, durata, scadenzaIscrizioni,
+        numeroMinimoPartecipanti, numeroMassimoPartecipanti, luogo, istruttore, immagine, createdBy
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+  
+    const params = [
+      title,
+      description,
+      date,
+      time,
+      duration,
+      deadline,
+      minParticipants,
+      maxParticipants,
+      location,
+      instructor,
+      image,
+      createdBy,
+    ];
+  
+    db.run(sql, params, function (err) {
+      if (err) {
+        console.error('❌ Errore durante la creazione dell\'attività:', err.message);
+        return res.status(500).json({ error: 'Errore durante la creazione dell\'attività.' });
+      }
+      res.status(201).json({ message: 'Attività creata con successo!', activityId: this.lastID });
+    });
+  });
+  router.get("/attivita-interna", async (req, res) => {
+    try {
+      // Se vuoi filtrare solo quelle future, puoi aggiungere clausole (es. WHERE datainizio >= CURRENT_DATE)
+      db.all("SELECT * FROM internal_activities", [], (err, rows) => {
+        if (err) {
+          console.error("Errore recupero attività interne:", err.message);
+          return res.status(500).json({ error: "Errore interno del server." });
+        }
+        return res.json({ activities: rows });
+      });
+    } catch (err) {
+      console.error("Errore generale:", err);
+      res.status(500).json({ error: "Errore interno del server." });
+    }
+  });
   
   module.exports = router;
