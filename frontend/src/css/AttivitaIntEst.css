@@ -53,13 +53,152 @@
      }
     }
   
+
+
+
+
+
+
+
   /* Stile del placeholder per le carte attività */
   .activity-card-placeholder {
-    background-color: #e0e0e0; /* Colore grigio chiaro per i placeholder */
-    border-radius: 0.5rem; /* Bordi arrotondati */
+    background-color: #f4f4f4;
+    border-radius: 1rem; /* Bordi arrotondati */
     height: 500px; /* Altezza fissa per i placeholder */ 
     width: auto; /* Larghezza automatica */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ccc; /* Bordo solido grigio chiaro */
+  }
+
+.image-card {
+  width: 100%;             /* Imposta la larghezza dell'immagine al 100% del suo contenitore */
+  height: 200px;
+  object-fit: cover;       /* Assicurati che l'immagine copra l'intero spazio senza deformarsi */
+  border-top-left-radius: 1rem; /* Bordo superiore sinistro a 1rem */
+  border-top-right-radius: 1rem; /* Bordo superiore destro a 1rem */
+  border-bottom-left-radius: 0;  /* Bordo inferiore sinistro a 0 */
+  border-bottom-right-radius: 0; /* Bordo inferiore destro a 0 */}
+
+.attivita-card-content {
+  padding: 20px;
+  flex-direction: column;
+  padding: 10px;
+  align-items: start;
 }
+
+.course-header{
+  margin-bottom: 7px;
+  overflow: hidden; /* Nasconde il testo in eccesso */
+}
+
+.course-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 0px 0;
+  color: #333;
+}
+
+.course-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+  margin-top: 0%;
+  line-height: 1.4; 
+  height: 39.19px;
+}
+
+.course-details {
+  margin-bottom: 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  border-bottom: 1px solid #eee;
+  gap:140px
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #666;
+  font-size: 14px;
+}
+
+.value {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap; /* Aggiungi questa riga per evitare che il testo vada a capo */
+}
+
+.deadline {
+  padding-top: 2px;
+  border-top: 1px solid #eee;
+}
+
+/* Quando la larghezza del viewport è inferiore a 700px*/
+@media (max-width: 700px) {
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2.5px 0;
+    border-bottom: 1px solid #eee;
+    gap:330px
+  }
+  .attivita-card-content {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .course-details{
+    margin-bottom: 7px;
+  }
+
+  }
+  @media (max-width: 684px) {
+    .course-details{
+      margin-bottom: 0;
+    }
+    .attivita-card-content{
+      padding-top: 3px;
+    }
+  }
+
+  @media (min-width: 916px) and (max-width: 1000px) {
+    .course-details {
+      margin-bottom: 12px;
+  }  }
+  
+
+
+.open-activity-btn {
+  width: 100%;
+  padding: 12px;
+  background: #0088cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.open-activity-btn:hover {
+  background: #006699;
+}
+
+
+
+
+
+
+
+
+
 
 
     /* Stile della carta attività */

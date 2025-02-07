@@ -285,6 +285,22 @@ select {
   .btn-yellow:hover {
     background-color: #e5b937;
   }
+
+  /* Pulsanti a destra */
+  .btn-red {
+    background-color: #f33e3e;
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn-red:hover {
+    background-color: #e5b937;
+  }
   
   /* Bottone Visualizza Disabilità */
   .view-disability {
@@ -324,6 +340,7 @@ select {
     .btn-green,
     .btn-gray,
     .btn-yellow,
+    .btn-red,
     .view-disability {
       width: 100%;
     }
@@ -395,8 +412,24 @@ select {
     cursor: pointer;
     transition: background 0.3s;
   }
+  .btn-red {
+    display: inline-block; /* Assicura che sia visibile */
+    background-color: #f33e3e;
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
   
   .btn-yellow:hover {
     background-color: #e5b937;
   }
+
+  .btn-red:hover {
+    background-color: rgb(201, 53, 53);
+  }
+
 
