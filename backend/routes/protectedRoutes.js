@@ -36,6 +36,7 @@ router.get('/admin', authenticateJWT, authorizeRole(3), (req, res) => {
   });
   */
 // 📌 API per ottenere tutti i pazienti
+
 // API GET unificata per il profilo
 router.get("/profilo", authenticateJWT, async (req, res) => {
   // Estrae l'ID e il ruolo dall'oggetto req.user, ottenuto dal token JWT
@@ -336,6 +337,7 @@ router.put("/profilo", authenticateJWT, upload.single("fotoProfilo"), async (req
     }
   });
 });
+
 router.delete(
     "/profilo/:id",
     authenticateJWT,

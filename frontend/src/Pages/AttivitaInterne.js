@@ -3,6 +3,8 @@ import { ArrowLeft, Search, Plus } from "lucide-react"
 import "../css/AttivitaIntEst.css"
 import NavbarDashboard from "../Components/NavbarDashboard"
 import ActivityBar from "../Components/ActivityBar";
+import AttivitaInterna from "../Components/AttivitaInterna";
+import AttivitaInternaTab from "../Components/AttivitaInternaTab";
 export default function AttivitaInterne() {
   return (
     <div className="attivita-interne">
@@ -13,17 +15,20 @@ export default function AttivitaInterne() {
         Qui troverai la lista delle attività interne del centro
       </p>
 
-      <div className="activities-grid">
+      {/*<div className="activities-grid">*/}
+
+        <AttivitaInternaTab />
+    
+
+       {/* <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
         <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        {/* Altri placeholder se necessario */}
-      </div>
+         Altri placeholder se necessario */}
+      {/*</div>*/}
       </header>
 
     </div>
