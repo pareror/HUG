@@ -191,7 +191,7 @@ const Profilo = () => {
     isTextInput ? { readOnly: !isEditing } : { disabled: !isEditing };
 
   return (
-    <div className="edit-patient-page">
+    <div className="create-patient-page">
       <NavbarDashboard />
 
       <div className="main-content">
