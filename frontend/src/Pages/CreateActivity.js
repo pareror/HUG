@@ -84,13 +84,14 @@ function CreateActivity() {
   
           <FormActions onSubmit={handleSubmit} onCancel={handleCancelClick} />
         </form>
-  
+  <div>
         <PopupAnnulla
           isOpen={isPopupOpen}
           onConfirm={handleConfirmCancel}
           onCancel={() => setIsPopupOpen(false)}
           redirectUrl="/dashboard/attivita/interna" // Modifica questa URL in base alla tua struttura di routing
-        />      
+        /> 
+        </div>     
       </div>
     )       //richiamo del componente con route specificata /dashboard/attivita/interna
   }

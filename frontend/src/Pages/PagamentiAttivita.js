@@ -59,51 +59,51 @@ export default function PagamentiAttivita() {
   )
 
   return (
-    <div className="pagamenti-main-content">
+    <div className="pag-main-content">
       <NavbarDashboard />
-      <div className="pagamenti-activities-list">
-        <button className="pagamenti-back-button" onClick={() => navigate(-1)}>
-          <ArrowLeft size={20} />
+      <div className="pag-activities-list">
+        <button className="pag-back-button" onClick={() => navigate(-1)}>
+          <ArrowLeft size={14} />
           Torna indietro
         </button>
 
-        <div className="pagamenti-container">
-          <div className="pagamenti-header">
+        <div className="pag-container">
+          <div className="pag-header">
             <h1>Pagamenti per Attività</h1>
-            <p className="pagamenti-subtitle">Qui troverai la lista dei pagamenti per attività</p>
+            <p className="pag-subtitle">Qui troverai la lista dei pagamenti per attività</p>
           </div>
 
-          <div className="pagamenti-search-container">
-            <div className="pagamenti-search-wrapper">
-              <Search className="pagamenti-search-icon" size={20} />
+          <div className="pag-search-container">
+            <div className="pag-search-wrapper">
+              <Search className="pag-search-icon" size={20} />
               <input
                 type="text"
                 placeholder="Cerca attività..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pagamenti-search-input"
+                className="pag-search-input"
               />
             </div>
           </div>
 
-          <div className="pagamenti-activities-list">
+          <div className="pag-activities-list">
             {filteredActivities.map((activity) => (
               <Link
                 key={activity.id}
                 to={`/dashboard/pagamenti/attivita/${activity.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <div className="pagamenti-activity-card">
-                  <div className="pagamenti-activity-info">
+                <div className="pag-activity-card">
+                  <div className="pag-activity-info">
                     <h2>{activity.name}</h2>
-                    <div className="pagamenti-activity-details">
+                    <div className="pag-activity-details">
                       <p>Data: {activity.date}</p>
                       <p>Partecipanti: {activity.participants}</p>
                     </div>
                   </div>
-                  <div className="pagamenti-activity-payment">
-                    <span className="pagamenti-amount">€{activity.amount.toFixed(2)}</span>
-                    <div className="pagamenti-pending-payments">{activity.pendingPayments} pagamenti in sospeso</div>
+                  <div className="pag-activity-payment">
+                    <span className="pag-amount">€{activity.amount.toFixed(2)}</span>
+                    <div className="pag-pending-payments">{activity.pendingPayments} pagamenti in sospeso</div>
                   </div>
                 </div>
               </Link>

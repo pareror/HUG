@@ -6,6 +6,24 @@ const multer = require('multer');
 const path = require('path');
 const db = require('../config/db');
 const fs = require("fs");
+const process = require("process");
+
+// Configurazione multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../uploads/");
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, "fotoProfilo-" + Date.now() + ext);
+  },
+});
+
+const upload = multer({ storage });
 /*
 // 📌 Esempio di API protetta accessibile solo con un JWT valido
 router.get('/protected-info', authenticateJWT, (req, res) => {
@@ -18,6 +36,306 @@ router.get('/admin', authenticateJWT, authorizeRole(3), (req, res) => {
   });
   */
 // 📌 API per ottenere tutti i pazienti
+// API GET unificata per il profilo
+router.get("/profilo", authenticateJWT, async (req, res) => {
+  // Estrae l'ID e il ruolo dall'oggetto req.user, ottenuto dal token JWT
+  const userId = req.user.id;
+  const role = req.user.role;
+  console.log(`📌 Recupero profilo per utente ID: ${userId}, ruolo: ${role}`);
+
+  let sql;
+  let params = [userId];
+
+  if (role === "paziente") {
+    // Campi per i pazienti (inclusi quelli delle disabilità)
+    sql = `
+      SELECT id, username, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzoResidenza,
+             codiceFiscale, genere, telefono, fotoProfilo, disabilita, disabilitaFisiche, 
+             disabilitaSensoriali, disabilitaPsichiche, assistenzaContinuativa, role
+      FROM profiles
+      WHERE id = ? AND role = 'paziente'
+    `;
+  } else if (role === "direttorecentro") {
+    // Campi per il centro/direttore (campi aziendali inclusi)
+    sql = `
+      SELECT id, username, comuneDiResidenza, indirizzoResidenza,
+             telefono, fotoProfilo, ragioneSociale, pIva, codiceSdi, indirizzo, emailPec, role
+      FROM profiles
+      WHERE id = ? AND role = 'direttorecentro'
+    `;
+  } else if (role === "caregiver") {
+    // Campi base per i caregiver (modifica se necessario)
+    sql = `
+      SELECT id, username, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzoResidenza,
+             codiceFiscale, genere, telefono, fotoProfilo, role
+      FROM profiles
+      WHERE id = ? AND role = 'caregiver'
+    `;
+  } else {
+    // Per altri ruoli, puoi scegliere di restituire tutti i campi
+    sql = `SELECT * FROM profiles WHERE id = ? AND role = ?`;
+    params.push(role);
+  }
+
+  db.get(sql, params, (err, profile) => {
+    if (err) {
+      console.error("❌ Errore SQL nel recupero del profilo:", err.message);
+      return res.status(500).json({ error: "Errore nel recupero del profilo." });
+    }
+
+    if (!profile) {
+      console.error("❌ Profilo non trovato per ID:", userId);
+      return res.status(404).json({ error: "Profilo non trovato." });
+    }
+
+    // Se il campo fotoProfilo è relativo, lo prefissa con il BACKEND_URL
+    const backendUrl = process.env.BACKEND_URL || "http://localhost:5000";
+    if (profile.fotoProfilo && profile.fotoProfilo.startsWith("/uploads")) {
+      profile.fotoProfilo = backendUrl + profile.fotoProfilo;
+    }
+
+    // Se il profilo è di un paziente, recupera anche i contatti di emergenza
+    if (role === "paziente") {
+      db.all(
+        `SELECT ec.id, ec.nome, ec.cognome, ec.telefono, ec.relazione
+         FROM emergency_contacts ec
+         INNER JOIN patient_emergency_contacts pec ON ec.id = pec.contactId
+         WHERE pec.patientId = ?`,
+        [userId],
+        (err, emergencyContacts) => {
+          if (err) {
+            console.error("❌ Errore SQL nel recupero dei contatti di emergenza:", err.message);
+            return res.status(500).json({ error: "Errore nel recupero dei contatti di emergenza." });
+          }
+          profile.emergencyContacts = emergencyContacts;
+          return res.json({ profile });
+        }
+      );
+    } else {
+      console.log("✅ Profilo trovato:", profile);
+      return res.json({ profile });
+    }
+  });
+});
+// PUT /api/profilo (aggiorna il profilo dell'utente)
+router.put("/profilo", authenticateJWT, upload.single("fotoProfilo"), async (req, res) => {
+  const userId = req.user.id;
+  const role = req.user.role;
+
+  console.log(`📌 Richiesta di aggiornamento profilo per utente ID: ${userId}, ruolo: ${role}`);
+
+  // Esempio: estrai i campi dal body
+  // (Se stai usando FormData, i campi sono in req.body, la foto in req.file)
+  const {
+    // Campi comuni
+    username,
+    nome,
+    cognome,
+    dataNascita,
+    comuneDiResidenza,
+    indirizzoResidenza,
+    codiceFiscale,
+    genere,
+    telefono,
+    email,
+    // Campi paziente
+    disabilita,
+    disabilitaFisiche,
+    disabilitaSensoriali,
+    disabilitaPsichiche,
+    assistenzaContinuativa,
+    // Campi direttorecentro
+    ragioneSociale,
+    pIva,
+    codiceSdi,
+    indirizzo,
+    emailPec,
+    // Altri eventuali campi
+    emergencyContacts, // stringa JSON per i contatti emergenza se paziente
+  } = req.body;
+
+  // Gestione foto (se caricata)
+  let fotoProfiloPath = null;
+  if (req.file) {
+    // Se abbiamo caricato un file nuovo
+    fotoProfiloPath = "/uploads/" + req.file.filename;
+  }
+
+  // Costruisci la query e i parametri in base al ruolo
+  let updateQuery = "";
+  let params = [];
+  
+  if (role === "paziente") {
+    // Aggiorniamo i campi tipici del paziente
+    // Se non vuoi fare un "partial update", puoi costruire dinamicamente la query
+    // o usare un set fisso. Esempio di set fisso:
+    updateQuery = `
+      UPDATE profiles
+      SET
+        username = ?,
+        nome = ?,
+        cognome = ?,
+        email = ?,
+        dataNascita = ?,
+        comuneDiResidenza = ?,
+        indirizzoResidenza = ?,
+        codiceFiscale = ?,
+        genere = ?,
+        telefono = ?,
+        fotoProfilo = COALESCE(?, fotoProfilo),
+        disabilita = ?,
+        disabilitaFisiche = ?,
+        disabilitaSensoriali = ?,
+        disabilitaPsichiche = ?,
+        assistenzaContinuativa = ?
+      WHERE id = ? AND role = 'paziente'
+    `;
+
+    params = [
+      username || "",
+      nome || "",
+      cognome || "",
+      email || "",
+      dataNascita || "",
+      comuneDiResidenza || "",
+      indirizzoResidenza || "",
+      codiceFiscale || "",
+      genere || "",
+      telefono || "",
+      fotoProfiloPath, // Se null, resta invariato (COALESCE)
+      disabilita === "true" ? 1 : 0,
+      disabilitaFisiche || "0",
+      disabilitaSensoriali || "0",
+      disabilitaPsichiche || "0",
+      assistenzaContinuativa === "true" ? 1 : 0,
+      userId,
+    ];
+  } else if (role === "direttorecentro") {
+    // Aggiorniamo i campi tipici del direttore
+    updateQuery = `
+      UPDATE profiles
+      SET
+        username = ?,
+        comuneDiResidenza = ?,
+        indirizzoResidenza = ?,
+        telefono = ?,
+        fotoProfilo = COALESCE(?, fotoProfilo),
+        ragioneSociale = ?,
+        pIva = ?,
+        codiceSdi = ?,
+        indirizzo = ?,
+        emailPec = ?
+      WHERE id = ? AND role = 'direttorecentro'
+    `;
+    params = [
+      username || "",
+      comuneDiResidenza || "",
+      indirizzoResidenza || "",
+      telefono || "",
+      fotoProfiloPath,
+      ragioneSociale || "",
+      pIva || "",
+      codiceSdi || "",
+      indirizzo || "",
+      emailPec || "",
+      userId,
+    ];
+  } else if (role === "caregiver") {
+    // Campi base per i caregiver
+    updateQuery = `
+      UPDATE profiles
+      SET
+        username = ?,
+        nome = ?,
+        cognome = ?,
+        email = ?,
+        dataNascita = ?,
+        comuneDiResidenza = ?,
+        indirizzoResidenza = ?,
+        codiceFiscale = ?,
+        genere = ?,
+        telefono = ?,
+        fotoProfilo = COALESCE(?, fotoProfilo)
+      WHERE id = ? AND role = 'caregiver'
+    `;
+    params = [
+      username || "",
+      nome || "",
+      cognome || "",
+      email || "",
+      dataNascita || "",
+      comuneDiResidenza || "",
+      indirizzoResidenza || "",
+      codiceFiscale || "",
+      genere || "",
+      telefono || "",
+      fotoProfiloPath,
+      userId,
+    ];
+  } else {
+    // Altri ruoli => decidi tu come gestirli
+    return res.status(403).json({ error: "Aggiornamento non previsto per questo ruolo." });
+  }
+
+  // Esegui la query di UPDATE
+  db.run(updateQuery, params, function (err) {
+    if (err) {
+      console.error("❌ Errore SQL nell'aggiornamento del profilo:", err.message);
+      return res.status(500).json({ error: "Errore durante l'aggiornamento del profilo." });
+    }
+    console.log("✅ Profilo aggiornato con successo (ruolo:", role, ", ID:", userId, ").");
+
+    // Se l'utente è un paziente e ha inviato emergencyContacts, aggiorniamo la tabella
+    if (role === "paziente" && emergencyContacts) {
+      try {
+        const contactsArray = JSON.parse(emergencyContacts); // stringa JSON
+        // Cancella le relazioni precedenti
+        db.run(
+          `DELETE FROM patient_emergency_contacts WHERE patientId = ?`,
+          [userId],
+          (delErr) => {
+            if (delErr) {
+              console.error("❌ Errore eliminando contatti emergenza:", delErr.message);
+              return res.status(500).json({ error: "Errore aggiornando i contatti di emergenza." });
+            }
+            // Per ogni contatto, inseriamo nella tabella emergency_contacts (se non esiste) e creiamo la relazione
+            const insertEC = db.prepare(
+              `INSERT INTO emergency_contacts (nome, cognome, telefono, relazione) VALUES (?, ?, ?, ?)`
+            );
+            const linkEC = db.prepare(
+              `INSERT INTO patient_emergency_contacts (patientId, contactId) VALUES (?, ?)`
+            );
+
+            // Per semplicità, qui creiamo SEMPRE nuovi contatti (non facciamo match su esistenti)
+            contactsArray.forEach((c) => {
+              insertEC.run([c.nome, c.cognome, c.telefono, c.relazione], function (insErr) {
+                if (insErr) {
+                  console.error("❌ Errore inserendo contatto emergenza:", insErr.message);
+                  // Non facciamo return qui per proseguire con i successivi
+                } else {
+                  const newContactId = this.lastID;
+                  linkEC.run([userId, newContactId]);
+                }
+              });
+            });
+
+            insertEC.finalize();
+            linkEC.finalize();
+
+            console.log("✅ Contatti di emergenza aggiornati con successo per paziente ID:", userId);
+            return res.json({ message: "Profilo e contatti di emergenza aggiornati con successo!" });
+          }
+        );
+      } catch (parseError) {
+        console.error("❌ Errore parsing contatti emergenza:", parseError);
+        return res.status(400).json({ error: "Formato contatti di emergenza non valido." });
+      }
+    } else {
+      // Se non è paziente o non abbiamo contatti di emergenza, fine
+      return res.json({ message: "Profilo aggiornato con successo!" });
+    }
+  });
+});
 router.delete(
     "/profilo/:id",
     authenticateJWT,
@@ -71,22 +389,7 @@ router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
     });
 });
 
-// Configurazione multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      const uploadPath = path.join(__dirname, "../uploads/");
-      if (!fs.existsSync(uploadPath)) {
-        fs.mkdirSync(uploadPath, { recursive: true });
-      }
-      cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, "fotoProfilo-" + Date.now() + ext);
-    },
-  });
-  
-  const upload = multer({ storage });
+
   
 // 📌 Funzione per generare username univoco con Promise
 const generateUniqueUsername = (nome, cognome) => {
