@@ -3,8 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function ActivityCard({ name, activitiesCount, totalAmount, amountToPay}) {
   const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate("/dashboard/pagamenti/paziente/paziente");
+  };
+
   return (
-    <div className="activity-card">
+    <div className="activity-card" onClick={handleCardClick}>
       <div className="card-content">
         <div className="user-info">
           <h3 className="user-name">{name}</h3>
