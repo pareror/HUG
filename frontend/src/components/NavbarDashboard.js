@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  Bell,
   ChevronDown,
   ChevronUp,
   User,
@@ -13,11 +12,43 @@ import {
 import "../css/NavbarDashboard.css";
 import LogoutButton from "./LogoutButton";
 import NotificationDropdown from "./NotificationDropdown";
+import axios from "axios";
+
 
 const NavbarDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-
+  const [profileInfo, setProfileInfo] = useState({
+    username: "",
+    email: "",
+    role: "",
+    emailPec: "",
+  });
+   // Caricamento info dal backend
+   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/profilo", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+        if (response.data.profile) {
+          const p = response.data.profile;
+          setProfileInfo({
+            // A seconda di come si chiama nel DB
+            username: p.username || "",
+            email: p.email || "",
+            role: p.role || "",
+            emailPec: p.emailPec || "", // Se esiste
+          });
+        }
+      } catch (err) {
+        console.error("Errore nel caricamento del profilo:", err);
+      }
+    };
+    fetchProfile();
+  }, []);
   // Apertura/chiusura menu mobile
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -221,9 +252,20 @@ const NavbarDashboard = () => {
               activeDropdown === "profilo" ? "show" : ""
             }`}
           >
-            <div className="profile-info">
-              <strong>Korian</strong>
-              <p>korian.centro@example.com</p>
+          <div className="profile-info">
+              {/* Username */}
+              <strong>{profileInfo.username}</strong>
+              {/* Email */}
+              {profileInfo.email && <p>{profileInfo.email}</p>}
+              
+              {/* emailPec (solo se utente è “azienda”/centro/ente/touroperator) */}
+              {/* Decide la condizione di controllo: */}
+              {(profileInfo.role === "direttorecentro" ||
+                profileInfo.role === "touroperator" ||
+                profileInfo.role === "enteesterno") &&
+                profileInfo.emailPec && (
+                  <p>Email: {profileInfo.emailPec}</p>
+                )}
             </div>
             <hr />
             <Link to="/dashboard/profilo" onClick={handleLinkClick}>
