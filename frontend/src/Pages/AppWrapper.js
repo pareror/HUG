@@ -24,6 +24,7 @@ import PagamentiPaziente from './PagamentiPaziente';
 import CreateCaregiver from './CreateCaregiver';
 import EditCaregiver from './EditCaregiver';
 import CambioPassword from '../Components/ChangePasswordModal';
+import PaginaDettaglioAttivita from './PaginaDettaglioAttivita';
 
 const Website = () => {
     return ( 
@@ -165,6 +166,13 @@ const Website = () => {
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <PagamentiPaziente />
                 </ProtectedRoute>
+                 }
+                 />
+
+        <Route path="/dashboard/attivita/interna/dettaglio" element={
+                
+                <PaginaDettaglioAttivita />
+             
                  }
                  />
 
