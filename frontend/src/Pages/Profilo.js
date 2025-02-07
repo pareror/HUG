@@ -183,15 +183,19 @@ const Profilo = () => {
     setIsEditing(false);
   };
 
-  // Eliminazione profilo
   const handleDeleteProfile = async () => {
     try {
-      await axios.delete("http://localhost:5000/api/profilo", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("jwt")}` },
+      // Assumiamo che `profileData.id` contenga l'ID dell'utente
+      await axios.delete(`http://localhost:5000/api/profilo/${profileData.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
       });
+      localStorage.removeItem("jwt");
       setShowConfirmDelete(false);
       setShowDeleteSuccessPopup(true);
-      setTimeout(() => navigate("/dashboard/utenza/pazienti"), 2000);
+      // Reindirizziamo dopo 2 secondi
+      setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       setError(err.response?.data?.error || "Errore durante l'eliminazione del profilo.");
       console.error(err);
