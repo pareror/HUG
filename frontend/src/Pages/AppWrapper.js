@@ -23,7 +23,6 @@ import DettaglioPagamenti from './DettaglioPagamenti';
 import PagamentiPaziente from './PagamentiPaziente';
 import CreateCaregiver from './CreateCaregiver';
 import EditCaregiver from './EditCaregiver';
-import CambioPassword from '../Components/ChangePasswordModal';
 
 const Website = () => {
     return ( 

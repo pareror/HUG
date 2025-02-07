@@ -89,12 +89,41 @@ const createPatientEmergencyContactsTable = () => {
   );
 };
 
+const createInternalActivitiesTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS internal_activities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      titolo TEXT NOT NULL,
+      descrizione TEXT,
+      datainizio DATE NOT NULL,
+      orainizio TEXT NOT NULL,
+      durata INTEGER, -- Durata in minuti
+      scadenzaIscrizioni DATE,
+      numeroMinimoPartecipanti INTEGER,
+      numeroMassimoPartecipanti INTEGER,
+      luogo TEXT,
+      istruttore TEXT,
+      immagine TEXT, -- Path dell'immagine (es. /uploads/activity.jpg)
+      
+      createdBy INTEGER, -- Chiave esterna verso la tabella 'profiles'
+      FOREIGN KEY (createdBy) REFERENCES profiles(id) ON DELETE CASCADE
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'internal_activities':", err.message);
+      } else {
+        console.log("✅ Tabella 'internal_activities' creata con successo.");
+      }
+    }
+  );
+};
 // Funzione principale per inizializzare il database
 const initializeDatabase = () => {
   console.log("🔄 Inizializzazione del database...");
   createProfilesTable();
   createEmergencyContactsTable();
   createPatientEmergencyContactsTable();
+  createInternalActivitiesTable();
 };
 
 initializeDatabase();
