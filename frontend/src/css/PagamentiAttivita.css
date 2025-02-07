@@ -1,15 +1,10 @@
-.pagamenti-attivita {
-    min-height: 100vh;
-    background-color: #f8f9fa;
-  }
-  
-  .pagamenti-main-content {
+ .pag-main-content {
     padding: 20px;
     max-width: 1200px 0 auto;
     margin: 0 auto;
   }
   
-  .pagamenti-back-button {
+  .pag-back-button {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -19,25 +14,26 @@
     font-size: 14px;
     cursor: pointer;
     padding: 0;
-    margin-bottom: 1%;
+    margin-top:1%;
   }
+
   
-  .pagamenti-back-button:hover {
+  .pag-back-button:hover {
     color: #374151;
   }
   
-  .pagamenti-container {
+  .pag-container {
     background-color: white;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   
-  .pagamenti-header {
+  .pag-header {
     margin-bottom: 24px;
   }
   
-  .pagamenti-header h1 {
+  .pag-header h1 {
     font-size: 24px;
     font-weight: 600;
     color: #111827;
@@ -46,22 +42,22 @@
     margin-bottom: 8px;
   }
   
-  .pagamenti-subtitle {
+  .pag-subtitle {
     color: #6b7280;
     font-size: 14px;
     margin: 0;
   }
   
-  .pagamenti-search-container {
+  .pag-search-container {
     margin-bottom: 24px;
   }
   
-  .pagamenti-search-wrapper {
+  .pag-search-wrapper {
     position: relative;
     max-width: 400px;
   }
   
-  .pagamenti-search-icon {
+  .pag-search-icon {
     position: absolute;
     left: 12px;
     top: 50%;
@@ -69,7 +65,7 @@
     color: #6b7280;
   }
   
-  .pagamenti-search-input {
+  .pag-search-input {
     width: 100%;
     padding: 10px 12px 10px 40px;
     border: 1px solid #e5e7eb;
@@ -80,11 +76,11 @@
     background-color: white;
   }
   
-  .pagamenti-search-input:focus {
+  .pag-search-input:focus {
     border-color: #3b82f6;
   }
   
-  .pagamenti-activities-list {
+  .pag-activities-list {
     display: flex;
     flex-direction: column;
 
@@ -94,7 +90,7 @@
     /* overflow-y: non deve essere impostato qui */
   }
   
-  .pagamenti-activity-card {
+  .pag-activity-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -105,12 +101,12 @@
     transition: transform 0.2s, box-shadow 0.2s;
   }
   
-  .pagamenti-activity-card:hover {
+  .pag-activity-card:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
   
-  .pagamenti-activity-info h2 {
+  .pag-activity-info h2 {
     font-size: 16px;
     font-weight: 600;
     color: #111827;
@@ -118,31 +114,31 @@
     margin-bottom: 8px;
   }
   
-  .pagamenti-activity-details {
+  .pag-activity-details {
     display: flex;
     gap: 16px;
   }
   
-  .pagamenti-activity-details p {
+  .pag-activity-details p {
     font-size: 14px;
     color: #6b7280;
     margin: 0;
   }
   
-  .pagamenti-activity-payment {
+  .pag-activity-payment {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
   }
   
-  .pagamenti-amount {
+  .pag-amount {
     font-size: 18px;
     font-weight: 600;
     color: #111827;
   }
   
-  .pagamenti-pending-payments {
+  .pag-pending-payments {
     background-color: #ef4444;
     color: white;
     padding: 4px 8px;
@@ -152,28 +148,28 @@
   }
   
   @media (max-width: 640px) {
-    .pagamenti-main-content {
+    .pag-main-content {
       padding: 16px;
     }
   
-    .pagamenti-container {
+    .pag-container {
       padding: 16px;
     }
   
-    .pagamenti-activity-card {
+    .pag-activity-card {
       flex-direction: column;
       align-items: flex-start;
       gap: 12px;
     }
   
-    .pagamenti-activity-payment {
+    .pag-activity-payment {
       width: 100%;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
     }
   
-    .pagamenti-activity-details {
+    .pag-activity-details {
       flex-direction: column;
       gap: 4px;
     }

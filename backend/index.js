@@ -2,7 +2,6 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');           // <--- import
 const { initializeDatabase } = require('./config/dbSetup');
-
 const publicRoutes = require('./routes/publicRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -31,6 +30,9 @@ app.use('/api', authRoutes);
 
 // ✅ Route protette (richiedono JWT)
 app.use('/api', protectedRoutes);
+
+// esponi la cartella uploads
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
