@@ -2,7 +2,9 @@ import React from "react";
 import "../css/AttivitaIntEst.css"
 import NavbarDashboard from "../Components/NavbarDashboard"
 import ActivityBar from "../Components/ActivityBar";
-export default function AttivitaInterne() {
+import AttivitaEsternaTab from "../Components/AttivitaEsternaTab";
+
+export default function AttivitaEsterne() {
   return (
     <div className="attivita-interne">
       <NavbarDashboard />
@@ -12,15 +14,7 @@ export default function AttivitaInterne() {
         Qui troverai la lista delle attività esterne del centro
       </p>
 
-      <div className="activities-grid">
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        {/* Altri placeholder se necessario */}
-      </div>
+      <AttivitaEsternaTab />
       </header>
 
     </div>

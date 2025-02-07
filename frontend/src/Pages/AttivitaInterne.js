@@ -15,20 +15,8 @@ export default function AttivitaInterne() {
         Qui troverai la lista delle attività interne del centro
       </p>
 
-      {/*<div className="activities-grid">*/}
-
         <AttivitaInternaTab />
-    
-
-       {/* <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-        <div className="activity-card-placeholder" />
-         Altri placeholder se necessario */}
-      {/*</div>*/}
+        
       </header>
 
     </div>
