@@ -1,21 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
 import "../css/Impostazioni.css";
 import Impostazione from "../Components/Impostazione";
+import ChangePasswordModal from "../Components/ChangePasswordModal"; // Import del popup
 
 export default function ImpostazioniTab() {
   const navigate = useNavigate();
+  const [showPasswordModal, setShowPasswordModal] = useState(false); // Stato per mostrare il popup
 
-  // Recupera l'ID dal JWT (se presente)
+  // Recupera l'ID dal JWT
   let userId = null;
   try {
     const token = localStorage.getItem("jwt");
     if (token) {
       const decoded = jwtDecode(token);
-      // Assumi che l'ID sia in decoded.id (dipende da come generi il JWT)
       userId = decoded.id;
     }
   } catch (error) {
@@ -25,20 +25,16 @@ export default function ImpostazioniTab() {
   // Funzione per eliminare l'account
   const handleDeleteAccount = async () => {
     if (!window.confirm("Sei sicuro di voler eliminare definitivamente il tuo account?")) {
-      return; // se l'utente annulla, interrompi
+      return;
     }
     try {
-      // Inviamo la richiesta di DELETE con l'ID estratto
       await axios.delete(`http://localhost:5000/api/profilo/${userId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
       });
 
-      // Rimuoviamo il token JWT dal localStorage (logout)
       localStorage.removeItem("jwt");
-
-      // Reindirizziamo l'utente (ad esempio alla homepage o al login)
       alert("Account eliminato con successo!");
       navigate("/");
     } catch (err) {
@@ -47,7 +43,6 @@ export default function ImpostazioniTab() {
     }
   };
 
-  // Lista di impostazioni
   const settings = [
     {
       id: 1,
@@ -55,7 +50,7 @@ export default function ImpostazioniTab() {
       descrizione: "Aggiorna la tua password per mantenere al sicuro il tuo account",
       bottoneText: "Cambia Password",
       bottoneClass: "blue-button",
-      onClick: () => navigate("/cambia-password") 
+      onClick: () => setShowPasswordModal(true), // Mostra il popup
     },
     {
       id: 2,
@@ -63,7 +58,7 @@ export default function ImpostazioniTab() {
       descrizione: "Attiva o disattiva la ricezione di notifiche",
       isToggle: true,
       onClick: (toggle) =>
-        alert(toggle ? "Notifiche disattivate!" : "Notifiche attivate!")
+        alert(toggle ? "Notifiche disattivate!" : "Notifiche attivate!"),
     },
     {
       id: 3,
@@ -71,7 +66,7 @@ export default function ImpostazioniTab() {
       descrizione: "Elimina permanentemente il tuo account e tutti i dati associati",
       bottoneText: "Elimina Account",
       bottoneClass: "red-button",
-      onClick: handleDeleteAccount, 
+      onClick: handleDeleteAccount,
     },
   ];
 
@@ -91,6 +86,11 @@ export default function ImpostazioniTab() {
           />
         ))}
       </div>
+
+      {/* Popup per il cambio password */}
+      {showPasswordModal && (
+        <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+      )}
     </div>
   );
 }
