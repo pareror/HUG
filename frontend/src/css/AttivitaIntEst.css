@@ -68,6 +68,7 @@
     width: auto; /* Larghezza automatica */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 2px solid #ccc; /* Bordo solido grigio chiaro */
+    max-width: 100%;
   }
 
 .image-card {
@@ -89,6 +90,7 @@
 .course-header{
   margin-bottom: 7px;
   overflow: hidden; /* Nasconde il testo in eccesso */
+  max-width: 311.27px;
 }
 
 .course-title {
@@ -96,6 +98,9 @@
   font-weight: bold;
   margin: 0 0 0px 0;
   color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .course-description {
@@ -158,6 +163,10 @@
     margin-bottom: 7px;
   }
 
+  .course-header{
+    max-width: 100%;
+  }
+
   }
   @media (max-width: 684px) {
     .course-details{
@@ -171,6 +180,11 @@
   @media (min-width: 916px) and (max-width: 1000px) {
     .course-details {
       margin-bottom: 12px;
+  }  }
+
+  @media (min-width: 830px) and (max-width: 1000px) {
+    .course-header {
+      max-width: 100%;
   }  }
   
 
