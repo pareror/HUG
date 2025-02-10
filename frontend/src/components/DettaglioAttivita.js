@@ -1,15 +1,27 @@
+import React, { useState } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, User2 } from "lucide-react";
 import axios from "axios";
 import "../css/DettaglioAttivita.css";
-
-function DettaglioAttivita() {
-  const { id } = useParams(); // Prendi l'ID dall'URL
+import { useNavigate } from "react-router-dom";
+import GestisciUtenzaModal from "./GestisciUtenzaModal";
+function DettaglioAttivita({
+  title,
+  date,
+  startTime,
+  duration,
+  location,
+  participants,
+  minParticipants,
+  maxParticipants,
+  instructor,
+  registrationDeadline,
+  description,
+  image
+}) {
   const navigate = useNavigate();
-  const [activity, setActivity] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchActivity = async () => {
@@ -123,10 +135,11 @@ function DettaglioAttivita() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary" onClick={handleModifyActivity}>
-          Modifica Attività
-        </button>
-        <button className="button button-secondary">Gestisci Utenza</button>
+        <button className="button button-primary">Modifica Attività</button>
+        <button className="button button-secondary" onClick={() => setShowModal(true)}>Gestisci Utenza</button>
+        {showModal && (
+        <GestisciUtenzaModal onClose={() => setShowModal(false)} />
+      )}
       </div>
     </div>
   );
