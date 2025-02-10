@@ -1173,12 +1173,6 @@ router.get("/paziente/:id",
 });
 router.get("/attivita-interna", authenticateJWT, (req, res) => {
   const centerId = req.user.id; // ID del centro dal JWT
-  const userRole = req.user.role;
-
-  // ✅ Verifica che solo i direttori di centro possano visualizzare le attività
-  if (userRole !== "direttorecentro") {
-    return res.status(403).json({ error: "Non sei autorizzato a visualizzare queste attività." });
-  }
 
   // 🔽 Ordinamento decrescente per data (e ora)
   const sql = `
@@ -1194,6 +1188,30 @@ router.get("/attivita-interna", authenticateJWT, (req, res) => {
       return res.status(500).json({ error: "Errore interno del server." });
     }
     return res.json({ activities: rows });
+  });
+});
+
+router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
+  const centerId = req.user.id; // ID del centro dal JWT
+  const activityId = req.params.id; // ID dell'attività dall'URL
+
+  const sql = `
+    SELECT * 
+    FROM internal_activities 
+    WHERE id = ? AND createdBy = ?
+  `;
+
+  db.get(sql, [activityId, centerId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore nel recupero dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
+    }
+
+    return res.json({ activity: row });
   });
 });
 
