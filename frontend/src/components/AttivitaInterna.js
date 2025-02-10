@@ -26,15 +26,17 @@ const AttivitaInterna = ({
   scadenzaIscrizioni,
   numeroMinimoPartecipanti,
   numeroMassimoPartecipanti,
+  numeroIscritti,
   luogo,
   istruttore
 }) => {
   const orarioFine = calcolaOrarioFine(orarioInizio, durata);
-
   const navigate = useNavigate();
+
   const handleOpenActivity = () => {
     navigate(`/dashboard/attivita/interna/${id}`);
   };
+
   return (
     <div className="activity-card-placeholder">
       <img src={image} alt="Attività" className="image-card" />
@@ -68,7 +70,7 @@ const AttivitaInterna = ({
 
           <div className="detail-row">
             <span className="label">Iscritti:</span>
-            <span className="value"><strong>5</strong></span>
+            <span className="value"><strong>{numeroIscritti}</strong></span> {/* ✅ Mostra il numero reale */}
           </div>
 
           <div className="detail-row">
@@ -87,7 +89,6 @@ const AttivitaInterna = ({
           </div>
         </div>
 
-        {/* Pulsante per aprire l'attività specifica */}
         <button className="open-activity-btn" onClick={handleOpenActivity}>
           Apri Attività
         </button>
@@ -95,5 +96,6 @@ const AttivitaInterna = ({
     </div>
   );
 };
+
 
 export default AttivitaInterna;
