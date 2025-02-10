@@ -1,14 +1,16 @@
 import React from 'react';
 import "../css/AttivitaIntEst.css";
 
-// Funzione per calcolare l'orario di fine attività
 const calcolaOrarioFine = (orarioInizio, durata) => {
   const [ore, minuti] = orarioInizio.split(':').map(Number);
   const fine = new Date();
   fine.setHours(ore);
-  fine.setMinutes(minuti + parseInt(durata));
+  fine.setMinutes(minuti);
   
-  const orarioFine = fine.toTimeString().slice(0, 5);
+  // Aggiungi la durata in ore
+  fine.setHours(fine.getHours() + parseInt(durata));
+
+  const orarioFine = fine.toTimeString().slice(0, 5); // Restituisce l'orario nel formato HH:MM
   return orarioFine;
 };
 
@@ -40,37 +42,37 @@ const AttivitaInterna = ({
         <div className="course-details">
           <div className="detail-row">
             <span className="label">Data:</span>
-            <span className="value">{data}</span>
+            <span className="value"><strong>{data}</strong></span>
           </div>
 
           <div className="detail-row">
             <span className="label">Orario:</span>
-            <span className="value">{orarioInizio} - {orarioFine}</span>
+            <span className="value"><strong>{orarioInizio} - {orarioFine}</strong></span>
           </div>
 
           <div className="detail-row">
             <span className="label">Durata:</span>
-            <span className="value">{durata}h</span>
+            <span className="value"><strong>{durata}h</strong></span>
           </div>
 
           <div className="detail-row">
             <span className="label">Luogo:</span>
-            <span className="value">{luogo}</span>
+            <span className="value"><strong>{luogo}</strong></span>
           </div>
 
           <div className="detail-row">
             <span className="label">Partecipanti:</span>
-            <span className="value">{numeroMinimoPartecipanti} / {numeroMassimoPartecipanti}</span>
+            <span className="value"><strong>{numeroMinimoPartecipanti} / {numeroMassimoPartecipanti}</strong></span>
           </div>
 
           <div className="detail-row">
             <span className="label">Istruttore:</span>
-            <span className="value">{istruttore}</span>
+            <span className="value"><strong>{istruttore}</strong></span>
           </div>
 
           <div className="detail-row deadline">
             <span className="label">Scadenza Iscrizioni:</span>
-            <span className="value">{scadenzaIscrizioni}</span>
+            <span className="value"><strong>{scadenzaIscrizioni}</strong></span>
           </div>
         </div>
 
