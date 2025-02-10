@@ -1,7 +1,8 @@
+import React, { useState } from "react";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, User2 } from "lucide-react";
 import "../css/DettaglioAttivita.css";
 import { useNavigate } from "react-router-dom";
-
+import GestisciUtenzaModal from "./GestisciUtenzaModal";
 function DettaglioAttivita({
   title,
   date,
@@ -17,6 +18,7 @@ function DettaglioAttivita({
   image
 }) {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="activity-detail">
@@ -109,7 +111,10 @@ function DettaglioAttivita({
 
       <div className="button-container">
         <button className="button button-primary">Modifica Attività</button>
-        <button className="button button-secondary">Gestisci Utenza</button>
+        <button className="button button-secondary" onClick={() => setShowModal(true)}>Gestisci Utenza</button>
+        {showModal && (
+        <GestisciUtenzaModal onClose={() => setShowModal(false)} />
+      )}
       </div>
     </div>
   );
