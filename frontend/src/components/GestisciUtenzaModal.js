@@ -111,9 +111,9 @@ const GestisciUtenzaModal = ({ onClose }) => {
                 </span>
                 <button
                     type="button"
-                    className={user.added ? "btn-red" : "btn-green"} // Uso condizionale della classe
+                    className={user.added ? "sub-btn-red" : "sub-btn-green"} // Uso condizionale della classe
                     onClick={() => handleToggleUser(user.id)}
-                    style={{ maxWidth: "100px", marginLeft: "1rem" /* Aggiunto */ }}
+                    style={{ maxWidth: "100px",  marginLeft: "1rem" /* Aggiunto */ }}
                 >
                     {user.added ? "Rimuovi" : "Aggiungi"}
                 </button>
@@ -122,7 +122,7 @@ const GestisciUtenzaModal = ({ onClose }) => {
             ))
           )}
         </div>
-      </div>
+       </div>
     </div>
   );
 };
