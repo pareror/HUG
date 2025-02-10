@@ -1142,7 +1142,13 @@ router.get(
     const BACKEND_URL = process.env.BACKEND_URL;
     const image = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
     const createdBy = req.user.id; // ID dell'utente dal JWT
-  
+    const userRole = req.user.role; // Ruolo dell'utente dal JWT
+
+    // ✅ Verifica che solo i direttori di centro possano creare attività
+    if (userRole !== "direttorecentro") {
+        return res.status(403).json({ error: "Non sei autorizzato a creare attività interne." });
+    }
+
     const sql = `
       INSERT INTO internal_activities (
         titolo, descrizione, datainizio, orainizio, durata, scadenzaIscrizioni,
@@ -1172,21 +1178,33 @@ router.get(
       }
       res.status(201).json({ message: 'Attività creata con successo!', activityId: this.lastID });
     });
-  });
-  router.get("/attivita-interna", async (req, res) => {
-    try {
-      // Se vuoi filtrare solo quelle future, puoi aggiungere clausole (es. WHERE datainizio >= CURRENT_DATE)
-      db.all("SELECT * FROM internal_activities", [], (err, rows) => {
-        if (err) {
-          console.error("Errore recupero attività interne:", err.message);
-          return res.status(500).json({ error: "Errore interno del server." });
-        }
-        return res.json({ activities: rows });
-      });
-    } catch (err) {
-      console.error("Errore generale:", err);
-      res.status(500).json({ error: "Errore interno del server." });
+});
+router.get("/attivita-interna", authenticateJWT, (req, res) => {
+  const centerId = req.user.id; // ID del centro dal JWT
+  const userRole = req.user.role;
+
+  // ✅ Verifica che solo i direttori di centro possano visualizzare le attività
+  if (userRole !== "direttorecentro") {
+    return res.status(403).json({ error: "Non sei autorizzato a visualizzare queste attività." });
+  }
+
+  // 🔽 Ordinamento decrescente per data (e ora)
+  const sql = `
+    SELECT * 
+    FROM internal_activities 
+    WHERE createdBy = ? 
+    ORDER BY datainizio DESC, orainizio DESC
+  `;
+
+  db.all(sql, [centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore recupero attività interne:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
     }
+    return res.json({ activities: rows });
   });
+});
+
+
   
   module.exports = router;
