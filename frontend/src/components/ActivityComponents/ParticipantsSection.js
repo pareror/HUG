@@ -1,29 +1,29 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
 function ParticipantsSection({ minParticipants, maxParticipants, location, onChange }) {
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    validateParticipants(minParticipants, maxParticipants)
-  }, [minParticipants, maxParticipants])
+    validateParticipants(minParticipants, maxParticipants);
+  }, [minParticipants, maxParticipants]);
 
   const validateParticipants = (min, max) => {
     if (min && max && Number.parseInt(min) > Number.parseInt(max)) {
-      setError("Il numero minimo di partecipanti deve essere minore o uguale al numero massimo.")
+      setError("Il numero minimo di partecipanti deve essere minore o uguale al numero massimo.");
     } else {
-      setError("")
+      setError("");
     }
-  }
+  };
 
   const handleChange = (field, value) => {
-    onChange(field, value)
+    onChange(field, value);
     if (field === "minParticipants" || field === "maxParticipants") {
       validateParticipants(
         field === "minParticipants" ? value : minParticipants,
-        field === "maxParticipants" ? value : maxParticipants,
-      )
+        field === "maxParticipants" ? value : maxParticipants
+      );
     }
-  }
+  };
 
   return (
     <div className="create-activity-form-row">
@@ -33,6 +33,7 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
           type="number"
           id="minParticipants"
           min="0"
+          required
           value={minParticipants}
           onChange={(e) => handleChange("minParticipants", e.target.value)}
           aria-invalid={error ? "true" : "false"}
@@ -45,6 +46,7 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
           type="number"
           id="maxParticipants"
           min="0"
+          required
           value={maxParticipants}
           onChange={(e) => handleChange("maxParticipants", e.target.value)}
           aria-invalid={error ? "true" : "false"}
@@ -53,7 +55,13 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
 
       <div className="create-activity-form-group">
         <label htmlFor="location">Luogo</label>
-        <input type="text" id="location" value={location} onChange={(e) => handleChange("location", e.target.value)} />
+        <input
+          type="text"
+          id="location"
+          required
+          value={location}
+          onChange={(e) => handleChange("location", e.target.value)}
+        />
       </div>
 
       {error && (
@@ -62,8 +70,7 @@ function ParticipantsSection({ minParticipants, maxParticipants, location, onCha
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default ParticipantsSection
-
+export default ParticipantsSection;

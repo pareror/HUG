@@ -1,41 +1,40 @@
-import { useState, useEffect } from "react"
-import { Calendar, Clock } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Calendar, Clock } from "lucide-react";
 
 function DateTimeSection({ date, time, duration, deadline, onChange }) {
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    validateDates(date, deadline)
-  }, [date, deadline])
+    validateDates(date, deadline);
+  }, [date, deadline]);
 
   const isDateInPast = (dateToCheck) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    return new Date(dateToCheck) < today
-  }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(dateToCheck) < today;
+  };
 
   const validateDates = (activityDate, deadlineDate) => {
     if (activityDate) {
       if (isDateInPast(activityDate)) {
-        setError("La data dell'attività non può essere nel passato.")
-        return
+        setError("La data dell'attività non può essere nel passato.");
+        return;
       }
 
       if (deadlineDate && new Date(activityDate) <= new Date(deadlineDate)) {
-        setError("La data dell'attività deve essere successiva alla data di scadenza delle iscrizioni.")
-        return
+        setError("La data dell'attività deve essere successiva alla data di scadenza delle iscrizioni.");
+        return;
       }
     }
-
-    setError("")
-  }
+    setError("");
+  };
 
   const handleChange = (field, value) => {
-    onChange(field, value)
+    onChange(field, value);
     if (field === "date" || field === "deadline") {
-      validateDates(field === "date" ? value : date, field === "deadline" ? value : deadline)
+      validateDates(field === "date" ? value : date, field === "deadline" ? value : deadline);
     }
-  }
+  };
 
   return (
     <div className="create-activity-form-row date-time-section">
@@ -49,6 +48,7 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
             onChange={(e) => handleChange("date", e.target.value)}
             className="date-input"
             aria-invalid={error ? "true" : "false"}
+            required
           />
           <Calendar className="create-activity-input-icon" />
         </div>
@@ -63,6 +63,7 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
             value={time}
             onChange={(e) => handleChange("time", e.target.value)}
             className="time-input"
+            required
           />
           <Clock className="create-activity-input-icon" />
         </div>
@@ -77,6 +78,7 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
           value={duration}
           onChange={(e) => handleChange("duration", e.target.value)}
           className="create-activity-duration-input"
+          required
         />
       </div>
 
@@ -90,6 +92,7 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
             onChange={(e) => handleChange("deadline", e.target.value)}
             className="date-input"
             aria-invalid={error ? "true" : "false"}
+            required
           />
           <Calendar className="create-activity-input-icon" />
         </div>
@@ -101,8 +104,8 @@ function DateTimeSection({ date, time, duration, deadline, onChange }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default DateTimeSection
+export default DateTimeSection;
 
