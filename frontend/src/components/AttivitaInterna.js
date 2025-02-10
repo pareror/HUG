@@ -67,7 +67,7 @@ const AttivitaInterna = ({
           </div>
 
           <div className="detail-row">
-            <span className="label">Partecipanti:</span>
+            <span className="label">Partecipanti (min/max):</span>
             <span className="value"><strong>{numeroMinimoPartecipanti} / {numeroMassimoPartecipanti}</strong></span>
           </div>
 

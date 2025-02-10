@@ -1215,6 +1215,84 @@ router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
   });
 });
 
+router.put("/attivita-interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ID del centro dal JWT
+  const userRole = req.user.role;
+
+  const {
+    title,
+    description,
+    date,
+    time,
+    duration,
+    deadline,
+    minParticipants,
+    maxParticipants,
+    location,
+    instructor,
+  } = req.body;
+
+  const BACKEND_URL = process.env.BACKEND_URL;
+  const image = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
+
+  // ✅ Verifica se l'attività esiste e appartiene al centro
+  const checkOwnershipQuery = `SELECT * FROM internal_activities WHERE id = ? AND createdBy = ?`;
+
+  db.get(checkOwnershipQuery, [activityId, centerId], (err, activity) => {
+    if (err) {
+      console.error("❌ Errore durante la verifica dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!activity) {
+      return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
+    }
+
+    // 🔄 Aggiorna l'attività
+    const updateQuery = `
+      UPDATE internal_activities
+      SET 
+        titolo = ?, 
+        descrizione = ?, 
+        datainizio = ?, 
+        orainizio = ?, 
+        durata = ?, 
+        scadenzaIscrizioni = ?, 
+        numeroMinimoPartecipanti = ?, 
+        numeroMassimoPartecipanti = ?, 
+        luogo = ?, 
+        istruttore = ?, 
+        immagine = COALESCE(?, immagine)
+      WHERE id = ? AND createdBy = ?
+    `;
+
+    const params = [
+      title,
+      description,
+      date,
+      time,
+      duration,
+      deadline,
+      minParticipants,
+      maxParticipants,
+      location,
+      instructor,
+      image, // Aggiorna l'immagine solo se è stata caricata una nuova
+      activityId,
+      centerId,
+    ];
+
+    db.run(updateQuery, params, function (err) {
+      if (err) {
+        console.error("❌ Errore durante l'aggiornamento dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore durante l'aggiornamento dell'attività." });
+      }
+
+      return res.status(200).json({ message: "Attività aggiornata con successo!" });
+    });
+  });
+});
 
   
   module.exports = router;

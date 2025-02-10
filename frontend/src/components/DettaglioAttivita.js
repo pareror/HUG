@@ -35,6 +35,13 @@ function DettaglioAttivita() {
   if (error) return <p>{error}</p>;
   if (!activity) return <p>Attività non trovata.</p>;
 
+  const handleModifyActivity = () => {
+    navigate(`/dashboard/attivita/interna/${id}/modifica`);
+  };
+  const formattaData = (data) => {
+    const [anno, mese, giorno] = data.split("-");
+    return `${giorno}-${mese}-${anno}`;
+  };
   return (
     <div className="activity-detail">
       <button onClick={() => navigate(-1)} className="details-back-button">
@@ -55,7 +62,7 @@ function DettaglioAttivita() {
           <div className="detail-item">
             <Calendar className="detail-icon" />
             <div>
-              <strong>Data:</strong> {activity.datainizio}
+              <strong>Data:</strong> {formattaData(activity.datainizio)}
             </div>
           </div>
 
@@ -104,7 +111,7 @@ function DettaglioAttivita() {
           <div className="detail-item">
             <Calendar className="detail-icon" />
             <div>
-              <strong>Scadenza iscrizioni:</strong> {activity.scadenzaIscrizioni}
+              <strong>Scadenza iscrizioni:</strong> {formattaData(activity.scadenzaIscrizioni)}
             </div>
           </div>
         </div>
@@ -116,7 +123,9 @@ function DettaglioAttivita() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary">Modifica Attività</button>
+        <button className="button button-primary" onClick={handleModifyActivity}>
+          Modifica Attività
+        </button>
         <button className="button button-secondary">Gestisci Utenza</button>
       </div>
     </div>
