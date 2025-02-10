@@ -1,9 +1,16 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
 function InstructorSection({ instructor, image, onChange }) {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+
+  // ✅ Inizializza l'anteprima con l'immagine passata tramite props
+  useEffect(() => {
+    if (image && !imagePreview) {
+      setImagePreview(image);
+    }
+  }, [image]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -49,7 +56,6 @@ function InstructorSection({ instructor, image, onChange }) {
             onChange={handleImageChange}
             style={{ display: "none" }}
             accept="image/*"
-            required
           />
           <button
             type="button"
@@ -63,8 +69,8 @@ function InstructorSection({ instructor, image, onChange }) {
               {imagePreview ? (
                 <>
                   <img
-                    src={imagePreview || "/placeholder.svg"}
-                    alt="Preview"
+                    src={imagePreview}
+                    alt="Anteprima"
                   />
                   <button
                     type="button"
@@ -76,7 +82,7 @@ function InstructorSection({ instructor, image, onChange }) {
                   </button>
                 </>
               ) : (
-                <div className="create-activity-image-placeholder"></div>
+                <div className="create-activity-image-placeholder">Nessuna immagine selezionata</div>
               )}
             </div>
           </div>
