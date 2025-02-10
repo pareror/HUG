@@ -24,7 +24,6 @@ import PagamentiPaziente from './PagamentiPaziente';
 import CreateCaregiver from './CreateCaregiver';
 import EditCaregiver from './EditCaregiver';
 
-
 const Website = () => {
     return ( 
         <div className="x">

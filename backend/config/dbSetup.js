@@ -89,12 +89,67 @@ const createPatientEmergencyContactsTable = () => {
   );
 };
 
+const createInternalActivitiesTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS internal_activities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      titolo TEXT NOT NULL,
+      descrizione TEXT,
+      datainizio DATE NOT NULL,
+      orainizio TEXT NOT NULL,
+      durata INTEGER, -- Durata in minuti
+      scadenzaIscrizioni DATE,
+      numeroMinimoPartecipanti INTEGER,
+      numeroMassimoPartecipanti INTEGER,
+      luogo TEXT,
+      istruttore TEXT,
+      immagine TEXT, -- Path dell'immagine (es. /uploads/activity.jpg)
+      
+      createdBy INTEGER, -- Chiave esterna verso la tabella 'profiles'
+      FOREIGN KEY (createdBy) REFERENCES profiles(id) ON DELETE CASCADE
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'internal_activities':", err.message);
+      } else {
+        console.log("✅ Tabella 'internal_activities' creata con successo.");
+      }
+    }
+  );
+};
+
+const createActivityParticipantsTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS activity_participants (
+      activityId INTEGER NOT NULL,  -- ID dell'attività
+      patientId INTEGER NOT NULL,   -- ID del paziente
+
+      -- Chiave primaria composta per evitare duplicati
+      PRIMARY KEY (activityId, patientId),
+
+      -- Chiave esterna verso la tabella 'internal_activities'
+      FOREIGN KEY (activityId) REFERENCES internal_activities(id) ON DELETE CASCADE,
+
+      -- Chiave esterna verso la tabella 'profiles'
+      FOREIGN KEY (patientId) REFERENCES profiles(id) ON DELETE CASCADE
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'activity_participants':", err.message);
+      } else {
+        console.log("✅ Tabella 'activity_participants' creata con successo.");
+      }
+    }
+  );
+};
 // Funzione principale per inizializzare il database
 const initializeDatabase = () => {
   console.log("🔄 Inizializzazione del database...");
   createProfilesTable();
   createEmergencyContactsTable();
   createPatientEmergencyContactsTable();
+  createInternalActivitiesTable();
+  createActivityParticipantsTable();
 };
 
 initializeDatabase();

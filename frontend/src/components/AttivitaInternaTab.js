@@ -1,75 +1,67 @@
-import React from 'react';
-import "../css/AttivitaIntEst.css"
-import AttivitaInterna from './AttivitaInterna';
-
-
-const attivita = [
-    {
-      image:"/images/pittura.png",  
-      titolo: "Visita al museo archeologico",
-      descrizione: "Vivi una fantastica giornatag iornatagiornataggiornatagi ornatagiornatagiornatai ornatagiornatag iornata al museo archeologico di Bari",
-      data: "27/11/2024",
-      orarioInizio: "16:00",
-      orarioFine: "17:00",
-      luogo: "Bari",
-      part: "10/12",
-      minPart: 10,
-      istruttore: "Mario Rossi",
-      scadIscData: "26/11/2024",
-      scadIscOrario: "12:00",
-    },
-    {
-      image:"/images/vecchi.png",
-      titolo: "Escursione in montagna",
-      descrizione: "Vivi una fantastica giornata al museo archeologico di Bari",
-      data: "15/12/2024",
-      orarioInizio: "08:00",
-      orarioFine: "18:00",
-      luogo: "Dolomiti",
-      part: "5/10",
-      minPart: 5,
-      istruttore: "Luca Bianchi",
-      scadIscData: "14/12/2024",
-      scadIscOrario: "18:00",
-    },
-    {
-        image:"/images/vecchi1.png",
-        titolo: "Escursione in montagna",
-        descrizione: "Vivi una fantastica giornata al museo archeologico di Bari",
-        data: "15/12/2024",
-        orarioInizio: "08:00",
-        orarioFine: "18:00",
-        luogo: "Dolomiti",
-        part: "5/10",
-        minPart: 5,
-        istruttore: "Luca Bianchi",
-        scadIscData: "14/12/2024",
-        scadIscOrario: "18:00",
-      },
-  ];
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "../css/AttivitaIntEst.css";
+import AttivitaInterna from "./AttivitaInterna"; // Componente che renderizza la singola card
 
 const AttivitaInternaTab = () => {
-    return (
-<div className="activities-grid">           
-     {attivita.map((activity, index) => (
-                <AttivitaInterna
-                    key={index}
-                    image={activity.image}
-                    titolo={activity.titolo}
-                    descrizione={activity.descrizione}
-                    data={activity.data}
-                    orarioInizio={activity.orarioInizio}
-                    orarioFine={activity.orarioFine}
-                    luogo={activity.luogo}
-                    part={activity.part}
-                    minPart={activity.minPart}
-                    istruttore={activity.istruttore}
-                    scadIscData={activity.scadIscData}
-                    scadIscOrario={activity.scadIscOrario}
-                />
-            ))}
-        </div>
-    );
+  const [activities, setActivities] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch delle attività dal backend
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const response = await axios.get("http://localhost:5000/api/attivita-interna", {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
+        console.log("Attività interne:", response.data.activities);
+        setActivities(response.data.activities || []);
+      } catch (err) {
+        console.error("Errore fetch attività interne:", err);
+        setError("Impossibile caricare le attività interne.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchActivities();
+  }, []);
+
+  if (loading) {
+    return <p>Caricamento...</p>;
+  }
+  if (error) {
+    return <p>{error}</p>;
+  }
+  const formattaData = (data) => {
+    const [anno, mese, giorno] = data.split("-");
+    return `${giorno}-${mese}-${anno}`;
+  };
+  return (
+    <div className="activities-grid">
+      {activities.map((activity) => (
+        <AttivitaInterna
+          key={activity.id}
+          // Mappiamo i campi del DB con le prop del componente
+          image={activity.immagine}
+          titolo={activity.titolo}
+          descrizione={activity.descrizione}
+          data={formattaData(activity.datainizio)}
+          orarioInizio={activity.orainizio}
+          // puoi calcolare orarioFine se vuoi, o mostrare "durata"
+          durata={activity.durata}
+          scadenzaIscrizioni={formattaData(activity.scadenzaIscrizioni)}
+          numeroMinimoPartecipanti={activity.numeroMinimoPartecipanti}
+          numeroMassimoPartecipanti={activity.numeroMassimoPartecipanti}
+          luogo={activity.luogo}
+          istruttore={activity.istruttore}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default AttivitaInternaTab;

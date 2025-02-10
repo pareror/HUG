@@ -32,7 +32,7 @@
     background: white;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Evita che esca dal contenitore */
+    overflow: auto; /* Evita che esca dal contenitore */
 }
 
 /* Titolo della sezione */

@@ -1,64 +1,85 @@
 import React from 'react';
-import "../css/AttivitaIntEst.css"
+import "../css/AttivitaIntEst.css";
 
-const AttivitaInterna = ({image, titolo, descrizione, data, orarioInizio, orarioFine, luogo, part, minPart, istruttore, scadIscData, scadIscOrario}) => {
-    return (
+const calcolaOrarioFine = (orarioInizio, durata) => {
+  const [ore, minuti] = orarioInizio.split(':').map(Number);
+  const fine = new Date();
+  fine.setHours(ore);
+  fine.setMinutes(minuti);
+  
+  // Aggiungi la durata in ore
+  fine.setHours(fine.getHours() + parseInt(durata));
 
-            <div className="activity-card-placeholder">
+  const orarioFine = fine.toTimeString().slice(0, 5); // Restituisce l'orario nel formato HH:MM
+  return orarioFine;
+};
 
-                <img src={image} alt="Activity" className="image-card" />
+const AttivitaInterna = ({
+  image,
+  titolo,
+  descrizione,
+  data,
+  orarioInizio,
+  durata,
+  scadenzaIscrizioni,
+  numeroMinimoPartecipanti,
+  numeroMassimoPartecipanti,
+  luogo,
+  istruttore
+}) => {
+  const orarioFine = calcolaOrarioFine(orarioInizio, durata);
 
-                <div className = "attivita-card-content">
-                <div className="course-header">
-                <h2 className="course-title">{titolo}</h2>
-                    <p className="course-description">
-                        {descrizione}
-                    </p>
-                </div>
+  return (
+    <div className="activity-card-placeholder">
+      <img src={image} alt="Attività" className="image-card" />
 
-                <div className="course-details">
+      <div className="attivita-card-content">
+        <div className="course-header">
+          <h2 className="course-title">{titolo}</h2>
+          <p className="course-description">{descrizione}</p>
+        </div>
 
-                <div className="detail-row">
-                    <span className="label">Data:</span>
-                    <span className="value">{data}</span>
-                </div>
+        <div className="course-details">
+          <div className="detail-row">
+            <span className="label">Data:</span>
+            <span className="value"><strong>{data}</strong></span>
+          </div>
 
-                <div className="detail-row">
-                    <span className="label">Orario:</span>
-                    <span className="value">{orarioInizio} - {orarioFine}</span>
-                </div>
+          <div className="detail-row">
+            <span className="label">Orario:</span>
+            <span className="value"><strong>{orarioInizio} - {orarioFine}</strong></span>
+          </div>
 
-                    <div className="detail-row">
-                    <span className="label">Luogo:</span>
-                    <span className="value">{luogo}</span>
-                </div>
+          <div className="detail-row">
+            <span className="label">Durata:</span>
+            <span className="value"><strong>{durata}h</strong></span>
+          </div>
 
-                <div className="detail-row">
-                    <span className="label">Partecipanti:</span>
-                    <span className="value">8/12</span>
-                </div>
+          <div className="detail-row">
+            <span className="label">Luogo:</span>
+            <span className="value"><strong>{luogo}</strong></span>
+          </div>
 
-                <div className="detail-row">
-                    <span className="label">Minimo partecipanti:</span>
-                    <span className="value">{minPart}</span>
-                </div>
+          <div className="detail-row">
+            <span className="label">Partecipanti:</span>
+            <span className="value"><strong>{numeroMinimoPartecipanti} / {numeroMassimoPartecipanti}</strong></span>
+          </div>
 
-                <div className="detail-row">
-                    <span className="label">Istruttore:</span>
-                    <span className="value">{istruttore}</span>
-                </div>
+          <div className="detail-row">
+            <span className="label">Istruttore:</span>
+            <span className="value"><strong>{istruttore}</strong></span>
+          </div>
 
-                <div className="detail-row deadline">
-                    <span className="label">Scadenza Iscrizioni:</span>
-                    <span className="value">{scadIscData} {scadIscOrario}</span>
-                </div>
-                
-                </div>
-                <button className="open-activity-btn">Apri Attività</button>
-                </div>
+          <div className="detail-row deadline">
+            <span className="label">Scadenza Iscrizioni:</span>
+            <span className="value"><strong>{scadenzaIscrizioni}</strong></span>
+          </div>
+        </div>
 
-                </div>
-    );
+        <button className="open-activity-btn">Apri Attività</button>
+      </div>
+    </div>
+  );
 };
 
 export default AttivitaInterna;

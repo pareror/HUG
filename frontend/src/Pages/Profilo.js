@@ -26,10 +26,6 @@ const Profilo = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Popup di eliminazione
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const [showDeleteSuccessPopup, setShowDeleteSuccessPopup] = useState(false);
-
   // **Stato per la modalità modifica** (visualizzazione = false / modifica = true)
   const [isEditing, setIsEditing] = useState(false);
 
@@ -90,7 +86,7 @@ const Profilo = () => {
     setProfileData((prev) => ({ ...prev, fotoProfilo: file }));
   };
 
-  // Contatti di emergenza
+  // Contatti di emergenza (solo paziente)
   const handleEmergencyContactChange = (index, e) => {
     const { name, value } = e.target;
     setEmergencyContacts((prev) => {
@@ -99,16 +95,20 @@ const Profilo = () => {
       return updated;
     });
   };
+
   const addEmergencyContact = () => {
     setEmergencyContacts([...emergencyContacts, { nome: "", cognome: "", telefono: "", relazione: "" }]);
     setExpandedContactIndex(emergencyContacts.length);
   };
+
   const removeEmergencyContact = (index) => {
     setEmergencyContacts((prev) => prev.filter((_, i) => i !== index));
   };
+
   const toggleContactDetails = (index) => {
     setExpandedContactIndex(expandedContactIndex === index ? null : index);
   };
+
   const areContactsValid = () => {
     return emergencyContacts.every(
       (c) =>
@@ -118,6 +118,7 @@ const Profilo = () => {
         c.relazione.trim() !== ""
     );
   };
+
   const handleCloseEmergencyPopup = () => {
     if (!areContactsValid()) {
       setError("Tutti i campi dei contatti di emergenza devono essere compilati.");
@@ -176,37 +177,10 @@ const Profilo = () => {
     // Ripristina i dati al valore iniziale
     setProfileData(originalData);
     // Se c’erano contatti emergenza modificati, potresti volerli ripristinare
-    // (Se hai un original dei contatti, usa quello. Altrimenti, ricarica dal server.)
     if (originalData.emergencyContacts) {
       setEmergencyContacts(originalData.emergencyContacts);
     }
     setIsEditing(false);
-  };
-
-  const handleDeleteProfile = async () => {
-    try {
-      // Assumiamo che `profileData.id` contenga l'ID dell'utente
-      await axios.delete(`http://localhost:5000/api/profilo/${profileData.id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-      });
-      localStorage.removeItem("jwt");
-      setShowConfirmDelete(false);
-      setShowDeleteSuccessPopup(true);
-      // Reindirizziamo dopo 2 secondi
-      setTimeout(() => navigate("/"), 2000);
-    } catch (err) {
-      setError(err.response?.data?.error || "Errore durante l'eliminazione del profilo.");
-      console.error(err);
-    }
-  };
-
-  const handleConfirmDelete = () => {
-    setShowConfirmDelete(true);
-  };
-  const handleCancelDelete = () => {
-    setShowConfirmDelete(false);
   };
 
   if (loading) return <p>Caricamento...</p>;
@@ -585,15 +559,6 @@ const Profilo = () => {
                 </button>
               </div>
             )}
-            <div className="left-actions">
-              <button
-                type="button"
-                className="btn-red"
-                onClick={handleConfirmDelete}
-              >
-                Elimina Profilo
-              </button>
-            </div>
           </div>
         </form>
       </div>
@@ -676,38 +641,7 @@ const Profilo = () => {
         </div>
       )}
 
-      {/* Popup conferma eliminazione */}
-      {showConfirmDelete && (
-        <div className="popup-overlay">
-          <div className="popup-box">
-            <h3>Conferma Eliminazione</h3>
-            <p>Sei sicuro di voler eliminare il profilo?</p>
-            <div className="popup-actions">
-              <button className="btn-red" onClick={handleDeleteProfile}>
-                Conferma
-              </button>
-              <button className="btn-gray" onClick={handleCancelDelete}>
-                Annulla
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Popup successo eliminazione */}
-      {showDeleteSuccessPopup && (
-        <div className="popup-overlay">
-          <div className="popup-box">
-            <h3>Profilo eliminato con successo!</h3>
-            <button
-              className="btn-green"
-              onClick={() => navigate("/dashboard/utenza/pazienti")}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
+      {/* In questa versione NON c'è più l'eliminazione del profilo */}
     </div>
   );
 };
