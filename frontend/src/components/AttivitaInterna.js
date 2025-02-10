@@ -1,5 +1,6 @@
 import React from 'react';
 import "../css/AttivitaIntEst.css";
+import { useNavigate } from 'react-router-dom';
 
 const calcolaOrarioFine = (orarioInizio, durata) => {
   const [ore, minuti] = orarioInizio.split(':').map(Number);
@@ -15,6 +16,7 @@ const calcolaOrarioFine = (orarioInizio, durata) => {
 };
 
 const AttivitaInterna = ({
+  id,
   image,
   titolo,
   descrizione,
@@ -29,6 +31,10 @@ const AttivitaInterna = ({
 }) => {
   const orarioFine = calcolaOrarioFine(orarioInizio, durata);
 
+  const navigate = useNavigate();
+  const handleOpenActivity = () => {
+    navigate(`/dashboard/attivita/interna/${id}`);
+  };
   return (
     <div className="activity-card-placeholder">
       <img src={image} alt="Attività" className="image-card" />
@@ -76,7 +82,10 @@ const AttivitaInterna = ({
           </div>
         </div>
 
-        <button className="open-activity-btn">Apri Attività</button>
+        {/* Pulsante per aprire l'attività specifica */}
+        <button className="open-activity-btn" onClick={handleOpenActivity}>
+          Apri Attività
+        </button>
       </div>
     </div>
   );

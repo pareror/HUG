@@ -12,16 +12,12 @@ const AttivitaInternaTab = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-<<<<<<< HEAD
         const token = localStorage.getItem("jwt");
         const response = await axios.get("http://localhost:5000/api/attivita-interna", {
           headers: {
             Authorization: `Bearer ${token}`, 
           },
         });
-=======
-        const response = await axios.get("http://localhost:5000/api/attivita-interna");
->>>>>>> 3da572596b5967c679925248cf182b93426c5caa
         console.log("Attività interne:", response.data.activities);
         setActivities(response.data.activities || []);
       } catch (err) {
@@ -48,7 +44,7 @@ const AttivitaInternaTab = () => {
     <div className="activities-grid">
       {activities.map((activity) => (
         <AttivitaInterna
-          key={activity.id}
+          id={activity.id}
           // Mappiamo i campi del DB con le prop del componente
           image={activity.immagine}
           titolo={activity.titolo}
