@@ -1,20 +1,40 @@
-import { ArrowLeft, Calendar, Clock, MapPin, Users, User2 } from "lucide-react"
-import "../css/DettaglioAttivita.css"
-/*import DatiAttivita from "./DatiAttivita"*/
-// Il componente ora riceve direttamente i dati dall'import
-const DettaglioAttivita = ({title, date, startTime, duration, location, participants, minParticipants, maxParticipants, instructor, registrationDeadline, description, image }) => {
-   return (
-   
+import { ArrowLeft, Calendar, Clock, MapPin, Users, User2 } from "lucide-react";
+import "../css/DettaglioAttivita.css";
+import { useNavigate } from "react-router-dom";
+
+function DettaglioAttivita({
+  title,
+  date,
+  startTime,
+  duration,
+  location,
+  participants,
+  minParticipants,
+  maxParticipants,
+  instructor,
+  registrationDeadline,
+  description,
+  image
+}) {
+  const navigate = useNavigate();
+
+  return (
     <div className="activity-detail">
-    <a href="#" className="details-back-button">
-        <ArrowLeft size={20} />
-        Torna indietro
-      </a>
+      <div>
+   <button onClick={() => navigate(-1)} className="details-back-button">
+  <ArrowLeft className="details-back-icon" />
+  <span className="details-back-text">Torna indietro</span>
+</button>
+</div>
 
       <h1 className="activity-title">{title}</h1>
 
       <div className="content-wrapper">
-        <img src={image || "/placeholder.svg"} alt={title} className="activity-image" />
+        <img
+          src={image || "/placeholder.svg"}
+          alt={title}
+          className="activity-image"
+        />
 
         <div className="details-grid">
           <div className="detail-item">
@@ -92,10 +112,7 @@ const DettaglioAttivita = ({title, date, startTime, duration, location, particip
         <button className="button button-secondary">Gestisci Utenza</button>
       </div>
     </div>
-    
   );
-};
-
+}
 
 export default DettaglioAttivita;
-

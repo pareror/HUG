@@ -1,123 +1,149 @@
 .main-content-dettaglio {
-    margin: 1% auto 0;           /* Margine superiore del 3% e centrato orizzontalmente */
-    padding: 20px;               /* Padding di 20px su tutti i lati */
-    background-color: #ffffff;   /* Sfondo bianco */
-    display: flex;               /* Layout a flexbox */
-    flex-direction: column;      /* Elementi allineati in colonna */
-    gap: 1.5rem;                /* Spazio tra gli elementi figli */
-    max-width: 100%;            
-    border-radius: 0.5rem;           /* Larghezza massima al 100% (o imposta un valore fisso se necessario) */
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
+  margin: 1% auto 0;      /* Margine superiore e centrato orizzontalmente */
+  padding: 20px;          /* Padding di 20px su tutti i lati */
+  background-color: #fff; /* Sfondo bianco */
+  display: flex;          /* Layout a flexbox */
+  flex-direction: column; /* Elementi in colonna */
+  gap: 1.5rem;            /* Spazio tra gli elementi */
+  max-width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+}
+
+/* --- CORREZIONE QUI: eliminato '0auto' e sostituito con '1200px; margin: 0 auto;' --- */
+.activity-detail {
+  width: 100%;
+  padding: 20px;
+}
+
+/* Classe per il bottone “Torna Indietro” (icona + testo) */
+.details-back-button {
+  display: inline-flex;      /* inline-flex per posizionare icona e testo sulla stessa riga */
+  align-items: center;
+  gap: 8px;                  /* Spazio tra icona e testo */
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+             
+}
+
+/* Se vuoi uno stile dedicato all'icona, usa una classe separata */
+.details-back-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Se vuoi uno stile dedicato al testo */
+.details-back-text {
+  display: inline;
+}
+
+.activity-title {
+  color: #333;
+  font-size: 30px ;
+  margin-bottom: 30px;
+  text-align:left;
 
 }
-.activity-detail {
-    max-width: 1200px 0auto;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .details-back-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #00a783;
-    text-decoration: none;
-    
-  }
-  
-  .activity-title {
-    color: #00a783;
-    margin-bottom: 30px;
-  }
-  
-  .content-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Modifica: cambiato da 300px 1fr a 1fr 1fr per dare più spazio all'immagine */
-    gap: 30px;
-    margin-bottom: 30px;
-  }
-  
-  .activity-image {
-    width: 100%;
-    height: auto; /* Modifica: rimosso aspect-ratio fisso */
-    max-height: 500px; /* Aggiunta: limita l'altezza massima */
-    object-fit: cover; /* Aggiunta: assicura che l'immagine copra l'area mantenendo le proporzioni */
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
 
+.content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 colonne: immagine + dettagli */
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.activity-image {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.details-grid {
+  display: grid;
+  gap: 15px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-icon {
+  color: #00a783;
+  width: 20px;
+}
+
+.description-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.description-title {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.button-container {
+  display: flex;
+  gap: 15px;
+}
+
+.button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button-primary {
+  background-color: #00a783;
+  color: #fff;
+}
+
+.button-primary:hover {
+  background-color: #008f72; /* Colore leggermente più scuro al passaggio del mouse */
+}
+
+.button-secondary {
+  background-color: #fff;
+  color: #00a783;
+  border: 1px solid #00a783;
+
+}
+
+.button-secondary:hover {
+  background-color:rgba(0, 0, 0, 0.35);
+  color: #fff;
+}
+
+
+/* --- Media query per schermi più piccoli --- */
+@media (max-width: 768px) {
+  .content-wrapper {
+    grid-template-columns: 1fr; /* Impila l'immagine sopra i dettagli */
   }
-  
-  .details-grid {
-    display: grid;
-    gap: 15px;
-    padding: 20px;
-    background: white;
-    border-radius: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+
+  .activity-image {
+    max-height: 300px;
   }
-  
-  .detail-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .detail-icon {
-    color: #00a783;
-    width: 20px;
-  }
-  
-  .description-section {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
-  }
-  
-  .description-title {
-    font-weight: 600;
-    margin-bottom: 15px;
-  }
-  
-  .button-container {
-    display: flex;
-    gap: 15px;
-  }
-  
-  .button {
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .button-primary {
-    background-color: #00a783;
-    color: white;
-  }
-  
-  .button-secondary {
-    background-color: white;
-    color: #00a783;
-    border: 1px solid #00a783;
-  }
-  
-  /* Aggiunta: Media query per schermi più piccoli */
-  @media (max-width: 768px) {
-    .content-wrapper {
-      grid-template-columns: 1fr; /* Impila l'immagine sopra i dettagli su schermi più piccoli */
-    }
-  
-    .activity-image {
-      max-height: 300px; /* Riduce l'altezza massima su schermi più piccoli */
-    }
-  }
-  
-  
+}

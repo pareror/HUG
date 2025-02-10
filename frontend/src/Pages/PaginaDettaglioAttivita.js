@@ -1,7 +1,6 @@
 import React from "react"
 import NavbarDashboard from "../Components/NavbarDashboard"
 import DatiAttivita from "../Components/DatiAttivita"
-import { ArrowLeft } from "lucide-react"
 function PaginaDettaglioAttivita() {
   return (
     <div className="activity-detail">

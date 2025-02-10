@@ -12,7 +12,12 @@ const AttivitaInternaTab = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/attivita-interna");
+        const token = localStorage.getItem("jwt");
+        const response = await axios.get("http://localhost:5000/api/attivita-interna", {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
         console.log("Attività interne:", response.data.activities);
         setActivities(response.data.activities || []);
       } catch (err) {
@@ -31,7 +36,10 @@ const AttivitaInternaTab = () => {
   if (error) {
     return <p>{error}</p>;
   }
-
+  const formattaData = (data) => {
+    const [anno, mese, giorno] = data.split("-");
+    return `${giorno}-${mese}-${anno}`;
+  };
   return (
     <div className="activities-grid">
       {activities.map((activity) => (
@@ -41,11 +49,11 @@ const AttivitaInternaTab = () => {
           image={activity.immagine}
           titolo={activity.titolo}
           descrizione={activity.descrizione}
-          data={activity.datainizio}
+          data={formattaData(activity.datainizio)}
           orarioInizio={activity.orainizio}
           // puoi calcolare orarioFine se vuoi, o mostrare "durata"
           durata={activity.durata}
-          scadenzaIscrizioni={activity.scadenzaIscrizioni}
+          scadenzaIscrizioni={formattaData(activity.scadenzaIscrizioni)}
           numeroMinimoPartecipanti={activity.numeroMinimoPartecipanti}
           numeroMassimoPartecipanti={activity.numeroMassimoPartecipanti}
           luogo={activity.luogo}
