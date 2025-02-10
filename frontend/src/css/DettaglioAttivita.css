@@ -169,6 +169,7 @@
   display: flex;
   align-items: center;
   gap: 8px; /* Spazio tra l'icona e il testo */
+  margin-left: auto; /* Allinea il pulsante a destra */
 }
 
 .button-danger:hover {
