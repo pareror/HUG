@@ -49,7 +49,6 @@ function InstructorSection({ instructor, image, onChange }) {
             onChange={handleImageChange}
             style={{ display: "none" }}
             accept="image/*"
-            required
           />
           <button
             type="button"

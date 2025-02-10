@@ -1218,7 +1218,6 @@ router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
 router.put("/attivita-interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
   const activityId = req.params.id;
   const centerId = req.user.id; // ID del centro dal JWT
-  const userRole = req.user.role;
 
   const {
     title,
