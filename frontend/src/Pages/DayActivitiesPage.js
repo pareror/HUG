@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import NavbarDashboard from "../Components/NavbarDashboard";
 import { ArrowLeft } from "lucide-react";
+import axios from "axios";
 import "../css/DayActivitiesPage.css";
 
 const DayActivitiesPage = () => {
@@ -9,58 +10,79 @@ const DayActivitiesPage = () => {
   const [activities, setActivities] = useState([]);
   const navigate = useNavigate();
 
-  // Simula il recupero delle attività per il giorno selezionato
   useEffect(() => {
-    const fakeData = {
-      1: [
-        { id: 1, name: "Yoga", color: "#ff5733", description: "Lezione di yoga mattutina" },
-        { id: 2, name: "Pilates", color: "#33c1ff", description: "Sessione di pilates" }
-      ],
-      2: [
-        { id: 3, name: "Running", color: "#33ff57", description: "Corsa serale" },
-        { id: 4, name: "Swimming", color: "#3357ff", description: "Allenamento in piscina" },
-        { id: 5, name: "Cycling", color: "#ff33a8", description: "Giro in bicicletta" },
-        { id: 6, name: "Boxing", color: "#a833ff", description: "Sessione di boxe" }
-      ]
-      // Aggiungi altri giorni se necessario
+    const fetchActivities = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/attivita-interna", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+
+        const activities = response.data.activities.filter((activity) => {
+          const activityDate = new Date(activity.datainizio);
+          return activityDate.getDate() === parseInt(day);
+        });
+
+        // Ordina le attività per orario di inizio
+        activities.sort((a, b) => a.orainizio.localeCompare(b.orainizio));
+
+        setActivities(activities);
+      } catch (error) {
+        console.error("Errore nel recupero delle attività:", error);
+      }
     };
 
-    setTimeout(() => {
-      setActivities(fakeData[day] || []);
-    }, 500);
+    fetchActivities();
   }, [day]);
+
+  const calculateEndTime = (startTime, duration) => {
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const endTime = new Date();
+    endTime.setHours(hours);
+    endTime.setMinutes(minutes);
+    endTime.setHours(endTime.getHours() + parseInt(duration));
+
+    return endTime.toTimeString().slice(0, 5);
+  };
 
   return (
     <div className="day-activities-page">
       <NavbarDashboard />
       <div className="main-content">
-      <main className="day-activities-main">
-        <header className="day-activities-header">
-          <button className="back-button" onClick={() => navigate(-1)}>
-            <ArrowLeft size={20} />
-            Torna indietro
-          </button>
-          <h1>Attività del Giorno {day}</h1>
-        </header>
-        <div className="activities-list">
-          {activities.length === 0 ? (
-            <p>Nessuna attività per questo giorno.</p>
-          ) : (
-            activities.map((activity) => (
-              <div key={activity.id} className="activity-item">
-                <span
-                  className="activity-dot"
-                  style={{ backgroundColor: activity.color }}
-                ></span>
-                <div className="activity-details">
-                  <h3>{activity.name}</h3>
-                  <p>{activity.description}</p>
+        <main className="day-activities-main">
+          <header className="day-activities-header">
+            <button className="back-button" onClick={() => navigate(-1)}>
+              <ArrowLeft size={20} />
+              Torna indietro
+            </button>
+            <h1>Attività del Giorno {day}</h1>
+          </header>
+          <div className="activities-list">
+            {activities.length === 0 ? (
+              <p>Nessuna attività per questo giorno.</p>
+            ) : (
+              activities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="activity-item"
+                  onClick={() => navigate(`/dashboard/attivita/interna/${activity.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <span
+                    className="activity-dot"
+                    style={{ backgroundColor: "#" + Math.floor(Math.random() * 16777215).toString(16) }}
+                  ></span>
+                  <div className="activity-details">
+                    <h3>{activity.titolo}</h3>
+                    <p>{activity.orainizio} - {calculateEndTime(activity.orainizio, activity.durata)}</p>
+                    <p><strong>Sala:</strong> {activity.luogo}</p>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </main>
+              ))
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
