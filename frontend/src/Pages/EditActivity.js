@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Header from "../Components/ActivityComponents/Header";
 import TitleSection from "../Components/ActivityComponents/TitleSection";
 import DescriptionSection from "../Components/ActivityComponents/DescriptionSection";
 import DateTimeSection from "../Components/ActivityComponents/DateTimeSection";
@@ -13,7 +12,7 @@ import PopupAnnulla from "../Components/PopupAnnulla";
 import "../css/CreateActivity.css";
 import "../css/SuccessPopup.css";  // ✅ Import del CSS per il popup di successo
 import "../css/ErrorPopup.css";    // ✅ Import del CSS per il popup di errore
-
+import { ArrowLeft } from "lucide-react";
 function EditActivity() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -130,7 +129,13 @@ function EditActivity() {
   return (
     <div className="primary-create-activity">
       <NavbarDashboard />
-      <Header />
+      <header className="create-activity-header">
+        <button onClick={() => navigate(-1)} className="create-activity-back-button">
+          <ArrowLeft className="create-activity-back-icon" />
+          <span>Torna indietro </span>
+        </button>
+        <h1>Modifica Attività</h1>
+      </header>
 
       <form onSubmit={handleSubmit} className="create-activity-form">
         <TitleSection value={formData.title} onChange={(value) => handleInputChange("title", value)} />
