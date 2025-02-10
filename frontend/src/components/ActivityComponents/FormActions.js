@@ -2,7 +2,7 @@ function FormActions({ onCancel }) {
     return (
       <div className="form-actions">
         <button type="submit" className="create-activity-submit-button">
-          Crea Attività
+          Salva
         </button>
         <button type="button" className="create-activity-cancel-button" onClick={onCancel}>
           Annulla
