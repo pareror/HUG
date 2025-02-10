@@ -67,6 +67,11 @@ const AttivitaInterna = ({
           </div>
 
           <div className="detail-row">
+            <span className="label">Iscritti:</span>
+            <span className="value"><strong>5</strong></span>
+          </div>
+
+          <div className="detail-row">
             <span className="label">Partecipanti (min/max):</span>
             <span className="value"><strong>{numeroMinimoPartecipanti} / {numeroMassimoPartecipanti}</strong></span>
           </div>

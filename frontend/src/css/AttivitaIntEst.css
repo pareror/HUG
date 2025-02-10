@@ -88,7 +88,7 @@
 }
 
 .course-header{
-  margin-bottom: 7px;
+  margin-bottom: 0;
   overflow: hidden; /* Nasconde il testo in eccesso */
   max-width: 311.27px;
 }
@@ -217,7 +217,6 @@
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.2s;
-    margin-top: 13px;
   }
   
   .open-activity-btn:hover {
