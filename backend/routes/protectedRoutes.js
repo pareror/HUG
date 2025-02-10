@@ -418,8 +418,7 @@ const generateUniqueUsername = (nome, cognome) => {
     });
 };
 
-router.post(
-    "/aggiungi-paziente",
+router.post("/aggiungi-paziente",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori di centri possono aggiungere pazienti
     upload.single("fotoProfilo"),
@@ -559,8 +558,7 @@ router.post(
         }
     }
 );
-router.post(
-    "/aggiungi-contatto-emergenza",
+router.post("/aggiungi-contatto-emergenza",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori di centri possono aggiungere contatti di emergenza
     async (req, res) => {
@@ -609,8 +607,7 @@ router.post(
     }
 );
 
-router.get(
-    "/paziente/:id",
+router.get("/paziente/:id",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori possono vedere i dettagli del paziente
     async (req, res) => {
@@ -667,8 +664,7 @@ router.get(
       }
     }
   );  
-  router.put(
-    "/paziente/:id",
+  router.put("/paziente/:id",
     authenticateJWT,
     authorizeRole(5),
     upload.none(),
@@ -799,8 +795,7 @@ router.get(
     }
   );
   
-  router.get(
-    "/caregivers",
+  router.get("/caregivers",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori (o chi ha il ruolo corretto) possono accedere
     async (req, res) => {
@@ -826,8 +821,7 @@ router.get(
     }
   );
   
-  router.post(
-    "/aggiungi-caregiver",
+  router.post("/aggiungi-caregiver",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori di centri possono aggiungere caregiver
     upload.single("fotoProfilo"),
@@ -954,8 +948,7 @@ router.get(
       }
     }
   );
-  router.get(
-    "/caregiver/:id",
+  router.get("/caregiver/:id",
     authenticateJWT,
     authorizeRole(5), // Solo gli utenti autorizzati (ad es. direttori) possono vedere i dettagli del caregiver
     async (req, res) => {
@@ -1000,8 +993,7 @@ router.get(
   );
   
 
-  router.put(
-    "/caregiver/:id",
+  router.put("/caregiver/:id",
     authenticateJWT,
     authorizeRole(5), // Solo utenti autorizzati possono modificare i caregiver
     upload.single("fotoProfilo"), // Gestisce l'upload del file se presente
@@ -1125,7 +1117,7 @@ router.get(
       });
     }
   );
-  router.post('/attivita-interna', authenticateJWT, upload.single('image'), (req, res) => {
+  router.post('/attivita-interna', authenticateJWT, authorizeRole(5), upload.single('image'), (req, res) => {
     const {
       title,
       description,
