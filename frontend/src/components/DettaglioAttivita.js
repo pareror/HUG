@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, MapPin, Users, User2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, Trash2 } from "lucide-react";
 import axios from "axios";
 import "../css/DettaglioAttivita.css";
 import GestisciUtenzaModal from "./GestisciUtenzaModal";
@@ -39,6 +39,22 @@ function DettaglioAttivita() {
 
   const handleModifyActivity = () => {
     navigate(`/dashboard/attivita/interna/${id}/modifica`);
+  };
+  const handleDeleteActivity = async () => {
+    if (window.confirm("Sei sicuro di voler eliminare questa attività?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/attivita-interna/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+        alert("Attività eliminata con successo.");
+        navigate("/dashboard/attivita/interna");
+      } catch (error) {
+        console.error("Errore durante l'eliminazione dell'attività:", error);
+        alert("Si è verificato un errore durante l'eliminazione dell'attività.");
+      }
+    }
   };
   const formattaData = (data) => {
     const [anno, mese, giorno] = data.split("-");
@@ -88,7 +104,12 @@ function DettaglioAttivita() {
               <strong>Luogo:</strong> {activity.luogo}
             </div>
           </div>
-
+          <div className="detail-item">
+            <Users className="detail-icon" />
+            <div>
+              <strong>Iscritti attuali:</strong> {activity.numeroIscritti || 0}
+            </div>
+          </div>
           <div className="detail-item">
             <Users className="detail-icon" />
             <div>
@@ -132,6 +153,9 @@ function DettaglioAttivita() {
         {showModal && (
         <GestisciUtenzaModal onClose={() => setShowModal(false)} />
       )}
+      <button className="button button-danger" onClick={handleDeleteActivity}>
+          <Trash2 size={18} /> Elimina Attività
+        </button>
       </div>
     </div>
   );

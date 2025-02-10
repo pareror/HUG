@@ -56,6 +56,7 @@ const AttivitaInternaTab = () => {
           scadenzaIscrizioni={formattaData(activity.scadenzaIscrizioni)}
           numeroMinimoPartecipanti={activity.numeroMinimoPartecipanti}
           numeroMassimoPartecipanti={activity.numeroMassimoPartecipanti}
+          numeroIscritti={activity.numeroIscritti}
           luogo={activity.luogo}
           istruttore={activity.istruttore}
         />

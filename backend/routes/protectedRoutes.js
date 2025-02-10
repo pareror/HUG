@@ -1172,14 +1172,17 @@ router.get("/paziente/:id",
     });
 });
 router.get("/attivita-interna", authenticateJWT, (req, res) => {
-  const centerId = req.user.id; // ID del centro dal JWT
+  const centerId = req.user.id; 
 
-  // 🔽 Ordinamento decrescente per data (e ora)
   const sql = `
-    SELECT * 
-    FROM internal_activities 
-    WHERE createdBy = ? 
-    ORDER BY datainizio DESC, orainizio DESC
+    SELECT 
+      a.*, 
+      COUNT(ap.patientId) AS numeroIscritti 
+    FROM internal_activities a
+    LEFT JOIN activity_participants ap ON a.id = ap.activityId
+    WHERE a.createdBy = ?
+    GROUP BY a.id
+    ORDER BY a.datainizio DESC, a.orainizio DESC
   `;
 
   db.all(sql, [centerId], (err, rows) => {
@@ -1190,6 +1193,7 @@ router.get("/attivita-interna", authenticateJWT, (req, res) => {
     return res.json({ activities: rows });
   });
 });
+
 
 router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
   const centerId = req.user.id; // ID del centro dal JWT
@@ -1289,6 +1293,62 @@ router.put("/attivita-interna/:id", authenticateJWT, upload.single("image"), (re
       }
 
       return res.status(200).json({ message: "Attività aggiornata con successo!" });
+    });
+  });
+});
+
+// API per eliminare un'attività interna
+router.delete("/attivita-interna/:id", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ID del centro dal JWT
+
+  // ✅ Verifica se l'attività esiste e appartiene al centro
+  const checkOwnershipSQL = `
+    SELECT createdBy 
+    FROM internal_activities 
+    WHERE id = ?
+  `;
+
+  db.get(checkOwnershipSQL, [activityId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore durante la verifica dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Attività non trovata." });
+    }
+
+    if (row.createdBy !== centerId) {
+      return res.status(403).json({ error: "Non sei autorizzato a eliminare questa attività." });
+    }
+
+    // 🔴 Annullamento delle iscrizioni per pazienti e caregiver prima dell'eliminazione dell'attività
+    const deleteParticipantsSQL = `
+      DELETE FROM activity_participants
+      WHERE activityId = ?
+    `;
+
+    db.run(deleteParticipantsSQL, [activityId], function (err) {
+      if (err) {
+        console.error("❌ Errore durante l'annullamento delle iscrizioni:", err.message);
+        return res.status(500).json({ error: "Errore durante l'annullamento delle iscrizioni." });
+      }
+
+      // ✅ Dopo aver rimosso le iscrizioni, elimina l'attività
+      const deleteActivitySQL = `
+        DELETE FROM internal_activities 
+        WHERE id = ?
+      `;
+
+      db.run(deleteActivitySQL, [activityId], function (err) {
+        if (err) {
+          console.error("❌ Errore durante l'eliminazione dell'attività:", err.message);
+          return res.status(500).json({ error: "Errore durante l'eliminazione dell'attività." });
+        }
+
+        res.status(200).json({ message: "Attività e iscrizioni correlate eliminate con successo." });
+      });
     });
   });
 });
