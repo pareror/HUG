@@ -60,16 +60,30 @@
 
 
 
-  /* Stile del placeholder per le carte attività */
+/* Stile del placeholder per le carte attività */
+.activity-card-placeholder {
+  background-color: #f4f4f4;
+  border-radius: 1rem; /* Bordi arrotondati */
+  height: 500px; /* Altezza fissa */
+  width: 100%; /* Occupa tutta la larghezza disponibile */
+  max-width: 350px; /* Limite massimo per la larghezza */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ccc; /* Bordo solido grigio chiaro */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Evita overflow indesiderati */
+  margin: auto; /* Centra la card nel contenitore */
+  box-sizing: border-box; /* Include padding e bordi nella larghezza */
+}
+
+/* Per gestire meglio il ridimensionamento su schermi piccoli */
+@media (max-width: 768px) {
   .activity-card-placeholder {
-    background-color: #f4f4f4;
-    border-radius: 1rem; /* Bordi arrotondati */
-    height: 500px; /* Altezza fissa per i placeholder */ 
-    width: auto; /* Larghezza automatica */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 2px solid #ccc; /* Bordo solido grigio chiaro */
-    max-width: 100%;
+    max-width: 100%; /* Occupa tutta la larghezza disponibile su schermi piccoli */
+    height: auto; /* Altezza adattabile al contenuto */
   }
+  
+}
 
 .image-card {
   width: 100%;             /* Imposta la larghezza dell'immagine al 100% del suo contenitore */
@@ -148,10 +162,11 @@
 @media (max-width: 700px) {
   .detail-row {
     display: flex;
-    justify-content: space-between;
-    padding: 2.5px 0;
+    flex-direction: column;    /* Dispone etichetta e valore in verticale */
+    align-items: flex-start;   /* Allinea il testo a sinistra */
+    padding: 4px 0;
     border-bottom: 1px solid #eee;
-    gap:330px
+    gap: 2px;                  /* Distanza ridotta tra etichetta e valore */
   }
   .attivita-card-content {
     display: flex;
