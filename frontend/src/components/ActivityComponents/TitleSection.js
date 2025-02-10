@@ -8,6 +8,7 @@ function TitleSection({ value, onChange }) {
             id="title"
             placeholder="Inserisci il titolo"
             maxLength={100}
+            required
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />

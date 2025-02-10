@@ -418,8 +418,7 @@ const generateUniqueUsername = (nome, cognome) => {
     });
 };
 
-router.post(
-    "/aggiungi-paziente",
+router.post("/aggiungi-paziente",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori di centri possono aggiungere pazienti
     upload.single("fotoProfilo"),
@@ -559,8 +558,7 @@ router.post(
         }
     }
 );
-router.post(
-    "/aggiungi-contatto-emergenza",
+router.post("/aggiungi-contatto-emergenza",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori di centri possono aggiungere contatti di emergenza
     async (req, res) => {
@@ -609,8 +607,7 @@ router.post(
     }
 );
 
-router.get(
-    "/paziente/:id",
+router.get("/paziente/:id",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori possono vedere i dettagli del paziente
     async (req, res) => {
@@ -667,8 +664,7 @@ router.get(
       }
     }
   );  
-  router.put(
-    "/paziente/:id",
+  router.put("/paziente/:id",
     authenticateJWT,
     authorizeRole(5),
     upload.none(),
@@ -799,8 +795,7 @@ router.get(
     }
   );
   
-  router.get(
-    "/caregivers",
+  router.get("/caregivers",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori (o chi ha il ruolo corretto) possono accedere
     async (req, res) => {
@@ -826,8 +821,7 @@ router.get(
     }
   );
   
-  router.post(
-    "/aggiungi-caregiver",
+  router.post("/aggiungi-caregiver",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori di centri possono aggiungere caregiver
     upload.single("fotoProfilo"),
@@ -954,8 +948,7 @@ router.get(
       }
     }
   );
-  router.get(
-    "/caregiver/:id",
+  router.get("/caregiver/:id",
     authenticateJWT,
     authorizeRole(5), // Solo gli utenti autorizzati (ad es. direttori) possono vedere i dettagli del caregiver
     async (req, res) => {
@@ -1000,8 +993,7 @@ router.get(
   );
   
 
-  router.put(
-    "/caregiver/:id",
+  router.put("/caregiver/:id",
     authenticateJWT,
     authorizeRole(5), // Solo utenti autorizzati possono modificare i caregiver
     upload.single("fotoProfilo"), // Gestisce l'upload del file se presente
@@ -1125,7 +1117,7 @@ router.get(
       });
     }
   );
-  router.post('/attivita-interna', authenticateJWT, upload.single('image'), (req, res) => {
+  router.post('/attivita-interna', authenticateJWT, authorizeRole(5), upload.single('image'), (req, res) => {
     const {
       title,
       description,
@@ -1181,12 +1173,6 @@ router.get(
 });
 router.get("/attivita-interna", authenticateJWT, (req, res) => {
   const centerId = req.user.id; // ID del centro dal JWT
-  const userRole = req.user.role;
-
-  // ✅ Verifica che solo i direttori di centro possano visualizzare le attività
-  if (userRole !== "direttorecentro") {
-    return res.status(403).json({ error: "Non sei autorizzato a visualizzare queste attività." });
-  }
 
   // 🔽 Ordinamento decrescente per data (e ora)
   const sql = `
@@ -1205,6 +1191,108 @@ router.get("/attivita-interna", authenticateJWT, (req, res) => {
   });
 });
 
+router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
+  const centerId = req.user.id; // ID del centro dal JWT
+  const activityId = req.params.id; // ID dell'attività dall'URL
+
+  const sql = `
+    SELECT * 
+    FROM internal_activities 
+    WHERE id = ? AND createdBy = ?
+  `;
+
+  db.get(sql, [activityId, centerId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore nel recupero dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
+    }
+
+    return res.json({ activity: row });
+  });
+});
+
+router.put("/attivita-interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ID del centro dal JWT
+  const userRole = req.user.role;
+
+  const {
+    title,
+    description,
+    date,
+    time,
+    duration,
+    deadline,
+    minParticipants,
+    maxParticipants,
+    location,
+    instructor,
+  } = req.body;
+
+  const BACKEND_URL = process.env.BACKEND_URL;
+  const image = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
+
+  // ✅ Verifica se l'attività esiste e appartiene al centro
+  const checkOwnershipQuery = `SELECT * FROM internal_activities WHERE id = ? AND createdBy = ?`;
+
+  db.get(checkOwnershipQuery, [activityId, centerId], (err, activity) => {
+    if (err) {
+      console.error("❌ Errore durante la verifica dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!activity) {
+      return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
+    }
+
+    // 🔄 Aggiorna l'attività
+    const updateQuery = `
+      UPDATE internal_activities
+      SET 
+        titolo = ?, 
+        descrizione = ?, 
+        datainizio = ?, 
+        orainizio = ?, 
+        durata = ?, 
+        scadenzaIscrizioni = ?, 
+        numeroMinimoPartecipanti = ?, 
+        numeroMassimoPartecipanti = ?, 
+        luogo = ?, 
+        istruttore = ?, 
+        immagine = COALESCE(?, immagine)
+      WHERE id = ? AND createdBy = ?
+    `;
+
+    const params = [
+      title,
+      description,
+      date,
+      time,
+      duration,
+      deadline,
+      minParticipants,
+      maxParticipants,
+      location,
+      instructor,
+      image, // Aggiorna l'immagine solo se è stata caricata una nuova
+      activityId,
+      centerId,
+    ];
+
+    db.run(updateQuery, params, function (err) {
+      if (err) {
+        console.error("❌ Errore durante l'aggiornamento dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore durante l'aggiornamento dell'attività." });
+      }
+
+      return res.status(200).json({ message: "Attività aggiornata con successo!" });
+    });
+  });
+});
 
   
   module.exports = router;

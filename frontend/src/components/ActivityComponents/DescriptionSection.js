@@ -7,6 +7,7 @@ function DescriptionSection({ value, onChange }) {
             id="description"
             placeholder="Inserisci la descrizione"
             maxLength={500}
+            required
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />

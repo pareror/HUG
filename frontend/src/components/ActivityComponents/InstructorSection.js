@@ -1,31 +1,31 @@
-import { useState, useRef } from "react"
-import { X } from "lucide-react"
+import { useState, useRef } from "react";
+import { X } from "lucide-react";
 
 function InstructorSection({ instructor, image, onChange }) {
-  const [imagePreview, setImagePreview] = useState(null)
-  const fileInputRef = useRef(null)
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
-      onChange("image", file)
-      const reader = new FileReader()
+      onChange("image", file);
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result)
-      }
-      reader.readAsDataURL(file)
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleFileButtonClick = () => {
-    fileInputRef.current.click()
-  }
+    fileInputRef.current.click();
+  };
 
   const handleRemoveImage = () => {
-    setImagePreview(null)
-    onChange("image", null)
-    fileInputRef.current.value = "" // Reset input file
-  }
+    setImagePreview(null);
+    onChange("image", null);
+    fileInputRef.current.value = ""; // Reset input file
+  };
 
   return (
     <div className="create-activity-form-row">
@@ -36,6 +36,7 @@ function InstructorSection({ instructor, image, onChange }) {
           id="instructor"
           value={instructor}
           onChange={(e) => onChange("instructor", e.target.value)}
+          required
         />
       </div>
 
@@ -48,15 +49,23 @@ function InstructorSection({ instructor, image, onChange }) {
             onChange={handleImageChange}
             style={{ display: "none" }}
             accept="image/*"
+            required
           />
-          <button type="button" onClick={handleFileButtonClick} className="create-activity-file-select-button">
+          <button
+            type="button"
+            onClick={handleFileButtonClick}
+            className="create-activity-file-select-button"
+          >
             Scegli file
           </button>
           <div className="create-activity-image-preview-wrapper">
             <div className="create-activity-image-preview">
               {imagePreview ? (
                 <>
-                  <img src={imagePreview || "/placeholder.svg"} alt="Preview" />
+                  <img
+                    src={imagePreview || "/placeholder.svg"}
+                    alt="Preview"
+                  />
                   <button
                     type="button"
                     className="create-activity-remove-image-button"
@@ -74,8 +83,7 @@ function InstructorSection({ instructor, image, onChange }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default InstructorSection
-
+export default InstructorSection;
