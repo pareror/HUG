@@ -191,7 +191,9 @@ const Profilo = () => {
     isTextInput ? { readOnly: !isEditing } : { disabled: !isEditing };
 
   return (
+
     <div className="edit-patient-page" style={{ padding: '20px' }} >
+
       <NavbarDashboard />
 
       <div className="main-content">
