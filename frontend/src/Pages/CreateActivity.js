@@ -97,8 +97,6 @@ function CreateActivity() {
         />
         <InstructorSection instructor={formData.instructor} image={formData.image} onChange={handleInputChange} />
 
-        <label>Immagine dell'attività:</label>
-        <input type="file" accept="image/*" onChange={(e) => handleImageChange(e.target.files[0])} />
 
         <FormActions onSubmit={handleSubmit} onCancel={handleCancelClick} />
       </form>
