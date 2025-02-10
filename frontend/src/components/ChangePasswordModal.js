@@ -90,7 +90,7 @@ const ChangePasswordModal = ({ onClose }) => {
             />
           </div>
 
-          <button type="submit" className="btn-green">Aggiorna Password</button>
+          <button type="submit" className="sub-btn-green">Aggiorna Password</button>
         </form>
       </div>
     </div>
