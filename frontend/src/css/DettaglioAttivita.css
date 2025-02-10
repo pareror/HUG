@@ -92,7 +92,16 @@
   border-radius: 12px;
   margin-bottom: 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  
+  /* Impedisce l'overflow e forza l'andare a capo */
+  overflow-wrap: break-word;  /* Forza il testo a capo quando necessario */
+  word-wrap: break-word;      /* Supporto per browser più vecchi */
+  white-space: normal;        /* Permette il ritorno a capo automatico */
+  
+  max-width: 100%;            /* Limita la larghezza al contenitore genitore */
+  box-sizing: border-box;     /* Include padding e bordo nel calcolo della larghezza */
 }
+
 
 .description-title {
   font-weight: 600;
