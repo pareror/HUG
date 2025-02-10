@@ -44,7 +44,7 @@ const AttivitaInternaTab = () => {
     <div className="activities-grid">
       {activities.map((activity) => (
         <AttivitaInterna
-          key={activity.id}
+          id={activity.id}
           // Mappiamo i campi del DB con le prop del componente
           image={activity.immagine}
           titolo={activity.titolo}
