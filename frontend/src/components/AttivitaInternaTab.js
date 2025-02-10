@@ -12,20 +12,12 @@ const AttivitaInternaTab = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-<<<<<<< HEAD
-
-=======
->>>>>>> 53cdea3a31fed9db8db6423dce04a20bfc1f41b7
         const token = localStorage.getItem("jwt");
         const response = await axios.get("http://localhost:5000/api/attivita-interna", {
           headers: {
             Authorization: `Bearer ${token}`, 
           },
         });
-<<<<<<< HEAD
-
-=======
->>>>>>> 53cdea3a31fed9db8db6423dce04a20bfc1f41b7
         console.log("Attività interne:", response.data.activities);
         setActivities(response.data.activities || []);
       } catch (err) {
