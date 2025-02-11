@@ -42,7 +42,7 @@ function ActivityBar() {
             </button>
           )}
           {isEsternaRoute && (
-            <button className="activity-bar-manage-button">
+            <button className="activity-bar-manage-button" onClick={() => navigate("/dashboard/attivita/esterna/gestisciattivita")}>
               <span className="button-text">Gestisci Attività</span>
               <span className="button-icon">+</span>
             </button>

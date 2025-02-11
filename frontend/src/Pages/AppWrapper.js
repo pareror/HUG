@@ -25,6 +25,7 @@ import CreateCaregiver from './CreateCaregiver';
 import EditCaregiver from './EditCaregiver';
 import PaginaDettaglioAttivita from './PaginaDettaglioAttivita';
 import EditActivity from './EditActivity';
+import GestisciAttivita from './GestisciAttivita';
 
 const Website = () => {
     return ( 
@@ -185,8 +186,14 @@ const Website = () => {
         
             }
             />
-
-        </Routes>  
+            
+            <Route path="/dashboard/attivita/esterna/gestisciattivita" element={
+                    <GestisciAttivita />
+               
+                    
+            }
+            />
+                </Routes>  
             
         </div>
      );
