@@ -1,128 +1,131 @@
-import React, { useState } from "react";
-import { X } from "lucide-react"; // Se vuoi usare l'icona X di Lucide come nel tuo esempio
-import "../css/ChangePassword.css"; // Usa lo stesso CSS o personalizzalo
-const GestisciUtenzaModal = ({ onClose }) => {
-  // Stato per selezione tipo di utenza
-  const [userType, setUserType] = useState("Pazienti"); /*userType – Stato che gestisce quale tipo di utenza è selezionata (“Pazienti” o “Caregiver”)*/
+import React, { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import axios from "axios";
+import "../css/ChangePassword.css";
 
-  // Stato per la barra di ricerca
-  const [searchTerm, setSearchTerm] = useState(""); /*searchTerm – Stato per la stringa di ricerca*/
+const GestisciUtenzaModal = ({ onClose, activityId }) => {
+  const [userType, setUserType] = useState("Pazienti");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [pazienti, setPazienti] = useState([]);
+  const [caregiver, setCaregiver] = useState([]);
 
-  // Stato locale per pazienti (con la proprietà "added" che indica se l’utente è aggiunto o rimosso) 
-  //pazienti e caregiver – Esempi di dati (array di oggetti) con proprietà come nome, cognome, matricola, disabilita, added. 
-  const [pazienti, setPazienti] = useState([
-    { id: 1, nome: "Mario", cognome: "Rossi", matricola: "ABC123", disabilita: true, added: false },
-    { id: 2, nome: "Luigi", cognome: "Verdi", matricola: "DEF456", disabilita: false, added: true },
-    { id: 3, nome: "Chiara", cognome: "Bianchi", matricola: "GHI789", disabilita: true, added: false },
-  ]);
+  // 🔄 Recupera pazienti e caregiver dal backend
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
 
-  // Stato locale per caregiver
-  const [caregiver, setCaregiver] = useState([
-    { id: 101, nome: "Anna", cognome: "Gentile", matricola: "XYZ999", added: false },
-    { id: 102, nome: "Roberto", cognome: "Esposito", matricola: "ZXW111", added: true },
-  ]);
+        const [pazientiRes, caregiverRes] = await Promise.all([
+          axios.get(`http://localhost:5000/api/attivita/${activityId}/pazienti`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`http://localhost:5000/api/attivita/${activityId}/caregiver`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+        console.log(pazientiRes.data);
+        console.log(caregiverRes.data);
+        setPazienti(pazientiRes.data);
+        setCaregiver(caregiverRes.data);
+      } catch (error) {
+        console.error("Errore nel recupero utenti:", error);
+      }
+    };
 
-  /**
-   * Funzione per gestire il toggle di "Aggiungi" / "Rimuovi" di un utente.
-   * Se added è true, viene settato a false, e viceversa.
-   */
-  const handleToggleUser = (id) => {
-    if (userType === "Pazienti") {
-      setPazienti((prev) =>
-        prev.map((p) =>
-          p.id === id ? { ...p, added: !p.added } : p
-        )
-      );
-    } else {
-      setCaregiver((prev) =>
-        prev.map((c) =>
-          c.id === id ? { ...c, added: !c.added } : c
-        )
-      );
+    fetchUsers();
+  }, [activityId]);
+
+  // ✅ Funzione per iscrivere/disiscrivere utenti
+  const handleToggleUser = async (userId, isIscritto) => {
+    try {
+      const token = localStorage.getItem("jwt");
+
+      if (isIscritto) {
+        await axios.delete(`http://localhost:5000/api/attivita/${activityId}/disiscrivi`, {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { userId },
+        });
+      } else {
+        await axios.post(`http://localhost:5000/api/attivita/${activityId}/iscrivi`, { userId }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      // 🔄 Aggiorna lo stato locale dopo l'iscrizione/disiscrizione
+      if (userType === "Pazienti") {
+        setPazienti((prev) =>
+          prev.map((p) => (p.id === userId ? { ...p, iscritto: !isIscritto } : p))
+        );
+      } else {
+        setCaregiver((prev) =>
+          prev.map((c) => (c.id === userId ? { ...c, iscritto: !isIscritto } : c))
+        );
+      }
+    } catch (error) {
+      console.error("Errore nell'iscrizione/disiscrizione:", error);
     }
   };
 
-  /**
-   * Filtra la lista di utenti in base al searchTerm.
-   * Il filtro viene applicato su nome, cognome e matricola.
-   */
-  const filteredUsers = (userType === "Pazienti" ? pazienti : caregiver).filter(
-    (user) => {
-      const fullString = `${user.nome} ${user.cognome} ${user.matricola}`.toLowerCase();
-      return fullString.includes(searchTerm.toLowerCase());
-    }
+  // 🔎 Filtra utenti in base alla ricerca
+  const filteredUsers = (userType === "Pazienti" ? pazienti : caregiver).filter((user) =>
+    `${user.nome} ${user.cognome} ${user.codiceFiscale}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        {/* Bottone di chiusura in alto a destra */}
         <button className="close-button" onClick={onClose}>
           <X />
         </button>
 
-        {/* Titolo del popup */}
         <h2>Gestisci Utenza</h2>
 
-        {/* Sezione per menù a tendina e barra di ricerca */}
         <div className="change-password-form">
-          {/* Menu a tendina per selezionare Pazienti o Caregiver */}
           <div className="form-group">
             <label>Tipo di Utenza</label>
-            <select
-              value={userType}
-              onChange={(e) => {
-                setUserType(e.target.value);
-                setSearchTerm(""); // Reset della ricerca quando cambio tipo di utenza
-              }}
-            >
+            <select value={userType} onChange={(e) => setUserType(e.target.value)}>
               <option value="Pazienti">Pazienti</option>
               <option value="Caregiver">Caregiver</option>
             </select>
           </div>
 
-          {/* Barra di ricerca con placeholder dinamico */}
           <div className="form-group">
             <label>Cerca</label>
             <input
               type="text"
-              placeholder={userType === "Pazienti" ? "Cerca Pazienti" : "Cerca Caregiver"}
+              placeholder={`Cerca ${userType}`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
-        {/* Elenco dinamico di pazienti o caregiver */}
-        <div className="gestisci-utenza-list" /* Aggiunto */>
+        <div className="gestisci-utenza-list">
           {filteredUsers.length === 0 ? (
-            <p style={{ textAlign: "center" /* Aggiunto */ }}>Nessun utente trovato</p>
+            <p style={{ textAlign: "center" }}>Nessun utente trovato</p>
           ) : (
             filteredUsers.map((user) => (
-              <div className="gestisci-utenza-list-item" key={user.id} /* Aggiunto */>
+              <div className="gestisci-utenza-list-item" key={user.id}>
                 <span>
-                  <strong>{user.nome} {user.cognome}</strong> - {user.matricola}
-                  {/* Se è un paziente con disabilità, mostra il simbolo */}
+                  <strong>{user.nome} {user.cognome}</strong> - {user.codiceFiscale}
                   {userType === "Pazienti" && user.disabilita && (
-                    <span style={{ marginLeft: "8px", color: "#00a783" /* Aggiunto */ }}>
-                      ♿
-                    </span>
+                    <span style={{ marginLeft: "8px", color: "#00a783" }}>♿</span>
                   )}
                 </span>
                 <button
-                    type="button"
-                    className={user.added ? "sub-btn-red" : "sub-btn-green"} // Uso condizionale della classe
-                    onClick={() => handleToggleUser(user.id)}
-                    style={{ maxWidth: "100px",  marginLeft: "1rem" /* Aggiunto */ }}
+                  type="button"
+                  className={user.iscritto ? "sub-btn-red" : "sub-btn-green"}
+                  onClick={() => handleToggleUser(user.id, user.iscritto)}
                 >
-                    {user.added ? "Rimuovi" : "Aggiungi"}
+                  {user.iscritto ? "Rimuovi" : "Aggiungi"}
                 </button>
-
               </div>
             ))
           )}
         </div>
-       </div>
+      </div>
     </div>
   );
 };
