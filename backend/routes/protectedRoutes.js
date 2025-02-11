@@ -1172,14 +1172,17 @@ router.get("/paziente/:id",
     });
 });
 router.get("/attivita-interna", authenticateJWT, (req, res) => {
-  const centerId = req.user.id; // ID del centro dal JWT
+  const centerId = req.user.id; 
 
-  // 🔽 Ordinamento decrescente per data (e ora)
   const sql = `
-    SELECT * 
-    FROM internal_activities 
-    WHERE createdBy = ? 
-    ORDER BY datainizio DESC, orainizio DESC
+    SELECT 
+      a.*, 
+      COUNT(ap.patientId) AS numeroIscritti 
+    FROM internal_activities a
+    LEFT JOIN activity_participants ap ON a.id = ap.activityId
+    WHERE a.createdBy = ?
+    GROUP BY a.id
+    ORDER BY a.datainizio DESC, a.orainizio DESC
   `;
 
   db.all(sql, [centerId], (err, rows) => {
@@ -1190,6 +1193,7 @@ router.get("/attivita-interna", authenticateJWT, (req, res) => {
     return res.json({ activities: rows });
   });
 });
+
 
 router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
   const centerId = req.user.id; // ID del centro dal JWT
@@ -1293,5 +1297,154 @@ router.put("/attivita-interna/:id", authenticateJWT, upload.single("image"), (re
   });
 });
 
+// API per eliminare un'attività interna
+router.delete("/attivita-interna/:id", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ID del centro dal JWT
+
+  // ✅ Verifica se l'attività esiste e appartiene al centro
+  const checkOwnershipSQL = `
+    SELECT createdBy 
+    FROM internal_activities 
+    WHERE id = ?
+  `;
+
+  db.get(checkOwnershipSQL, [activityId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore durante la verifica dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Attività non trovata." });
+    }
+
+    if (row.createdBy !== centerId) {
+      return res.status(403).json({ error: "Non sei autorizzato a eliminare questa attività." });
+    }
+
+    // 🔴 Annullamento delle iscrizioni per pazienti e caregiver prima dell'eliminazione dell'attività
+    const deleteParticipantsSQL = `
+      DELETE FROM activity_participants
+      WHERE activityId = ?
+    `;
+
+    db.run(deleteParticipantsSQL, [activityId], function (err) {
+      if (err) {
+        console.error("❌ Errore durante l'annullamento delle iscrizioni:", err.message);
+        return res.status(500).json({ error: "Errore durante l'annullamento delle iscrizioni." });
+      }
+
+      // ✅ Dopo aver rimosso le iscrizioni, elimina l'attività
+      const deleteActivitySQL = `
+        DELETE FROM internal_activities 
+        WHERE id = ?
+      `;
+
+      db.run(deleteActivitySQL, [activityId], function (err) {
+        if (err) {
+          console.error("❌ Errore durante l'eliminazione dell'attività:", err.message);
+          return res.status(500).json({ error: "Errore durante l'eliminazione dell'attività." });
+        }
+
+        res.status(200).json({ message: "Attività e iscrizioni correlate eliminate con successo." });
+      });
+    });
+  });
+});
+
+router.get("/attivita/:id/pazienti", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ✅ ID del centro diurno dal JWT
+
+  const sql = `
+    SELECT 
+      p.id, 
+      p.nome, 
+      p.cognome, 
+      p.codiceFiscale, 
+      p.disabilita,
+      CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
+    FROM profiles p
+    LEFT JOIN activity_participants ap 
+      ON p.id = ap.patientId AND ap.activityId = ?
+    WHERE p.role = 'paziente' AND p.centroDiurnoId = ? -- ✅ Filtraggio per centro diurno
+    ORDER BY iscritto DESC, p.nome ASC
+  `;
+
+  db.all(sql, [activityId, centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero dei pazienti:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    console.log("✅ Pazienti trovati:", rows);
+    res.json(rows);
+  });
+});
+
+router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ✅ ID del centro diurno dal JWT
+
+  const sql = `
+    SELECT 
+      p.id, 
+      p.nome, 
+      p.cognome, 
+      p.codiceFiscale,
+      CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
+    FROM profiles p
+    LEFT JOIN activity_participants ap 
+      ON p.id = ap.patientId AND ap.activityId = ?
+    WHERE p.role = 'caregiver' AND p.centroDiurnoId = ? -- ✅ Filtraggio per centro diurno
+    ORDER BY iscritto DESC, p.nome ASC
+  `;
+
+  db.all(sql, [activityId, centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero dei caregiver:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    res.json(rows);
+  });
+});
+router.post("/attivita/:id/iscrivi", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const { userId } = req.body;
+
   
+    const insertQuery = `
+      INSERT INTO activity_participants (activityId, patientId)
+      VALUES (?, ?)
+    `;
+
+    db.run(insertQuery, [activityId, userId], function (err) {
+      if (err) {
+        console.error("❌ Errore durante l'iscrizione:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+
+      res.status(201).json({ message: "Utente iscritto con successo." });
+    });
+});
+router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const { userId } = req.body;
+  const centerId = req.user.id; // ID del centro dal JWT
+
+    const deleteQuery = `
+      DELETE FROM activity_participants
+      WHERE activityId = ? AND patientId = ?
+    `;
+
+    db.run(deleteQuery, [activityId, userId], function (err) {
+      if (err) {
+        console.error("❌ Errore durante la disiscrizione:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+
+      res.status(200).json({ message: "Utente disiscritto con successo." });
+    });
+});
+
   module.exports = router;

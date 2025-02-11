@@ -156,3 +156,22 @@
     max-height: 300px;
   }
 }
+/* Pulsante rosso per eliminazione attività */
+.button-danger {
+  background-color: #e74c3c; /* Rosso vivo */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spazio tra l'icona e il testo */
+  margin-left: auto; /* Allinea il pulsante a destra */
+}
+
+.button-danger:hover {
+  background-color: #c0392b; /* Rosso più scuro per hover */
+}
