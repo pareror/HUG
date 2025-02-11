@@ -1,9 +1,17 @@
+.det-pag-main{
+  min-height: 100vh;
+    background-color: #e7ebee;
+    padding: 20px
+}
 .det-pag-container {
-    padding: 20px;
-    max-width: 1200px 0 auto;
-    margin: 0 auto;
-    background-color: #f8f9fa;
-    min-height: 100vh;
+  
+  max-width: 100%;
+  margin-top: 2%;
+  padding: 3% 3% 3%;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
   }
   
   .det-pag-header {
@@ -43,10 +51,9 @@
   }
   
   .det-pag-payment-status-card {
-    background-color: white;
     border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 3%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   }
   
   .det-pag-status-header {
@@ -105,6 +112,7 @@
     gap: 16px;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
     align-items: center;
   }
   
@@ -138,14 +146,23 @@
     padding: 8px 16px;
     font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
   }
   
   .det-pag-register-payment-button:hover {
     background-color: #1f2937;
   }
   
-  @media (max-width: 768px) {
+  .det-pag-paid-button {
+    background-color: #10b981;
+    color: white;
+    cursor: default;
+  }
+  
+  .det-pag-paid-button:hover {
+    background-color: #0e9f6e; /* Colore verde leggermente più scuro */
+  }
+  @media (max-width:1000px) {
     .det-pag-total-info {
       flex-direction: column;
       align-items: flex-start;
