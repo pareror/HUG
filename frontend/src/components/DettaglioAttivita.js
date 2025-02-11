@@ -151,7 +151,7 @@ function DettaglioAttivita() {
         </button>
         <button className="button button-secondary" onClick={() => setShowModal(true)}>Gestisci Utenza</button>
         {showModal && (
-        <GestisciUtenzaModal onClose={() => setShowModal(false)} />
+        <GestisciUtenzaModal onClose={() => setShowModal(false)} activityId={id} />
       )}
       <button className="button button-danger" onClick={handleDeleteActivity}>
           <Trash2 size={18} /> Elimina Attività
