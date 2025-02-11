@@ -1353,5 +1353,98 @@ router.delete("/attivita-interna/:id", authenticateJWT, (req, res) => {
   });
 });
 
+router.get("/attivita/:id/pazienti", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ✅ ID del centro diurno dal JWT
+
+  const sql = `
+    SELECT 
+      p.id, 
+      p.nome, 
+      p.cognome, 
+      p.codiceFiscale, 
+      p.disabilita,
+      CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
+    FROM profiles p
+    LEFT JOIN activity_participants ap 
+      ON p.id = ap.patientId AND ap.activityId = ?
+    WHERE p.role = 'paziente' AND p.centroDiurnoId = ? -- ✅ Filtraggio per centro diurno
+    ORDER BY iscritto DESC, p.nome ASC
+  `;
+
+  db.all(sql, [activityId, centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero dei pazienti:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    console.log("✅ Pazienti trovati:", rows);
+    res.json(rows);
+  });
+});
+
+router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const centerId = req.user.id; // ✅ ID del centro diurno dal JWT
+
+  const sql = `
+    SELECT 
+      p.id, 
+      p.nome, 
+      p.cognome, 
+      p.codiceFiscale,
+      CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
+    FROM profiles p
+    LEFT JOIN activity_participants ap 
+      ON p.id = ap.patientId AND ap.activityId = ?
+    WHERE p.role = 'caregiver' AND p.centroDiurnoId = ? -- ✅ Filtraggio per centro diurno
+    ORDER BY iscritto DESC, p.nome ASC
+  `;
+
+  db.all(sql, [activityId, centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero dei caregiver:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    res.json(rows);
+  });
+});
+router.post("/attivita/:id/iscrivi", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const { userId } = req.body;
+
   
+    const insertQuery = `
+      INSERT INTO activity_participants (activityId, patientId)
+      VALUES (?, ?)
+    `;
+
+    db.run(insertQuery, [activityId, userId], function (err) {
+      if (err) {
+        console.error("❌ Errore durante l'iscrizione:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+
+      res.status(201).json({ message: "Utente iscritto con successo." });
+    });
+});
+router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const { userId } = req.body;
+  const centerId = req.user.id; // ID del centro dal JWT
+
+    const deleteQuery = `
+      DELETE FROM activity_participants
+      WHERE activityId = ? AND patientId = ?
+    `;
+
+    db.run(deleteQuery, [activityId, userId], function (err) {
+      if (err) {
+        console.error("❌ Errore durante la disiscrizione:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+
+      res.status(200).json({ message: "Utente disiscritto con successo." });
+    });
+});
+
   module.exports = router;
