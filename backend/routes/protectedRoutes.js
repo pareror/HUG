@@ -1446,5 +1446,73 @@ router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
       res.status(200).json({ message: "Utente disiscritto con successo." });
     });
 });
+router.get("/attivita-esterna", authenticateJWT, (req, res) => {
+  const sql = `
+    SELECT * 
+    FROM external_activities
+    ORDER BY datainizio DESC, orainizio DESC
+  `;
 
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero delle attività esterne:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    //console.log("✅ Attività esterne recuperate:", rows);
+    res.json({ activities: rows });
+  });
+});
+
+router.post("/attivita-esterna", authenticateJWT, (req, res) => {
+  const {
+    titolo,
+    descrizione,
+    datainizio,
+    orainizio,
+    orariofine,
+    luogo,
+    numeroMinimoPartecipanti,
+    numeroMassimoPartecipanti,
+    istruttore,
+    immagine,
+    scadenzaIscrizioniData,
+    scadenzaIscrizioniOrario,
+  } = req.body;
+
+  const centerId = req.user.id;
+
+  const sql = `
+    INSERT INTO external_activities (
+      titolo, descrizione, datainizio, orainizio, orariofine,
+      luogo, numeroMinimoPartecipanti, numeroMassimoPartecipanti,
+      istruttore, immagine, scadenzaIscrizioniData, scadenzaIscrizioniOrario, createdBy
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.run(
+    sql,
+    [
+      titolo,
+      descrizione,
+      datainizio,
+      orainizio,
+      orariofine,
+      luogo,
+      numeroMinimoPartecipanti,
+      numeroMassimoPartecipanti,
+      istruttore,
+      immagine,
+      scadenzaIscrizioniData,
+      scadenzaIscrizioniOrario,
+      centerId,
+    ],
+    function (err) {
+      if (err) {
+        console.error("❌ Errore durante la creazione dell'attività esterna:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      res.status(201).json({ message: "Attività esterna creata con successo!", activityId: this.lastID });
+    }
+  );
+});
   module.exports = router;
