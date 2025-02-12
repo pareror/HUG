@@ -1,45 +1,46 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, Trash2 } from "lucide-react";
+import axios from "axios";
 import '../../css/DettaglioAttivita.css';
+import GestisciUtenzaModal from "../GestisciUtenzaModal";
 
 function DettaglioAttivitaEsterne() {
-  // Navigazione
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [activity, setActivity] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  // Esempio di dati mock (fittizi) per l'attività
-  const [activity] = useState({
-    titolo: "Titolo di prova",
-    immagine: "/placeholder.svg",
-    datainizio: "2025-06-15",
-    orainizio: "09:00",
-    durata: 2,
-    luogo: "Location di esempio",
-    numeroIscritti: 5,
-    numeroMinimoPartecipanti: 8,
-    numeroMassimoPartecipanti: 20,
-    istruttore: "Mario Rossi",
-    scadenzaIscrizioni: "2025-06-10",
-    descrizione: "Questa è una descrizione di prova dell'attività esterna."
-  });
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/attivita-esterna/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+        setActivity(response.data.activity);
+      } catch (err) {
+        console.error("Errore durante il recupero dell'attività:", err);
+        setError("Errore durante il caricamento dell'attività.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Funzione di navigazione per modificare l'attività
+    fetchActivity();
+  }, [id]);
+
+  if (loading) return <p>Caricamento in corso...</p>;
+  if (error) return <p>{error}</p>;
+  if (!activity) return <p>Attività non trovata.</p>;
+
   const handleModifyActivity = () => {
-    // Qui avviene soltanto la navigazione verso una pagina di modifica
-    navigate(`/dashboard/attivita/esterna/1/modifica`);
+    navigate(`/dashboard/attivita/esterna/${id}/modifica`);
   };
 
-  // Funzione di esempio per l'eliminazione (senza backend)
-  const handleDeleteActivity = () => {
-    if (window.confirm("Sei sicuro di voler eliminare questa attività?")) {
-      // Logica solo lato client, senza chiamate a server
-      alert("Attività (fittizia) eliminata.");
-      navigate("/dashboard/attivita/esterna");
-    }
-  };
-
-  // Funzione per formattare la data
   const formattaData = (data) => {
     const [anno, mese, giorno] = data.split("-");
     return `${giorno}-${mese}-${anno}`;
@@ -56,7 +57,7 @@ function DettaglioAttivitaEsterne() {
 
       <div className="content-wrapper">
         <img
-          src={activity.immagine}
+          src={activity.immagine || "/placeholder.svg"}
           alt={activity.titolo}
           className="activity-image"
         />
@@ -136,12 +137,11 @@ function DettaglioAttivitaEsterne() {
         <button className="button button-primary" onClick={handleModifyActivity}>
           Modifica Attività
         </button>
-        <button className="button button-secondary" >Gestisci Utenza</button>
-       
-        {/* Esempio di pulsante senza alcuna chiamata al backend */}
-        <button className="button button-danger" onClick={handleDeleteActivity}>
-          <Trash2 size={18} /> Elimina Attività
-        </button>
+        <button className="button button-secondary" onClick={() => setShowModal(true)}>Gestisci Utenza</button>
+        {showModal && (
+          <GestisciUtenzaModal onClose={() => setShowModal(false)} activityId={id} />
+        )}
+
       </div>
     </div>
   );

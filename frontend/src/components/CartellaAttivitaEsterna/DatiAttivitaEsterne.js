@@ -1,27 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "../../css/DettaglioAttivita.css";
 import DettaglioAttivitaEsterne from "./DettaglioAttivitaEsterne";
 
 const DatiAttivitaEsterne = ({ selectedKey }) => {
-  // Dati fittizi dell'attività
-  const activityData = {
-    id: 1,
-    titolo: "Titolo fittizio",
-    immagine: "/placeholder.svg",
-    datainizio: "2025-06-15",
-    orainizio: "09:00",
-    durata: 2,
-    luogo: "Luogo di esempio",
-    numeroIscritti: 5,
-    numeroMinimoPartecipanti: 8,
-    numeroMassimoPartecipanti: 20,
-    istruttore: "Mario Rossi",
-    scadenzaIscrizioni: "2025-06-10",
-    descrizione: "Questa è una descrizione di prova dell'attività esterna."
-  };
+  const [activity, setActivity] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Invece di effettuare chiamate al server, passiamo direttamente i dati fittizi
-  return <DettaglioAttivitaEsterne {...activityData} />;
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/attivita-esterna/${selectedKey}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+        setActivity(response.data.activity);
+      } catch (err) {
+        console.error("❌ Errore nel recupero dell'attività esterna:", err);
+        setError("Impossibile recuperare i dettagli dell'attività.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivity();
+  }, [selectedKey]);
+
+  if (loading) return <div>Caricamento...</div>;
+  if (error) return <div>{error}</div>;
+  if (!activity) return <div>Attività non trovata.</div>;
+
+  return <DettaglioAttivitaEsterne {...activity} />;
 };
 
 export default DatiAttivitaEsterne;

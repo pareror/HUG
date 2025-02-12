@@ -1515,4 +1515,28 @@ router.post("/attivita-esterna", authenticateJWT, (req, res) => {
     }
   );
 });
+
+router.get("/attivita-esterna/:id", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+
+  const sql = `
+    SELECT * 
+    FROM external_activities
+    WHERE id = ?
+  `;
+
+  db.get(sql, [activityId], (err, activity) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero dell'attività esterna:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!activity) {
+      return res.status(404).json({ error: "Attività non trovata." });
+    }
+
+    res.json({ activity });
+  });
+});
+
   module.exports = router;
