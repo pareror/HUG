@@ -197,9 +197,6 @@ const Website = () => {
 
             }
             />
-
-        </Routes>  
-
             <Route path="/dashboard/attivita/esterna/gestisciattivita" element={
                     <GestisciAttivita />
                 //route da rendere protetta
@@ -209,9 +206,11 @@ const Website = () => {
                     <DettaglioPreventivo />
                 //route da rendere protetta
             }
-            />
-                </Routes>  
+            /> 
 
+        </Routes>  
+
+            
         </div>
      );
 }
