@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, EyeOff  } from "lucide-react";
 import axios from "axios";
 import '../../css/DettaglioAttivita.css';
 import GestisciUtenzaModal from "../GestisciUtenzaModal";
@@ -42,7 +42,9 @@ function DettaglioAttivitaEsterne() {
     const [anno, mese, giorno] = data.split("-");
     return `${giorno}-${mese}-${anno}`;
   };
+  const handleHideActivity = async () => {
 
+  }
   return (
     <div className="activity-detail">
       <button onClick={() => navigate(-1)} className="details-back-button">
@@ -142,12 +144,12 @@ function DettaglioAttivitaEsterne() {
       {showModal && (
         <GestisciUtenzaModal
           onClose={() => setShowModal(false)}
-          activityId={activityId}
+          activityId={id}
         />
       )}
         {/* Esempio di pulsante senza alcuna chiamata al backend */}
-        <button className="button button-danger" onClick={handleDeleteActivity}>
-          <Trash2 size={18} /> Nascondi Attivita
+        <button className="button button-danger" onClick={handleHideActivity}>
+          <EyeOff size={18} /> Nascondi Attivita
         </button>
       
       </div>
