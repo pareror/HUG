@@ -26,6 +26,8 @@ import EditCaregiver from './EditCaregiver';
 import PaginaDettaglioAttivita from './PaginaDettaglioAttivita';
 import EditActivity from './EditActivity';
 import ConsultaPreventivi from './ConsultaPreventivi';
+import GestisciAttivita from './GestisciAttivita';
+import DettaglioPreventivo from './DettaglioPreventivo';
 
 const Website = () => {
     return ( 
@@ -197,7 +199,19 @@ const Website = () => {
             />
 
         </Routes>  
-            
+
+            <Route path="/dashboard/attivita/esterna/gestisciattivita" element={
+                    <GestisciAttivita />
+                //route da rendere protetta
+            }
+            />
+             <Route path="/dashboard/attivita/esterna/preventivi/preventivo" element={
+                    <DettaglioPreventivo />
+                //route da rendere protetta
+            }
+            />
+                </Routes>  
+
         </div>
      );
 }
