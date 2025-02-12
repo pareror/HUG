@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, Trash2 } from "lucide-react";
 import '../../css/DettaglioAttivita.css';
-
+import GestisciUtenzaModal from "../GestisciUtenzaModal";
+import ConsultaPreventivi from "../../Pages/ConsultaPreventivi";
 function DettaglioAttivitaEsterne() {
   // Navigazione
   const navigate = useNavigate();
-
+  const [showModal, setShowModal] = useState(false);
+  const activityId = 1; 
   // Esempio di dati mock (fittizi) per l'attività
   const [activity] = useState({
     titolo: "Titolo di prova",
@@ -133,15 +135,24 @@ function DettaglioAttivitaEsterne() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary" onClick={handleModifyActivity}>
-          Modifica Attività
+        <button className="button button-primary"onClick={() => navigate("/dashboard/attivita/esterna/4/consulta-preventivi")}>
+          Consulta Preventivi
         </button>
-        <button className="button button-secondary" >Gestisci Utenza</button>
-       
+        <button className="button button-secondary" onClick={() => setShowModal(true)}>
+        Gestisci Utenza
+      </button>       
+      {/* Se showModal è true, renderizzo il componente GestisciUtenzaModal */}
+      {showModal && (
+        <GestisciUtenzaModal
+          onClose={() => setShowModal(false)}
+          activityId={activityId}
+        />
+      )}
         {/* Esempio di pulsante senza alcuna chiamata al backend */}
         <button className="button button-danger" onClick={handleDeleteActivity}>
-          <Trash2 size={18} /> Elimina Attività
+          <Trash2 size={18} /> Nascondi Attivita
         </button>
+      
       </div>
     </div>
   );

@@ -215,6 +215,10 @@ const Website = () => {
                 }
              />
 
+                <Route path="/dashboard/attivita/esterna/4/consulta-preventivi" element={
+                    <ConsultaPreventivi />
+                }
+            />
 
         </Routes>  
         </div>
