@@ -41,7 +41,7 @@ export default function PreventiviTab() {
       ];
     
     return (
-        <div className="container">
+    <div className="container">
       <div className="header">
         <h1>Preventivi Attività esterne</h1>
         <p>Qui troverai la lista delle attività esterne e i loro preventivi</p>
