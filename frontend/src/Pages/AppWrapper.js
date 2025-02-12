@@ -25,6 +25,7 @@ import CreateCaregiver from './CreateCaregiver';
 import EditCaregiver from './EditCaregiver';
 import PaginaDettaglioAttivita from './PaginaDettaglioAttivita';
 import EditActivity from './EditActivity';
+import ConsultaPreventivi from './ConsultaPreventivi';
 import GestisciAttivita from './GestisciAttivita';
 import DettaglioPreventivo from './DettaglioPreventivo';
 
@@ -187,7 +188,15 @@ const Website = () => {
         
             }
             />
-            
+
+            <Route path="/dashboard/attivita/esterna/preventivi" element={
+        
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ConsultaPreventivi />
+                </ProtectedRoute>
+
+            }
+            />
             <Route path="/dashboard/attivita/esterna/gestisciattivita" element={
                     <GestisciAttivita />
                 //route da rendere protetta
@@ -197,8 +206,10 @@ const Website = () => {
                     <DettaglioPreventivo />
                 //route da rendere protetta
             }
-            />
-                </Routes>  
+            /> 
+
+        </Routes>  
+
             
         </div>
      );
