@@ -27,6 +27,8 @@ import PaginaDettaglioAttivita from './PaginaDettaglioAttivita';
 import EditActivity from './EditActivity';
 import GestisciAttivita from './GestisciAttivita';
 import DettaglioPreventivo from './DettaglioPreventivo';
+import DettaglioAttivitaEsterne from '../Components/CartellaAttivitaEsterna/DettaglioAttivitaEsterne';
+import PaginaDettaglioAttivitaEsterne from './PaginaDettaglioAttivitaEsterne';
 
 const Website = () => {
     return ( 
@@ -198,7 +200,12 @@ const Website = () => {
                 //route da rendere protetta
             }
             />
+             <Route path="/dashboard/attivita/esterna/:id" element={
+                <PaginaDettaglioAttivitaEsterne />}
+                 />
                 </Routes>  
+
+               
             
         </div>
      );
