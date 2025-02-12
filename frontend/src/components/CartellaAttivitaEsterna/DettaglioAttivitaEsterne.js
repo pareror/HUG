@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, Trash2 } from "lucide
 import axios from "axios";
 import '../../css/DettaglioAttivita.css';
 import GestisciUtenzaModal from "../GestisciUtenzaModal";
+import ConsultaPreventivi from "../../Pages/ConsultaPreventivi";
 
 function DettaglioAttivitaEsterne() {
   const { id } = useParams();
@@ -36,11 +37,7 @@ function DettaglioAttivitaEsterne() {
   if (loading) return <p>Caricamento in corso...</p>;
   if (error) return <p>{error}</p>;
   if (!activity) return <p>Attività non trovata.</p>;
-
-  const handleModifyActivity = () => {
-    navigate(`/dashboard/attivita/esterna/${id}/modifica`);
-  };
-
+  
   const formattaData = (data) => {
     const [anno, mese, giorno] = data.split("-");
     return `${giorno}-${mese}-${anno}`;
@@ -134,14 +131,25 @@ function DettaglioAttivitaEsterne() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary" onClick={handleModifyActivity}>
-          Modifica Attività
+        <button className="button button-primary"onClick={() => navigate("/dashboard/attivita/esterna/4/consulta-preventivi")}>
+          Consulta Preventivi
         </button>
-        <button className="button button-secondary" onClick={() => setShowModal(true)}>Gestisci Utenza</button>
-        {showModal && (
-          <GestisciUtenzaModal onClose={() => setShowModal(false)} activityId={id} />
-        )}
 
+        <button className="button button-secondary" onClick={() => setShowModal(true)}>
+        Gestisci Utenza
+      </button>       
+      {/* Se showModal è true, renderizzo il componente GestisciUtenzaModal */}
+      {showModal && (
+        <GestisciUtenzaModal
+          onClose={() => setShowModal(false)}
+          activityId={activityId}
+        />
+      )}
+        {/* Esempio di pulsante senza alcuna chiamata al backend */}
+        <button className="button button-danger" onClick={handleDeleteActivity}>
+          <Trash2 size={18} /> Nascondi Attivita
+        </button>
+      
       </div>
     </div>
   );
