@@ -28,6 +28,7 @@ import EditActivity from './EditActivity';
 import ConsultaPreventivi from './ConsultaPreventivi';
 import GestisciAttivita from './GestisciAttivita';
 import DettaglioPreventivo from './DettaglioPreventivo';
+import PazientiPage from './PazientiPage';
 
 const Website = () => {
     return ( 
@@ -198,7 +199,14 @@ const Website = () => {
             }
             />
 
-        </Routes>  
+            <Route path="/pazienti" element={
+                    
+                    <ProtectedRoute requiredPermission={[2,3,5]}>
+                    <PazientiPage />
+                    </ProtectedRoute>
+
+                }
+                />
 
             <Route path="/dashboard/attivita/esterna/gestisciattivita" element={
                     <GestisciAttivita />
@@ -209,9 +217,13 @@ const Website = () => {
                     <DettaglioPreventivo />
                 //route da rendere protetta
             }
-            />
-                </Routes>  
+            /> 
 
+            
+
+        </Routes>  
+
+            
         </div>
      );
 }

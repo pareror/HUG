@@ -9,7 +9,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import "../css/NavbarDashboard.css";
+import "../css/NavbarPazienti.css";
 import LogoutButton from "./LogoutButton";
 import NotificationDropdown from "./NotificationDropdown";
 import axios from "axios";
@@ -146,38 +146,6 @@ const NavbarDashboard = () => {
           </div>
         </div>
 
-        {/* Dropdown Gestione Utenza */}
-        <div className="dropdown">
-          <button
-            className="dropdown-toggle"
-            onClick={() => toggleDropdown("gestioneUtenza")}
-          >
-            Gestione Utenza{" "}
-            {activeDropdown === "gestioneUtenza" ? (
-              <ChevronUp size={16} />
-            ) : (
-              <ChevronDown size={16} />
-            )}
-          </button>
-          <div
-            className={`dropdown-menu ${
-              activeDropdown === "gestioneUtenza" ? "show" : ""
-            }`}
-          >
-            <Link
-              to="/dashboard/utenza/pazienti"
-              onClick={handleLinkClick}
-            >
-              Pazienti
-            </Link>
-            <Link
-              to="/dashboard/utenza/caregiver"
-              onClick={handleLinkClick}
-            >
-              Caregiver
-            </Link>
-          </div>
-        </div>
 
         {/* Dropdown Gestione Pagamenti */}
         <div className="dropdown">
@@ -211,10 +179,7 @@ const NavbarDashboard = () => {
             </Link>
           </div>
         </div>
-
-        <Link to="/dashboard/preventivi" onClick={handleLinkClick}>
-          Lista Preventivi
-        </Link>
+        
       </div>
 
       {/* Sezione a destra */}
