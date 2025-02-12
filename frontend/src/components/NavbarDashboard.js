@@ -23,6 +23,7 @@ const NavbarDashboard = () => {
     email: "",
     role: "",
     emailPec: "",
+    foto: "",
   });
    // Caricamento info dal backend
    useEffect(() => {
@@ -41,6 +42,7 @@ const NavbarDashboard = () => {
             email: p.email || "",
             role: p.role || "",
             emailPec: p.emailPec || "", // Se esiste
+            fotoProfilo: p.fotoProfilo || "/images/profilo.png",
           });
         }
       } catch (err) {
@@ -236,7 +238,7 @@ const NavbarDashboard = () => {
             onClick={() => toggleDropdown("profilo")}
           >
             <img
-              src="/images/profilo.png"
+              src={profileInfo.fotoProfilo || "/images/profilo.png"}
               alt="Profilo"
               className="profile-pic"
             />
