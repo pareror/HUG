@@ -1448,9 +1448,13 @@ router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
 });
 router.get("/attivita-esterna", authenticateJWT, (req, res) => {
   const sql = `
-    SELECT * 
-    FROM external_activities
-    ORDER BY datainizio DESC, orainizio DESC
+    SELECT ea.*, 
+           COALESCE(COUNT(ap.patientId), 0) AS numeroIscritti
+    FROM external_activities ea
+    LEFT JOIN activity_participants ap 
+      ON ea.id = ap.activityId
+    GROUP BY ea.id
+    ORDER BY ea.datainizio DESC, ea.orainizio DESC
   `;
 
   db.all(sql, [], (err, rows) => {
@@ -1458,10 +1462,10 @@ router.get("/attivita-esterna", authenticateJWT, (req, res) => {
       console.error("❌ Errore durante il recupero delle attività esterne:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
     }
-    //console.log("✅ Attività esterne recuperate:", rows);
     res.json({ activities: rows });
   });
 });
+
 
 router.post("/attivita-esterna", authenticateJWT, (req, res) => {
   const {
@@ -1520,9 +1524,12 @@ router.get("/attivita-esterna/:id", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
 
   const sql = `
-    SELECT * 
-    FROM external_activities
-    WHERE id = ?
+    SELECT ea.*, 
+           (SELECT COUNT(*) 
+            FROM activity_participants 
+            WHERE activityId = ea.id) AS numeroIscritti
+    FROM external_activities ea
+    WHERE ea.id = ?
   `;
 
   db.get(sql, [activityId], (err, activity) => {
@@ -1538,5 +1545,6 @@ router.get("/attivita-esterna/:id", authenticateJWT, (req, res) => {
     res.json({ activity });
   });
 });
+
 
   module.exports = router;

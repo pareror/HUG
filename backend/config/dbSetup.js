@@ -92,7 +92,7 @@ const createPatientEmergencyContactsTable = () => {
 const createInternalActivitiesTable = () => {
   db.run(
     `CREATE TABLE IF NOT EXISTS internal_activities (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id BETWEEN 1 AND 100000),
       titolo TEXT NOT NULL,
       descrizione TEXT,
       datainizio DATE NOT NULL,
@@ -146,7 +146,7 @@ const createActivityParticipantsTable = () => {
 const createExternalActivitiesTable = () => {
   db.run(
     `CREATE TABLE IF NOT EXISTS external_activities (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id BETWEEN 100001 AND 300000),
       titolo TEXT NOT NULL,
       descrizione TEXT,
       datainizio DATE NOT NULL,
