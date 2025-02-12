@@ -1,0 +1,207 @@
+.pre-det-base {
+    min-height: 100vh; /* Altezza minima pari all'intera viewport */
+    background-color: #e7ebee;
+    padding: 20px;
+  }
+  .pre-det-container {
+    max-width: auto;
+    padding-top: 2%; /* Increased top padding to create space below NavbarDashboard */
+  }
+  
+  .pre-det-content-box {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+  }
+  
+  .pre-det-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .pre-det-back-button {
+    background: none;
+    border: none;
+    color: #00a0dc;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+  
+  .pre-det-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+  }
+  
+  .pre-det-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .pre-det-main-info {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 20px;
+  }
+  
+  .pre-det-left-section {
+    flex: 1;
+  }
+  
+  .pre-det-right-section {
+    flex: 1;
+    border-left: 1px solid #e0e0e0;
+    padding-left: 24px;
+  }
+  
+  .pre-det-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .pre-det-field {
+    flex: 1;
+  }
+  
+  .pre-det-label {
+    display: block;
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  .pre-det-pricing-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  
+  .pre-det-price-item {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .pre-det-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .pre-det-transport {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .pre-det-transport p {
+    margin: 0;
+    color: #666;
+  }
+  
+  .pre-det-servizi ul,
+  .pre-det-itinerario {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .pre-det-servizi li,
+  .pre-det-itinerario li {
+    margin-bottom: 8px;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  .pre-det-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .pre-det-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+  }
+  
+  .pre-det-nota {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .pre-det-submit {
+    background-color: #00a0dc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .pre-det-submit:hover {
+    background-color: #008bc3;
+  }
+  
+  @media (max-width: 768px) {
+    .pre-det-main-info {
+      flex-direction: column;
+    }
+  
+    .pre-det-right-section {
+      border-left: none;
+      border-top: 1px solid #e0e0e0;
+      padding-left: 0;
+      padding-top: 16px;
+    }
+  
+    .pre-det-row {
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    .pre-det-pricing-row {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .pre-det-price-item {
+      width: 100%;
+    }
+  
+    .pre-det-footer {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+  
+    .pre-det-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .pre-det-back-button {
+      margin-bottom: 12px;
+    }
+  }
+  
+  
