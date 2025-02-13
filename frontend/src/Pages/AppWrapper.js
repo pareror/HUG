@@ -32,7 +32,7 @@ import DettaglioAttivitaEsterne from '../Components/CartellaAttivitaEsterna/Dett
 import PaginaDettaglioAttivitaEsterne from './PaginaDettaglioAttivitaEsterne';
 
 import PazientiPage from './PazientiPage'
-
+import DashboardRouter from "./DashboardRouter";
 const Website = () => {
     return ( 
         <div className="x">
@@ -46,15 +46,13 @@ const Website = () => {
             <Route path="/register" element={<Register />} />
             {/* Rotte protette */}
             <Route path="/dashboard" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
-                <Dashboard />
+                <ProtectedRoute requiredPermission={[1,2,3,5]}>
+                <DashboardRouter />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/calendario" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
                 <CalendarPage />
-                </ProtectedRoute>
             }
             />
             <Route path="/dashboard/calendario/day/:day" element={
