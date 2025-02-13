@@ -31,6 +31,8 @@ import DettaglioPreventivo from './DettaglioPreventivo';
 import DettaglioAttivitaEsterne from '../Components/CartellaAttivitaEsterna/DettaglioAttivitaEsterne';
 import PaginaDettaglioAttivitaEsterne from './PaginaDettaglioAttivitaEsterne';
 
+import PazientiPage from './PazientiPage'
+
 const Website = () => {
     return ( 
         <div className="x">
@@ -219,6 +221,14 @@ const Website = () => {
                     <ConsultaPreventivi />
                 }
             />
+
+            <Route path="/pazienti" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PazientiPage />
+                </ProtectedRoute>
+                 }
+                 />
+
 
         </Routes>  
         </div>
