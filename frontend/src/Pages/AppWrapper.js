@@ -46,9 +46,9 @@ const Website = () => {
             <Route path="/register" element={<Register />} />
             {/* Rotte protette */}
             <Route path="/dashboard" element={
-                <ProtectedRoute requiredPermission={[1,2,3,5]}>
+                
                 <DashboardRouter />
-                </ProtectedRoute>
+
             }
             />
             <Route path="/dashboard/calendario" element={
