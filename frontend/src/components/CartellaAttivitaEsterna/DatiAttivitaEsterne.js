@@ -11,10 +11,11 @@ const DatiAttivitaEsterne = ({ selectedKey }) => {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/attivita-esterna/${selectedKey}`, {
+        const response = await axios.get(`http://localhost:5000/api/attivita/${selectedKey}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
+          params: { tipo: "E" }, 
         });
         setActivity(response.data.activity);
       } catch (err) {

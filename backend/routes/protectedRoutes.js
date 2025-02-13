@@ -1184,7 +1184,7 @@ router.get("/paziente/:id",
   router.get("/attivita", authenticateJWT, (req, res) => {
     const centerId = req.user.id; 
     const tipo = req.query.tipo; // 'I' per interne, 'E' per esterne, null per entrambe
-  
+
     let sql = `
       SELECT 
         a.*, 
@@ -1192,19 +1192,21 @@ router.get("/paziente/:id",
       FROM activities a
       LEFT JOIN activity_participants ap ON a.id = ap.activityId
     `;
-  
+
     const params = [];
-  
-    if (tipo === "I" || tipo === "E") {
+
+    if (tipo === "I") {
+      // Le attività interne devono essere visibili solo al centro che le ha create
       sql += ` WHERE a.tipo = ? AND a.createdBy = ? `;
       params.push(tipo, centerId);
-    } else {
-      sql += ` WHERE a.createdBy = ? `;
-      params.push(centerId);
+    } else if (tipo === "E") {
+      // Le attività esterne possono essere viste da tutti
+      sql += ` WHERE a.tipo = ? `;
+      params.push(tipo);
     }
-  
+
     sql += ` GROUP BY a.id ORDER BY a.datainizio DESC, a.orainizio DESC `;
-  
+
     db.all(sql, params, (err, rows) => {
       if (err) {
         console.error("❌ Errore recupero attività:", err.message);
@@ -1212,7 +1214,8 @@ router.get("/paziente/:id",
       }
       return res.json({ activities: rows });
     });
-  });
+});
+
   
 
   router.get("/attivita/:id", authenticateJWT, (req, res) => {
@@ -1410,25 +1413,22 @@ router.get("/attivita/:id/pazienti", authenticateJWT, (req, res) => {
     LEFT JOIN activity_participants ap 
       ON p.id = ap.patientId AND ap.activityId = ?
     WHERE p.role = 'paziente' 
-      AND p.centroDiurnoId = ? 
-      AND EXISTS (SELECT 1 FROM activities a WHERE a.id = ? AND a.createdBy = ?) -- ✅ Verifica se l'attività appartiene al centro
+      AND p.centroDiurnoId = ? -- ✅ Mostra solo i pazienti registrati dal centro loggato
+      AND EXISTS (SELECT 1 FROM activities WHERE id = ?) -- ✅ Verifica che l'attività esista
     ORDER BY iscritto DESC, p.nome ASC
   `;
 
-  db.all(sql, [activityId, centerId, activityId, centerId], (err, rows) => {
+  db.all(sql, [activityId, centerId, activityId], (err, rows) => {
     if (err) {
       console.error("❌ Errore durante il recupero dei pazienti:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
-    }
-
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
     }
 
     console.log("✅ Pazienti trovati:", rows);
     res.json(rows);
   });
 });
+
 
 
 router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
@@ -1446,11 +1446,12 @@ router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
     LEFT JOIN activity_participants ap 
       ON p.id = ap.patientId AND ap.activityId = ?
     WHERE p.role = 'caregiver' 
-      AND EXISTS (SELECT 1 FROM activities a WHERE a.id = ? AND a.createdBy = ?) -- ✅ Verifica se l'attività appartiene al centro
+      AND p.centroDiurnoId = ? -- ✅ Mostra solo i caregiver registrati dal centro loggato
+      AND EXISTS (SELECT 1 FROM activities WHERE id = ?) -- ✅ Verifica che l'attività esista
     ORDER BY iscritto DESC, p.nome ASC
   `;
 
-  db.all(sql, [activityId, activityId, centerId], (err, rows) => {
+  db.all(sql, [activityId, centerId, activityId], (err, rows) => {
     if (err) {
       console.error("❌ Errore durante il recupero dei caregiver:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
