@@ -17,10 +17,11 @@ function DettaglioAttivitaEsterne() {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/attivita-esterna/${id}`, {
+        const response = await axios.get(`http://localhost:5000/api/attivita/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
+          params: { tipo: "E" }
         });
         setActivity(response.data.activity);
       } catch (err) {

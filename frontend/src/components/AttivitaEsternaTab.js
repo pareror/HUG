@@ -9,26 +9,31 @@ const AttivitaEsternaTab = () => {
   const [loading, setLoading] = useState(true);
 
   // Fetch delle attività esterne dal backend
-  useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        const response = await axios.get("http://localhost:5000/api/attivita-esterna", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log("Attività esterne:", response.data.activities);
-        setActivities(response.data.activities || []);
-      } catch (err) {
-        console.error("Errore fetch attività esterne:", err);
-        setError("Impossibile caricare le attività esterne.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchActivities();
-  }, []);
+useEffect(() => {
+  const fetchActivities = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+
+      const response = await axios.get("http://localhost:5000/api/attivita", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: { tipo: "E" }, // ✅ Passiamo il tipo "E" per ottenere solo attività esterne
+      });
+
+      console.log("Attività esterne:", response.data.activities);
+      setActivities(response.data.activities || []);
+    } catch (err) {
+      console.error("Errore fetch attività esterne:", err);
+      setError("Impossibile caricare le attività esterne.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchActivities();
+}, []);
+
 
   if (loading) {
     return <p>Caricamento...</p>;
