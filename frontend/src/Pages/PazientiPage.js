@@ -20,7 +20,7 @@ const PazientiPage = () => {
 
         const [activities] = useState([
           {
-            name: "Yoga",
+            name: "Yasdasdoga",
             date: "11 gen 2025",
             time: "16:00",
             status: "In progress",
