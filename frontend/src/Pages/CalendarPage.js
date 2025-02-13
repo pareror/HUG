@@ -20,10 +20,11 @@ const CalendarPage = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/attivita-interna", {
+        const response = await axios.get("http://localhost:5000/api/attivita", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
+          params: { tipo: "I" } // ✅ Recupera solo attività interne
         });
 
         const activities = response.data.activities;
@@ -39,7 +40,7 @@ const CalendarPage = () => {
             organizedActivities[day].push({
               id: activity.id,
               name: activity.titolo,
-              color: "#" + Math.floor(Math.random()*16777215).toString(16) // Colore casuale
+              color: "#" + Math.floor(Math.random() * 16777215).toString(16) // Colore casuale
             });
           }
         });
@@ -51,7 +52,8 @@ const CalendarPage = () => {
     };
 
     fetchActivities();
-  }, [currentMonth, currentYear]);
+  }, [currentMonth, currentYear]); 
+
 
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 

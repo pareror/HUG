@@ -13,6 +13,7 @@ import "../css/CreateActivity.css";
 
 function CreateActivity() {
   const [formData, setFormData] = useState({
+    tipo: "I",
     title: "",
     description: "",
     date: "",
@@ -44,20 +45,20 @@ function CreateActivity() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
-
-      await axios.post("http://localhost:5000/api/attivita-interna", formDataToSend, {
+  
+      await axios.post("http://localhost:5000/api/attivita", formDataToSend, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           "Content-Type": "multipart/form-data",
         },
       });
-
+  
       alert("Attività creata con successo!");
       window.location.href = "/dashboard/attivita/interna";
     } catch (error) {

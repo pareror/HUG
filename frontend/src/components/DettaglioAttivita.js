@@ -16,10 +16,11 @@ function DettaglioAttivita() {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/attivita-interna/${id}`, {
+        const response = await axios.get(`http://localhost:5000/api/attivita/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
+          params: { tipo: "I" }
         });
         setActivity(response.data.activity);
       } catch (err) {
@@ -43,11 +44,13 @@ function DettaglioAttivita() {
   const handleDeleteActivity = async () => {
     if (window.confirm("Sei sicuro di voler eliminare questa attività?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/attivita-interna/${id}`, {
+        await axios.delete(`http://localhost:5000/api/attivita/interna/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
+          data: { tipo: "I" } // ✅ Passa il tipo di attività come dati nel body
         });
+  
         alert("Attività eliminata con successo.");
         navigate("/dashboard/attivita/interna");
       } catch (error) {
@@ -56,6 +59,7 @@ function DettaglioAttivita() {
       }
     }
   };
+  
   const formattaData = (data) => {
     const [anno, mese, giorno] = data.split("-");
     return `${giorno}-${mese}-${anno}`;
