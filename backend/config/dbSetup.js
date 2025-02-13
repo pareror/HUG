@@ -142,9 +142,35 @@ const createActivityParticipantsTable = () => {
   );
 };
 
+const createActivityVisibilityTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS activity_visibility (
+      activityId INTEGER NOT NULL,  -- ID dell'attività
+      centerId INTEGER NOT NULL,    -- ID del centro diurno
+      visibile INTEGER DEFAULT 1,   -- 1 = visibile, 0 = nascosto
+
+      -- Chiave primaria composta per evitare duplicati
+      PRIMARY KEY (activityId, centerId),
+
+      -- Chiave esterna verso la tabella 'activities'
+      FOREIGN KEY (activityId) REFERENCES activities(id) ON DELETE CASCADE,
+
+      -- Chiave esterna verso la tabella 'profiles' (solo centri possono nascondere attività)
+      FOREIGN KEY (centerId) REFERENCES profiles(id) ON DELETE CASCADE
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'activity_visibility':", err.message);
+      } else {
+        console.log("✅ Tabella 'activity_visibility' creata con successo.");
+      }
+    }
+  );
+};
 
 const aggiungiAttivitaEsterneFittizie = () => {
   const attività = [
+    // ✅ 3 Attività visibili
     {
       tipo: "E",
       titolo: "Giornata di Trekking sulle Dolomiti",
@@ -160,6 +186,38 @@ const aggiungiAttivitaEsterneFittizie = () => {
       immagine: "http://localhost:5000/uploads/trekking-dolomiti.png",
       createdBy: null
     },
+    {
+      tipo: "E",
+      titolo: "Tour Enogastronomico in Toscana",
+      descrizione: "Scopri i sapori autentici della Toscana con degustazioni di vini e prodotti tipici.",
+      datainizio: "2025-12-02",
+      orainizio: "12:00",
+      durata: 4,
+      scadenzaIscrizioni: "2025-11-25",
+      numeroMinimoPartecipanti: 6,
+      numeroMassimoPartecipanti: 18,
+      luogo: "Chianti, Toscana",
+      istruttore: "Giovanni Verdi",
+      immagine: "http://localhost:5000/uploads/tour-toscana.png",
+      createdBy: null
+    },
+    {
+      tipo: "E",
+      titolo: "Weekend di Relax alle Terme",
+      descrizione: "Un fine settimana all'insegna del benessere e del relax nelle migliori terme italiane.",
+      datainizio: "2025-11-15",
+      orainizio: "10:00",
+      durata: 5,
+      scadenzaIscrizioni: "2025-11-05",
+      numeroMinimoPartecipanti: 8,
+      numeroMassimoPartecipanti: 25,
+      luogo: "Bagni di Bormio, Lombardia",
+      istruttore: "Elena Rossi",
+      immagine: "http://localhost:5000/uploads/terme-bormio.png",
+      createdBy: null
+    },
+
+    // 🔴 3 Attività da approvare
     {
       tipo: "E",
       titolo: "Visita guidata ai Castelli della Loira",
@@ -188,36 +246,6 @@ const aggiungiAttivitaEsterneFittizie = () => {
       luogo: "Parco Serengeti, Tanzania",
       istruttore: "Marco Ricci",
       immagine: "http://localhost:5000/uploads/safari-africa.png",
-      createdBy: null
-    },
-    {
-      tipo: "E",
-      titolo: "Weekend di Relax alle Terme",
-      descrizione: "Un fine settimana all'insegna del benessere e del relax nelle migliori terme italiane.",
-      datainizio: "2025-11-15",
-      orainizio: "10:00",
-      durata: 5,
-      scadenzaIscrizioni: "2025-11-05",
-      numeroMinimoPartecipanti: 8,
-      numeroMassimoPartecipanti: 25,
-      luogo: "Bagni di Bormio, Lombardia",
-      istruttore: "Elena Rossi",
-      immagine: "http://localhost:5000/uploads/terme-bormio.png",
-      createdBy: null
-    },
-    {
-      tipo: "E",
-      titolo: "Tour Enogastronomico in Toscana",
-      descrizione: "Scopri i sapori autentici della Toscana con degustazioni di vini e prodotti tipici.",
-      datainizio: "2025-12-02",
-      orainizio: "12:00",
-      durata: 4,
-      scadenzaIscrizioni: "2025-11-25",
-      numeroMinimoPartecipanti: 6,
-      numeroMassimoPartecipanti: 18,
-      luogo: "Chianti, Toscana",
-      istruttore: "Giovanni Verdi",
-      immagine: "http://localhost:5000/uploads/tour-toscana.png",
       createdBy: null
     },
     {
@@ -258,11 +286,23 @@ const aggiungiAttivitaEsterneFittizie = () => {
       attività.istruttore,
       attività.immagine,
       attività.createdBy
-    ], (err) => {
+    ], function (err) {
       if (err) {
         console.error("❌ Errore durante l'inserimento dell'attività:", err.message);
       } else {
         console.log(`✅ Attività "${attività.titolo}" aggiunta con successo.`);
+
+        // 🔄 Inseriamo la visibilità (solo per le prime 3)
+        if (this.lastID && [1, 2, 3].includes(this.lastID)) {
+          db.run(
+            `INSERT INTO activity_visibility (activityId, centerId, visibile) VALUES (?, ?, ?)`,
+            [this.lastID, 1, 1], // Qui ipotizziamo che il centro 1 le abbia approvate
+            (err) => {
+              if (err) console.error("❌ Errore nell'impostazione della visibilità:", err.message);
+              else console.log(`✅ Attività "${attività.titolo}" approvata per il centro 1.`);
+            }
+          );
+        }
       }
     });
   });
@@ -277,7 +317,7 @@ const initializeDatabase = () => {
   createPatientEmergencyContactsTable();
   createActivitiesTable();
   createActivityParticipantsTable();
-
+  createActivityVisibilityTable();
 };
 
 initializeDatabase();

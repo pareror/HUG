@@ -175,3 +175,23 @@
 .button-danger:hover {
   background-color: #c0392b; /* Rosso più scuro per hover */
 }
+
+/* Pulsante verde per mostrare attività */
+.button-success {
+  background-color: #28a745; /* Verde vivo */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spazio tra l'icona e il testo */
+  margin-left: auto; /* Allinea il pulsante a destra */
+}
+
+.button-success:hover {
+  background-color: #218838; /* Verde più scuro per hover */
+}

@@ -1183,7 +1183,7 @@ router.get("/paziente/:id",
   
   router.get("/attivita", authenticateJWT, (req, res) => {
     const centerId = req.user.id; 
-    const tipo = req.query.tipo; // 'I' per interne, 'E' per esterne, null per entrambe
+    const tipo = req.query.tipo; // 'I' per interne, 'E' per esterne
 
     let sql = `
       SELECT 
@@ -1196,13 +1196,18 @@ router.get("/paziente/:id",
     const params = [];
 
     if (tipo === "I") {
-      // Le attività interne devono essere visibili solo al centro che le ha create
-      sql += ` WHERE a.tipo = ? AND a.createdBy = ? `;
-      params.push(tipo, centerId);
+        // 🔹 Attività interne → Visibili solo al centro che le ha create
+        sql += ` WHERE a.tipo = ? AND a.createdBy = ? `;
+        params.push(tipo, centerId);
     } else if (tipo === "E") {
-      // Le attività esterne possono essere viste da tutti
-      sql += ` WHERE a.tipo = ? `;
-      params.push(tipo);
+        // 🔹 Attività esterne → Visibili solo se il centro le ha approvate
+        sql += `
+          LEFT JOIN activity_visibility av 
+            ON a.id = av.activityId 
+            AND av.centerId = ?
+        WHERE a.tipo = ? AND av.visibile = 1
+        `;
+        params.push(centerId, tipo);
     }
 
     sql += ` GROUP BY a.id ORDER BY a.datainizio DESC, a.orainizio DESC `;
@@ -1216,43 +1221,128 @@ router.get("/paziente/:id",
     });
 });
 
+router.get("/attivita-esterne/gestione", authenticateJWT, authorizeRole(5), (req, res) => {
+  const centerId = req.user.id;
+
+  const sql = `
+    SELECT a.*, 
+           COALESCE(av.visibile, 0) AS visibile
+    FROM activities a
+    LEFT JOIN activity_visibility av 
+      ON a.id = av.activityId 
+      AND av.centerId = ?
+    WHERE a.tipo = 'E' 
+      AND (av.visibile IS NULL OR av.visibile = 0) -- ✅ Mostra solo le attività non visibili
+    ORDER BY a.datainizio DESC, a.orainizio DESC
+  `;
+
+  db.all(sql, [centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore nel recupero delle attività da gestire:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    return res.json({ activities: rows });
+  });
+});
+
+router.put("/attivita-esterna/:id/visibilita", authenticateJWT, (req, res) => {
+  const { id } = req.params;  // ID dell'attività
+  const { visibile } = req.body;  // Nuovo stato di visibilità (0 o 1)
+  const centerId = req.user.id;  // ID del centro che sta effettuando la modifica
+
+  // Controllo input valido
+  if (visibile !== 0 && visibile !== 1) {
+    return res.status(400).json({ error: "Valore non valido per la visibilità. Deve essere 0 o 1." });
+  }
+
+  // Aggiorna solo se la riga esiste già
+  const updateSql = `
+    UPDATE activity_visibility
+    SET visibile = ?
+    WHERE activityId = ? AND centerId = ?
+  `;
+
+  db.run(updateSql, [visibile, id, centerId], function (err) {
+    if (err) {
+      console.error("❌ Errore nell'aggiornamento della visibilità:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    // Se non è stata aggiornata nessuna riga, significa che la riga non esiste
+    if (this.changes === 0) {
+      // Inserisco la nuova riga con visibile impostato a 1 di default
+      const insertSql = `
+        INSERT INTO activity_visibility (activityId, centerId, visibile)
+        VALUES (?, ?, 1)
+      `;
+      db.run(insertSql, [id, centerId], function (insertErr) {
+        if (insertErr) {
+          console.error("❌ Errore nell'inserimento della visibilità:", insertErr.message);
+          return res.status(500).json({ error: "Errore interno del server durante l'inserimento della visibilità." });
+        }
+        return res.json({ message: "Visibilità inserita con successo!", visibile: 1 });
+      });
+    } else {
+      return res.json({ message: "Visibilità aggiornata con successo!", visibile });
+    }
+  });
+});
+
+
   
 
-  router.get("/attivita/:id", authenticateJWT, (req, res) => {
-    const activityId = req.params.id;
-    const { tipo } = req.query; // Tipo passato nel body della richiesta
-    const userId = req.user.id; // ID dell'utente loggato
-  
-    // Assicuriamoci che il tipo sia maiuscolo (I o E)
-    const tipoAttivita = tipo ? tipo.toUpperCase() : null;
-  
-    // Validazione del tipo di attività
-    if (tipoAttivita !== 'I' && tipoAttivita !== 'E') {
-      return res.status(400).json({ error: "Tipo di attività non valido. Usa 'I' per interne o 'E' per esterne." });
-    }
-  
-    const sql = `
-      SELECT a.*, 
-             COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti
-      FROM activities a
-      WHERE a.id = ?
-      AND a.tipo = ?
-      AND (a.tipo = 'E' OR a.createdBy = ?) -- Se interna, deve essere stata creata dall'utente
+router.get("/attivita/:id", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  const { tipo } = req.query; // Tipo passato nella query (es. ?tipo=E o ?tipo=I)
+  const userId = req.user.id; // ID dell'utente loggato
+
+  // Assicuriamoci che il tipo sia maiuscolo (I o E)
+  const tipoAttivita = tipo ? tipo.toUpperCase() : null;
+
+  // Validazione del tipo di attività
+  if (tipoAttivita !== 'I' && tipoAttivita !== 'E') {
+    return res.status(400).json({ error: "Tipo di attività non valido. Usa 'I' per interne o 'E' per esterne." });
+  }
+
+  // Costruisco la query base
+  let sql = `
+    SELECT a.*, 
+           COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti
+  `;
+
+  // Se l'attività è esterna, aggiungo anche la visibilità (default 0 se non presente)
+  if (tipoAttivita === 'E') {
+    sql += `,
+            COALESCE((SELECT visibile FROM activity_visibility WHERE activityId = a.id AND centerId = ?), 0) AS visibile
     `;
-  
-    db.get(sql, [activityId, tipoAttivita, userId], (err, activity) => {
-      if (err) {
-        console.error("❌ Errore nel recupero dell'attività:", err.message);
-        return res.status(500).json({ error: "Errore interno del server." });
-      }
-  
-      if (!activity) {
-        return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
-      }
-  
-      res.json({ activity });
-    });
+  }
+
+  sql += `
+    FROM activities a
+    WHERE a.id = ?
+    AND a.tipo = ?
+    AND (a.tipo = 'E' OR a.createdBy = ?)
+  `;
+
+  // Costruisco i parametri in base al tipo di attività
+  const params = tipoAttivita === 'E'
+    ? [userId, activityId, tipoAttivita, userId]
+    : [activityId, tipoAttivita, userId];
+
+  db.get(sql, params, (err, activity) => {
+    if (err) {
+      console.error("❌ Errore nel recupero dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    if (!activity) {
+      return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
+    }
+
+    res.json({ activity });
   });
+});
+
   
   router.put("/attivita/interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
     const activityId = req.params.id;

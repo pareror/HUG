@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, EyeOff  } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, EyeOff, Eye } from "lucide-react";
 import axios from "axios";
 import '../../css/DettaglioAttivita.css';
 import GestisciUtenzaModal from "../GestisciUtenzaModal";
@@ -13,6 +13,7 @@ function DettaglioAttivitaEsterne() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [visibilita, setVisibilita] = useState(null);
 
   useEffect(() => {
     const fetchActivity = async () => {
@@ -23,6 +24,11 @@ function DettaglioAttivitaEsterne() {
           },
           params: { tipo: "E" }
         });
+        // Se il campo "visibile" non è presente, assumiamo il valore di default 0 (non visibile)
+        const vis = typeof response.data.activity.visibile !== "undefined" 
+          ? response.data.activity.visibile 
+          : 0;
+        setVisibilita(vis);
         setActivity(response.data.activity);
       } catch (err) {
         console.error("Errore durante il recupero dell'attività:", err);
@@ -38,14 +44,38 @@ function DettaglioAttivitaEsterne() {
   if (loading) return <p>Caricamento in corso...</p>;
   if (error) return <p>{error}</p>;
   if (!activity) return <p>Attività non trovata.</p>;
-  
+
+  // L'attività è visibile se "visibilita" è 1
+  const isVisible = visibilita === 1;
+
   const formattaData = (data) => {
     const [anno, mese, giorno] = data.split("-");
     return `${giorno}-${mese}-${anno}`;
   };
-  const handleHideActivity = async () => {
 
-  }
+  // Se l'attività è visibile (visibilita === 1) al click impostiamo la nuova visibilità a 0 (non visibile),
+  // altrimenti la impostiamo a 1 (visibile)
+  const handleToggleVisibility = async () => {
+    try {
+      const newVisibility = isVisible ? 0 : 1;
+      await axios.put(
+        `http://localhost:5000/api/attivita-esterna/${id}/visibilita`,
+        { visibile: newVisibility },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        }
+      );
+
+      setVisibilita(newVisibility);
+      setActivity((prev) => ({ ...prev, visibile: newVisibility }));
+    } catch (error) {
+      console.error("Errore durante la modifica della visibilità:", error);
+      alert("Errore durante la modifica della visibilità.");
+    }
+  };
+
   return (
     <div className="activity-detail">
       <button onClick={() => navigate(-1)} className="details-back-button">
@@ -134,25 +164,36 @@ function DettaglioAttivitaEsterne() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary"onClick={() => navigate("/dashboard/attivita/esterna/4/consulta-preventivi")}>
+        <button className="button button-primary" onClick={() => navigate("/dashboard/attivita/esterna/4/consulta-preventivi")}>
           Consulta Preventivi
         </button>
 
         <button className="button button-secondary" onClick={() => setShowModal(true)}>
-        Gestisci Utenza
-      </button>       
-      {/* Se showModal è true, renderizzo il componente GestisciUtenzaModal */}
-      {showModal && (
-        <GestisciUtenzaModal
-          onClose={() => setShowModal(false)}
-          activityId={id}
-        />
-      )}
-        {/* Esempio di pulsante senza alcuna chiamata al backend */}
-        <button className="button button-danger" onClick={handleHideActivity}>
-          <EyeOff size={18} /> Nascondi Attivita
+          Gestisci Utenza
         </button>
-      
+
+        {showModal && (
+          <GestisciUtenzaModal
+            onClose={() => setShowModal(false)}
+            activityId={id}
+          />
+        )}
+
+        {/* Il pulsante viene visualizzato in base allo stato "visibilita" */}
+        <button
+  onClick={handleToggleVisibility}
+  className={`button ${isVisible ? "button-danger" : "button-success"}`}
+>
+  {isVisible ? (
+    <>
+      <EyeOff size={18} /> Nascondi Attività
+    </>
+  ) : (
+    <>
+      <Eye size={18} /> Mostra Attività
+    </>
+  )}
+</button>
       </div>
     </div>
   );
