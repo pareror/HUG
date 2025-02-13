@@ -39,10 +39,11 @@ function EditActivity() {
     if (id) {
       const fetchActivity = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/attivita-interna/${id}`, {
+          const response = await axios.get(`http://localhost:5000/api/attivita/${id}`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             },
+            params: { tipo: "I" }
           });
 
           const activity = response.data.activity;
@@ -94,7 +95,7 @@ function EditActivity() {
       }
 
       if (id) {
-        await axios.put(`http://localhost:5000/api/attivita-interna/${id}`, formDataToSend, {
+        await axios.put(`http://localhost:5000/api/attivita/interna/${id}`, formDataToSend, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             "Content-Type": "multipart/form-data",
@@ -102,7 +103,7 @@ function EditActivity() {
         });
         setSuccessMessage("Attività aggiornata con successo!");
       } else {
-        await axios.post("http://localhost:5000/api/attivita-interna", formDataToSend, {
+        await axios.post("http://localhost:5000/api/attivita", formDataToSend, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             "Content-Type": "multipart/form-data",

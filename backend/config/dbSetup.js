@@ -88,11 +88,11 @@ const createPatientEmergencyContactsTable = () => {
     }
   );
 };
-
-const createInternalActivitiesTable = () => {
+const createActivitiesTable = () => {
   db.run(
-    `CREATE TABLE IF NOT EXISTS internal_activities (
-      id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id BETWEEN 1 AND 100000),
+    `CREATE TABLE IF NOT EXISTS activities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipo TEXT NOT NULL CHECK (tipo IN ('I', 'E')), -- I = Interna, E = Esterna
       titolo TEXT NOT NULL,
       descrizione TEXT,
       datainizio DATE NOT NULL,
@@ -103,16 +103,15 @@ const createInternalActivitiesTable = () => {
       numeroMassimoPartecipanti INTEGER,
       luogo TEXT,
       istruttore TEXT,
-      immagine TEXT, -- Path dell'immagine (es. /uploads/activity.jpg)
-      
-      createdBy INTEGER, -- Chiave esterna verso la tabella 'profiles'
+      immagine TEXT,
+      createdBy INTEGER,
       FOREIGN KEY (createdBy) REFERENCES profiles(id) ON DELETE CASCADE
     )`,
     (err) => {
       if (err) {
-        console.error("❌ Errore nella creazione della tabella 'internal_activities':", err.message);
+        console.error("❌ Errore nella creazione della tabella 'activities':", err.message);
       } else {
-        console.log("✅ Tabella 'internal_activities' creata con successo.");
+        console.log("✅ Tabella 'activities' creata con successo.");
       }
     }
   );
@@ -143,33 +142,7 @@ const createActivityParticipantsTable = () => {
   );
 };
 
-const createExternalActivitiesTable = () => {
-  db.run(
-    `CREATE TABLE IF NOT EXISTS external_activities (
-      id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id BETWEEN 100001 AND 300000),
-      titolo TEXT NOT NULL,
-      descrizione TEXT,
-      datainizio DATE NOT NULL,
-      orainizio TEXT NOT NULL,
-      durata INTEGER,
-      scadenzaIscrizioni DATE, 
-      numeroMinimoPartecipanti INTEGER,
-      numeroMassimoPartecipanti INTEGER,
-      luogo TEXT,
-      istruttore TEXT,
-      immagine TEXT,
-      createdBy INTEGER,
-      FOREIGN KEY (createdBy) REFERENCES profiles(id) ON DELETE CASCADE
-    )`,
-    (err) => {
-      if (err) {
-        console.error("❌ Errore nella creazione della tabella 'external_activities':", err.message);
-      } else {
-        console.log("✅ Tabella 'external_activities' creata con successo.");
-      }
-    }
-  );
-};
+
 const aggiungiAttivitaEsterneFittizie = () => {
   const attività = [
     {
@@ -252,9 +225,9 @@ const initializeDatabase = () => {
   createProfilesTable();
   createEmergencyContactsTable();
   createPatientEmergencyContactsTable();
-  createInternalActivitiesTable();
+  createActivitiesTable();
   createActivityParticipantsTable();
-  createExternalActivitiesTable();
+
 };
 
 initializeDatabase();

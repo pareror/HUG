@@ -13,10 +13,11 @@ const DayActivitiesPage = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/attivita-interna", {
+        const response = await axios.get("http://localhost:5000/api/attivita", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwt")}`,
           },
+          params: { tipo: "I" } // ✅ Recupera solo attività interne
         });
 
         const activities = response.data.activities.filter((activity) => {
@@ -24,7 +25,7 @@ const DayActivitiesPage = () => {
           return activityDate.getDate() === parseInt(day);
         });
 
-        // Ordina le attività per orario di inizio
+        // ✅ Ordina le attività per orario di inizio
         activities.sort((a, b) => a.orainizio.localeCompare(b.orainizio));
 
         setActivities(activities);
@@ -35,6 +36,7 @@ const DayActivitiesPage = () => {
 
     fetchActivities();
   }, [day]);
+
 
   const calculateEndTime = (startTime, duration) => {
     const [hours, minutes] = startTime.split(":").map(Number);

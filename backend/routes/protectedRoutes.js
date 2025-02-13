@@ -1117,7 +1117,144 @@ router.get("/paziente/:id",
       });
     }
   );
-  router.post('/attivita-interna', authenticateJWT, authorizeRole(5), upload.single('image'), (req, res) => {
+
+  router.post("/attivita", authenticateJWT, upload.single("image"), (req, res) => {
+    const {
+      tipo,
+      title: titolo,  // ✅ Ora il backend accetta "title" e lo mappa su "titolo"
+      description: descrizione,  
+      date: datainizio,  
+      time: orainizio,  
+      duration: durata,  
+      deadline: scadenzaIscrizioni,  
+      minParticipants: numeroMinimoPartecipanti,  
+      maxParticipants: numeroMassimoPartecipanti,  
+      location: luogo,  
+      instructor: istruttore  
+    } = req.body;
+    console.log("dati ricevuti", req.body);
+    const BACKEND_URL = process.env.BACKEND_URL;
+    const immagine = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
+    const createdBy = req.user.id;
+    const userRole = req.user.role;
+  
+    // ✅ Verifica il tipo di attività
+    if (tipo !== "I" && tipo !== "E") {
+      return res.status(400).json({ error: "Tipo di attività non valido. Usa 'I' per interne o 'E' per esterne." });
+    }
+  
+    // ✅ Solo i direttori di centro possono creare attività interne
+    if (tipo === "I" && userRole !== "direttorecentro") {
+      return res.status(403).json({ error: "Non sei autorizzato a creare attività interne." });
+    }
+  
+    const sql = `
+    INSERT INTO activities (
+      tipo, titolo, descrizione, datainizio, orainizio, durata, scadenzaIscrizioni,
+      numeroMinimoPartecipanti, numeroMassimoPartecipanti, luogo, istruttore, immagine, createdBy
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const params = [
+    tipo,
+    titolo,
+    descrizione,
+    datainizio,
+    orainizio,
+    durata,
+    scadenzaIscrizioni,
+    numeroMinimoPartecipanti,
+    numeroMassimoPartecipanti,
+    luogo,
+    istruttore,
+    immagine,
+    createdBy,
+  ];
+
+  
+    db.run(sql, params, function (err) {
+      if (err) {
+        console.error("❌ Errore durante la creazione dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      res.status(201).json({ message: "Attività creata con successo!", activityId: this.lastID });
+    });
+  });
+  
+  router.get("/attivita", authenticateJWT, (req, res) => {
+    const centerId = req.user.id; 
+    const tipo = req.query.tipo; // 'I' per interne, 'E' per esterne, null per entrambe
+  
+    let sql = `
+      SELECT 
+        a.*, 
+        COALESCE(COUNT(ap.patientId), 0) AS numeroIscritti 
+      FROM activities a
+      LEFT JOIN activity_participants ap ON a.id = ap.activityId
+    `;
+  
+    const params = [];
+  
+    if (tipo === "I" || tipo === "E") {
+      sql += ` WHERE a.tipo = ? AND a.createdBy = ? `;
+      params.push(tipo, centerId);
+    } else {
+      sql += ` WHERE a.createdBy = ? `;
+      params.push(centerId);
+    }
+  
+    sql += ` GROUP BY a.id ORDER BY a.datainizio DESC, a.orainizio DESC `;
+  
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        console.error("❌ Errore recupero attività:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      return res.json({ activities: rows });
+    });
+  });
+  
+
+  router.get("/attivita/:id", authenticateJWT, (req, res) => {
+    const activityId = req.params.id;
+    const { tipo } = req.query; // Tipo passato nel body della richiesta
+    const userId = req.user.id; // ID dell'utente loggato
+  
+    // Assicuriamoci che il tipo sia maiuscolo (I o E)
+    const tipoAttivita = tipo ? tipo.toUpperCase() : null;
+  
+    // Validazione del tipo di attività
+    if (tipoAttivita !== 'I' && tipoAttivita !== 'E') {
+      return res.status(400).json({ error: "Tipo di attività non valido. Usa 'I' per interne o 'E' per esterne." });
+    }
+  
+    const sql = `
+      SELECT a.*, 
+             COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti
+      FROM activities a
+      WHERE a.id = ?
+      AND a.tipo = ?
+      AND (a.tipo = 'E' OR a.createdBy = ?) -- Se interna, deve essere stata creata dall'utente
+    `;
+  
+    db.get(sql, [activityId, tipoAttivita, userId], (err, activity) => {
+      if (err) {
+        console.error("❌ Errore nel recupero dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+  
+      if (!activity) {
+        return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
+      }
+  
+      res.json({ activity });
+    });
+  });
+  
+  router.put("/attivita/interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
+    const activityId = req.params.id;
+    const centerId = req.user.id; // ID del centro dal JWT
+  
     const {
       title,
       description,
@@ -1130,183 +1267,86 @@ router.get("/paziente/:id",
       location,
       instructor,
     } = req.body;
-
+  
     const BACKEND_URL = process.env.BACKEND_URL;
     const image = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
-    const createdBy = req.user.id; // ID dell'utente dal JWT
-    const userRole = req.user.role; // Ruolo dell'utente dal JWT
-
-    // ✅ Verifica che solo i direttori di centro possano creare attività
-    if (userRole !== "direttorecentro") {
-        return res.status(403).json({ error: "Non sei autorizzato a creare attività interne." });
-    }
-
-    const sql = `
-      INSERT INTO internal_activities (
-        titolo, descrizione, datainizio, orainizio, durata, scadenzaIscrizioni,
-        numeroMinimoPartecipanti, numeroMassimoPartecipanti, luogo, istruttore, immagine, createdBy
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  
+    // ✅ Verifica se l'attività esiste e appartiene al centro
+    const checkOwnershipQuery = `
+      SELECT * FROM activities 
+      WHERE id = ? 
+      AND tipo = 'I' 
+      AND createdBy = ?
     `;
   
-    const params = [
-      title,
-      description,
-      date,
-      time,
-      duration,
-      deadline,
-      minParticipants,
-      maxParticipants,
-      location,
-      instructor,
-      image,
-      createdBy,
-    ];
+    db.get(checkOwnershipQuery, [activityId, centerId], (err, activity) => {
+      if (err) {
+        console.error("❌ Errore durante la verifica dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
   
-    db.run(sql, params, function (err) {
-      if (err) {
-        console.error('❌ Errore durante la creazione dell\'attività:', err.message);
-        return res.status(500).json({ error: 'Errore durante la creazione dell\'attività.' });
+      if (!activity) {
+        return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
       }
-      res.status(201).json({ message: 'Attività creata con successo!', activityId: this.lastID });
-    });
-});
-router.get("/attivita-interna", authenticateJWT, (req, res) => {
-  const centerId = req.user.id; 
-
-  const sql = `
-    SELECT 
-      a.*, 
-      COUNT(ap.patientId) AS numeroIscritti 
-    FROM internal_activities a
-    LEFT JOIN activity_participants ap ON a.id = ap.activityId
-    WHERE a.createdBy = ?
-    GROUP BY a.id
-    ORDER BY a.datainizio DESC, a.orainizio DESC
-  `;
-
-  db.all(sql, [centerId], (err, rows) => {
-    if (err) {
-      console.error("❌ Errore recupero attività interne:", err.message);
-      return res.status(500).json({ error: "Errore interno del server." });
-    }
-    return res.json({ activities: rows });
-  });
-});
-
-
-router.get("/attivita-interna/:id", authenticateJWT, (req, res) => {
-  const centerId = req.user.id; // ID del centro dal JWT
-  const activityId = req.params.id; // ID dell'attività dall'URL
-
-  const sql = `
-    SELECT * 
-    FROM internal_activities 
-    WHERE id = ? AND createdBy = ?
-  `;
-
-  db.get(sql, [activityId, centerId], (err, row) => {
-    if (err) {
-      console.error("❌ Errore nel recupero dell'attività:", err.message);
-      return res.status(500).json({ error: "Errore interno del server." });
-    }
-
-    if (!row) {
-      return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
-    }
-
-    return res.json({ activity: row });
-  });
-});
-
-router.put("/attivita-interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
-  const activityId = req.params.id;
-  const centerId = req.user.id; // ID del centro dal JWT
-
-  const {
-    title,
-    description,
-    date,
-    time,
-    duration,
-    deadline,
-    minParticipants,
-    maxParticipants,
-    location,
-    instructor,
-  } = req.body;
-
-  const BACKEND_URL = process.env.BACKEND_URL;
-  const image = req.file ? `${BACKEND_URL}/uploads/${req.file.filename}` : null;
-
-  // ✅ Verifica se l'attività esiste e appartiene al centro
-  const checkOwnershipQuery = `SELECT * FROM internal_activities WHERE id = ? AND createdBy = ?`;
-
-  db.get(checkOwnershipQuery, [activityId, centerId], (err, activity) => {
-    if (err) {
-      console.error("❌ Errore durante la verifica dell'attività:", err.message);
-      return res.status(500).json({ error: "Errore interno del server." });
-    }
-
-    if (!activity) {
-      return res.status(404).json({ error: "Attività non trovata o non autorizzato." });
-    }
-
-    // 🔄 Aggiorna l'attività
-    const updateQuery = `
-      UPDATE internal_activities
-      SET 
-        titolo = ?, 
-        descrizione = ?, 
-        datainizio = ?, 
-        orainizio = ?, 
-        durata = ?, 
-        scadenzaIscrizioni = ?, 
-        numeroMinimoPartecipanti = ?, 
-        numeroMassimoPartecipanti = ?, 
-        luogo = ?, 
-        istruttore = ?, 
-        immagine = COALESCE(?, immagine)
-      WHERE id = ? AND createdBy = ?
-    `;
-
-    const params = [
-      title,
-      description,
-      date,
-      time,
-      duration,
-      deadline,
-      minParticipants,
-      maxParticipants,
-      location,
-      instructor,
-      image, // Aggiorna l'immagine solo se è stata caricata una nuova
-      activityId,
-      centerId,
-    ];
-
-    db.run(updateQuery, params, function (err) {
-      if (err) {
-        console.error("❌ Errore durante l'aggiornamento dell'attività:", err.message);
-        return res.status(500).json({ error: "Errore durante l'aggiornamento dell'attività." });
-      }
-
-      return res.status(200).json({ message: "Attività aggiornata con successo!" });
+  
+      // 🔄 Aggiorna l'attività interna
+      const updateQuery = `
+        UPDATE activities
+        SET 
+          titolo = ?, 
+          descrizione = ?, 
+          datainizio = ?, 
+          orainizio = ?, 
+          durata = ?, 
+          scadenzaIscrizioni = ?, 
+          numeroMinimoPartecipanti = ?, 
+          numeroMassimoPartecipanti = ?, 
+          luogo = ?, 
+          istruttore = ?, 
+          immagine = COALESCE(?, immagine)
+        WHERE id = ? 
+        AND tipo = 'I' 
+        AND createdBy = ?
+      `;
+  
+      const params = [
+        title,
+        description,
+        date,
+        time,
+        duration,
+        deadline,
+        minParticipants,
+        maxParticipants,
+        location,
+        instructor,
+        image, // Aggiorna l'immagine solo se è stata caricata una nuova
+        activityId,
+        centerId,
+      ];
+  
+      db.run(updateQuery, params, function (err) {
+        if (err) {
+          console.error("❌ Errore durante l'aggiornamento dell'attività interna:", err.message);
+          return res.status(500).json({ error: "Errore durante l'aggiornamento dell'attività." });
+        }
+  
+        return res.status(200).json({ message: "Attività interna aggiornata con successo!" });
+      });
     });
   });
-});
+  
 
 // API per eliminare un'attività interna
-router.delete("/attivita-interna/:id", authenticateJWT, (req, res) => {
+router.delete("/attivita/interna/:id", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
   const centerId = req.user.id; // ID del centro dal JWT
 
   // ✅ Verifica se l'attività esiste e appartiene al centro
   const checkOwnershipSQL = `
     SELECT createdBy 
-    FROM internal_activities 
-    WHERE id = ?
+    FROM activities 
+    WHERE id = ? AND tipo = 'I'
   `;
 
   db.get(checkOwnershipSQL, [activityId], (err, row) => {
@@ -1337,8 +1377,8 @@ router.delete("/attivita-interna/:id", authenticateJWT, (req, res) => {
 
       // ✅ Dopo aver rimosso le iscrizioni, elimina l'attività
       const deleteActivitySQL = `
-        DELETE FROM internal_activities 
-        WHERE id = ?
+        DELETE FROM activities 
+        WHERE id = ? AND tipo = 'I'
       `;
 
       db.run(deleteActivitySQL, [activityId], function (err) {
@@ -1347,11 +1387,12 @@ router.delete("/attivita-interna/:id", authenticateJWT, (req, res) => {
           return res.status(500).json({ error: "Errore durante l'eliminazione dell'attività." });
         }
 
-        res.status(200).json({ message: "Attività e iscrizioni correlate eliminate con successo." });
+        res.status(200).json({ message: "Attività interna e iscrizioni correlate eliminate con successo." });
       });
     });
   });
 });
+
 
 router.get("/attivita/:id/pazienti", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
@@ -1368,19 +1409,27 @@ router.get("/attivita/:id/pazienti", authenticateJWT, (req, res) => {
     FROM profiles p
     LEFT JOIN activity_participants ap 
       ON p.id = ap.patientId AND ap.activityId = ?
-    WHERE p.role = 'paziente' AND p.centroDiurnoId = ? -- ✅ Filtraggio per centro diurno
+    WHERE p.role = 'paziente' 
+      AND p.centroDiurnoId = ? 
+      AND EXISTS (SELECT 1 FROM activities a WHERE a.id = ? AND a.createdBy = ?) -- ✅ Verifica se l'attività appartiene al centro
     ORDER BY iscritto DESC, p.nome ASC
   `;
 
-  db.all(sql, [activityId, centerId], (err, rows) => {
+  db.all(sql, [activityId, centerId, activityId, centerId], (err, rows) => {
     if (err) {
       console.error("❌ Errore durante il recupero dei pazienti:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
     }
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
+    }
+
     console.log("✅ Pazienti trovati:", rows);
     res.json(rows);
   });
 });
+
 
 router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
@@ -1396,155 +1445,63 @@ router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
     FROM profiles p
     LEFT JOIN activity_participants ap 
       ON p.id = ap.patientId AND ap.activityId = ?
-    WHERE p.role = 'caregiver' AND p.centroDiurnoId = ? -- ✅ Filtraggio per centro diurno
+    WHERE p.role = 'caregiver' 
+      AND EXISTS (SELECT 1 FROM activities a WHERE a.id = ? AND a.createdBy = ?) -- ✅ Verifica se l'attività appartiene al centro
     ORDER BY iscritto DESC, p.nome ASC
   `;
 
-  db.all(sql, [activityId, centerId], (err, rows) => {
+  db.all(sql, [activityId, activityId, centerId], (err, rows) => {
     if (err) {
       console.error("❌ Errore durante il recupero dei caregiver:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
     }
+
+    console.log("✅ Caregiver trovati:", rows);
     res.json(rows);
   });
 });
+
 router.post("/attivita/:id/iscrivi", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
   const { userId } = req.body;
 
-  
-    const insertQuery = `
-      INSERT INTO activity_participants (activityId, patientId)
-      VALUES (?, ?)
-    `;
+  const insertQuery = `
+    INSERT INTO activity_participants (activityId, patientId)
+    VALUES (?, ?)
+  `;
 
-    db.run(insertQuery, [activityId, userId], function (err) {
-      if (err) {
-        console.error("❌ Errore durante l'iscrizione:", err.message);
-        return res.status(500).json({ error: "Errore interno del server." });
-      }
+  db.run(insertQuery, [activityId, userId], function (err) {
+    if (err) {
+      console.error("❌ Errore durante l'iscrizione:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
 
-      res.status(201).json({ message: "Utente iscritto con successo." });
-    });
+    res.status(201).json({ message: "Utente iscritto con successo." });
+  });
 });
+
+
 router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
   const { userId } = req.body;
-  const centerId = req.user.id; // ID del centro dal JWT
 
-    const deleteQuery = `
-      DELETE FROM activity_participants
-      WHERE activityId = ? AND patientId = ?
-    `;
-
-    db.run(deleteQuery, [activityId, userId], function (err) {
-      if (err) {
-        console.error("❌ Errore durante la disiscrizione:", err.message);
-        return res.status(500).json({ error: "Errore interno del server." });
-      }
-
-      res.status(200).json({ message: "Utente disiscritto con successo." });
-    });
-});
-router.get("/attivita-esterna", authenticateJWT, (req, res) => {
-  const sql = `
-    SELECT ea.*, 
-           COALESCE(COUNT(ap.patientId), 0) AS numeroIscritti
-    FROM external_activities ea
-    LEFT JOIN activity_participants ap 
-      ON ea.id = ap.activityId
-    GROUP BY ea.id
-    ORDER BY ea.datainizio DESC, ea.orainizio DESC
+  const deleteQuery = `
+    DELETE FROM activity_participants
+    WHERE activityId = ? AND patientId = ?
   `;
 
-  db.all(sql, [], (err, rows) => {
+  db.run(deleteQuery, [activityId, userId], function (err) {
     if (err) {
-      console.error("❌ Errore durante il recupero delle attività esterne:", err.message);
+      console.error("❌ Errore durante la disiscrizione:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
     }
-    res.json({ activities: rows });
+
+    res.status(200).json({ message: "Utente disiscritto con successo." });
   });
 });
 
 
-router.post("/attivita-esterna", authenticateJWT, (req, res) => {
-  const {
-    titolo,
-    descrizione,
-    datainizio,
-    orainizio,
-    orariofine,
-    luogo,
-    numeroMinimoPartecipanti,
-    numeroMassimoPartecipanti,
-    istruttore,
-    immagine,
-    scadenzaIscrizioniData,
-    scadenzaIscrizioniOrario,
-  } = req.body;
 
-  const centerId = req.user.id;
-
-  const sql = `
-    INSERT INTO external_activities (
-      titolo, descrizione, datainizio, orainizio, orariofine,
-      luogo, numeroMinimoPartecipanti, numeroMassimoPartecipanti,
-      istruttore, immagine, scadenzaIscrizioniData, scadenzaIscrizioniOrario, createdBy
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.run(
-    sql,
-    [
-      titolo,
-      descrizione,
-      datainizio,
-      orainizio,
-      orariofine,
-      luogo,
-      numeroMinimoPartecipanti,
-      numeroMassimoPartecipanti,
-      istruttore,
-      immagine,
-      scadenzaIscrizioniData,
-      scadenzaIscrizioniOrario,
-      centerId,
-    ],
-    function (err) {
-      if (err) {
-        console.error("❌ Errore durante la creazione dell'attività esterna:", err.message);
-        return res.status(500).json({ error: "Errore interno del server." });
-      }
-      res.status(201).json({ message: "Attività esterna creata con successo!", activityId: this.lastID });
-    }
-  );
-});
-
-router.get("/attivita-esterna/:id", authenticateJWT, (req, res) => {
-  const activityId = req.params.id;
-
-  const sql = `
-    SELECT ea.*, 
-           (SELECT COUNT(*) 
-            FROM activity_participants 
-            WHERE activityId = ea.id) AS numeroIscritti
-    FROM external_activities ea
-    WHERE ea.id = ?
-  `;
-
-  db.get(sql, [activityId], (err, activity) => {
-    if (err) {
-      console.error("❌ Errore durante il recupero dell'attività esterna:", err.message);
-      return res.status(500).json({ error: "Errore interno del server." });
-    }
-
-    if (!activity) {
-      return res.status(404).json({ error: "Attività non trovata." });
-    }
-
-    res.json({ activity });
-  });
-});
 
 
   module.exports = router;

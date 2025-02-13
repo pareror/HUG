@@ -13,11 +13,15 @@ const AttivitaInternaTab = () => {
     const fetchActivities = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const response = await axios.get("http://localhost:5000/api/attivita-interna", {
+        const response = await axios.get("http://localhost:5000/api/attivita", {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            tipo: "I", // ✅ Passiamo il tipo 'I' nei parametri della query
           },
         });
+
         console.log("Attività interne:", response.data.activities);
         setActivities(response.data.activities || []);
       } catch (err) {
@@ -27,6 +31,7 @@ const AttivitaInternaTab = () => {
         setLoading(false);
       }
     };
+
     fetchActivities();
   }, []);
 
