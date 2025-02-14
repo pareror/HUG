@@ -4,11 +4,14 @@ import { ArrowLeft, Plus, Key, Edit2 } from "lucide-react";
 import "../css/PatientsManagement.css"; // Puoi rinominarlo se vuoi, ad es. CaregiverManagement.css
 import NavbarDashboard from "../Components/NavbarDashboard";
 import axios from "axios";
+import ForceChangePasswordModal from "../Components/ForceChangePasswordModal";
 
 const CaregiverManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [caregivers, setCaregivers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCaregiver, setSelectedCaregiver] = useState(null);
 
   // Funzione per recuperare i caregiver dall'API
   const fetchCaregivers = async () => {
@@ -30,13 +33,19 @@ const CaregiverManagement = () => {
   }, []);
 
   // Filtra i caregiver in base al termine di ricerca (nome, cognome, codice fiscale, id)
-  const filteredCaregivers = caregivers.filter(
-    (caregiver) =>
-      caregiver.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      caregiver.cognome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      caregiver.codiceFiscale.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      caregiver.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCaregivers = caregivers.filter((caregiver) =>
+    caregiver.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    caregiver.cognome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    caregiver.codiceFiscale.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    caregiver.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Quando si clicca sull'icona per cambiare la password, salva il caregiver selezionato e apri il modal
+  const handleOpenModal = (caregiver) => {
+    console.log("Apertura modal per:", caregiver);
+    setSelectedCaregiver(caregiver);
+    setShowModal(true);
+  };
 
   return (
     <div className="patients-management-page">
@@ -52,9 +61,7 @@ const CaregiverManagement = () => {
           <div className="header-center">
             <h1>Gestione Caregiver</h1>
           </div>
-          <div className="header-right">
-            {/* Vuoto per bilanciare l'header */}
-          </div>
+          <div className="header-right">{/* Vuoto per bilanciare l'header */}</div>
         </header>
 
         <div className="pm-controls">
@@ -96,23 +103,16 @@ const CaregiverManagement = () => {
                     <td>{caregiver.cognome}</td>
                     <td>{caregiver.codiceFiscale}</td>
                     <td className="actions-cell">
-                      {/* Ad esempio: se vuoi mostrare le credenziali */}
                       <button
                         className="icon-button"
-                        onClick={() =>
-                          navigate(
-                            `/dashboard/utenza/caregiver/${caregiver.id}/credenziali`
-                          )
-                        }
+                        onClick={() => handleOpenModal(caregiver)}
                       >
                         <Key size={16} />
                       </button>
                       <button
                         className="icon-button"
                         onClick={() =>
-                          navigate(
-                            `/dashboard/utenza/caregiver/${caregiver.id}/modifica`
-                          )
+                          navigate(`/dashboard/utenza/caregiver/${caregiver.id}/modifica`)
                         }
                       >
                         <Edit2 size={16} />
@@ -125,6 +125,14 @@ const CaregiverManagement = () => {
           )}
         </div>
       </div>
+      {/* Renderizza il modal una sola volta, fuori dal ciclo */}
+      {showModal && selectedCaregiver && (
+        <ForceChangePasswordModal
+          userId={selectedCaregiver.id}
+          username={selectedCaregiver.username}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
