@@ -1,7 +1,7 @@
 import React from "react";
 import {jwtDecode} from "jwt-decode";
 import ProtectedRoute from "../Components/ProtectedRoute";
-import DashboardPazienti from "./PazientiPage";
+import DashboardPazienti from "./Pazienti/PazientiPage";
 // import DashboardCaregiver from "./DashboardCaregiver";
 // import DashboardTouroperator from "./DashboardTouroperator";
 // import DashboardEnteEsterno from "./DashboardEnteEsterno";

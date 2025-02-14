@@ -1,0 +1,195 @@
+.lista-pazienti {
+    min-height: 100vh; /* Altezza minima pari all'intera viewport */
+    background-color: #e7ebee;
+    padding: 20px;
+  }
+  .lista-main-content {
+    margin-top: 10px;
+    max-width: 100%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.back-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+  .back-button svg {
+    margin-right: 8px;
+  }
+  .list-att-paz-container {
+    max-width: 90%;
+    margin: 25px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list-att-paz-header {
+    margin-bottom: 24px;
+  }
+  
+  .list-att-paz-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 8px 0;
+  }
+  
+  .list-att-paz-header p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .list-att-paz-search-container {
+    position: relative;
+    margin-bottom: 24px;
+    max-width: 400px;
+  }
+  
+  .list-att-paz-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #666;
+  }
+  
+  .list-att-paz-search-input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .list-att-paz-search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .list-att-paz-activities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .list-att-paz-activity-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px 32px; /* Increased padding */
+    background-color: white;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    margin-bottom: 16px; /* Added margin between cards */
+  }
+  
+  .list-att-paz-activity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list-att-paz-card-content {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center; /* Changed to center alignment */
+    gap: 32px; /* Increased gap */
+  }
+  
+  .list-att-paz-activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .list-att-paz-activity-name {
+    font-size: 20px; /* Increased font size */
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+  
+  .list-att-paz-activity-date {
+    font-size: 15px; /* Increased font size */
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .list-att-paz-status-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  
+  .list-att-paz-status-badge {
+    padding: 6px 16px; /* Increased padding */
+    border-radius: 4px;
+    font-size: 15px; /* Increased font size */
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .list-att-paz-status-da-pagare {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .list-att-paz-status-pagato {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+  
+  .list-att-paz-status-gratuito {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+  
+  .list-att-paz-payment-date {
+    font-size: 15px; /* Increased font size */
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .list-att-paz-payment-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  .list-att-paz-total-amount {
+    font-size: 20px; /* Increased font size */
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 768px) {
+    .list-att-paz-card-content {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  
+    .list-att-paz-status-section {
+      align-items: flex-start;
+    }
+  
+    .list-att-paz-payment-info {
+      justify-content: flex-start;
+    }
+  }
+  
+  
+  

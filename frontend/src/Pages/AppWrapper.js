@@ -35,7 +35,7 @@ import AttivitaInternePazienti from './Pazienti/AttivitaInternePazienti';
 import AttivitaEsternePazienti from './Pazienti/AttivitaEsternePazienti';
 import PagamentiAttivitaPaziente from './Pazienti/PagamentiAttivitaPaziente';
 import DashboardRouter from "./DashboardRouter";
-
+import AttivitaIscrittoPazienti from "./Pazienti/AttivitaIscrittoPazienti";
 const Website = () => {
     return ( 
         <div className="x">
@@ -251,6 +251,11 @@ const Website = () => {
                 </ProtectedRoute>
                  }
                  />
+
+                 <Route path="pazienti/attivita/iscritto" element={
+                    <AttivitaIscrittoPazienti />
+                }       
+                />
 
         </Routes>  
         </div>
