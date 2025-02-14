@@ -4,12 +4,12 @@ import { Accessibility, Key, Edit2, ArrowLeft, Plus } from "lucide-react";
 import "../css/PatientsManagement.css";
 import NavbarDashboard from "../Components/NavbarDashboard";
 import axios from "axios";
-
+import ChangeCredentialsModal from "../Components/ForceChangePasswordModal";
 const PatientsManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState([]);
-
+  const [showModal, setShowModal] = useState(false);
   // Funzione per recuperare i pazienti dall'API
   const fetchPatients = async () => {
     try {
@@ -102,14 +102,11 @@ const PatientsManagement = () => {
                       )}
                       <button
                         className="icon-button"
-                        onClick={() =>
-                          navigate(
-                            `/dashboard/utenza/pazienti/${patient.id}/credenziali`
-                          )
-                        }
+                        onClick={() => setShowModal(true)}
                       >
                         <Key size={16} />
                       </button>
+                      {showModal && <ChangeCredentialsModal userId={patient.id} onClose={() => setShowModal(false)} />}
                       <button
                         className="icon-button"
                         onClick={() =>
