@@ -9,9 +9,9 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import "../css/NavbarPazienti.css";
-import LogoutButton from "./LogoutButton";
-import NotificationDropdown from "./NotificationDropdown";
+import "../../css/Pazienti/NavbarPazienti.css";
+import LogoutButton from "../LogoutButton";
+import NotificationDropdown from "../NotificationDropdown";
 import axios from "axios";
 
 
@@ -101,10 +101,10 @@ const NavbarPazienti = () => {
   }, []);
 
   return (
-    <nav className="navbar-dashboard">
+    <nav className="pazienti-navbar-dashboard">
       {/* Logo a sinistra */}
-      <Link to="/dashboard" className="navbar-logo" onClick={handleLinkClick}>
-        <img src="/images/logo.png" alt="Logo" className="logo" />
+      <Link to="/dashboard" className="pazienti-navbar-logo" onClick={handleLinkClick}>
+        <img src="/images/logo.png" alt="Logo" className="pazienti-logo" />
       </Link>
 
       {/* Menu Desktop (le voci principali) */}
@@ -118,9 +118,9 @@ const NavbarPazienti = () => {
         </Link>
 
         {/* Dropdown Attività */}
-        <div className="dropdown">
+        <div className="pazienti-dropdown">
           <button
-            className="dropdown-toggle"
+            className="pazienti-dropdown-toggle"
             onClick={() => toggleDropdown("attivita")}
           >
             Attività{" "}
@@ -131,7 +131,7 @@ const NavbarPazienti = () => {
             )}
           </button>
           <div
-            className={`dropdown-menu ${
+            className={`pazienti-dropdown-menu ${
               activeDropdown === "attivita" ? "show" : ""
             }`}
           >
@@ -152,7 +152,7 @@ const NavbarPazienti = () => {
 
 
         {/* Dropdown Gestione Pagamenti */}
-        <div className="dropdown">
+        <div className="pazienti-dropdown">
           <button
             className="dropdown-toggle"
             onClick={() => toggleDropdown("gestionePagamenti")}
@@ -181,7 +181,7 @@ const NavbarPazienti = () => {
       </div>
 
       {/* Sezione a destra */}
-      <div className="navbar-right">
+      <div className="pazienti-navbar-right">
         {/* Menu Toggle (hamburger) - visibile solo su mobile */}
         <button
           className="menu-toggle"
