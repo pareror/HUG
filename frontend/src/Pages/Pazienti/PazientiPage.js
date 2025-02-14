@@ -1,18 +1,19 @@
 import React from 'react';
-import NavbarPazienti from  '../Components/NavbarPazienti'
-import '../css/PazientiPage.css'
+import NavbarPazienti from  '../../Components/Pazienti/NavbarPazienti'
 
-import "../css/Dashboard.css";
+import '../../css/Pazienti/PazientiPage.css'
 
-import ActivityStatsPazienti from "../Components/ActivityStatsPazienti"
+import "../../css/Dashboard.css";
 
-import UpcomingActivities from "../Components/UpcomingActivities"
-import '../css/UpcomingActivities.css';
+import ActivityStatsPazienti from "../../Components/Pazienti/ActivityStatsPazienti"
 
-import PaymentsTable from "../Components/PaymentsTable"
-import '../css/PaymentsTable.css';
+import UpcomingActivities from "../../Components/UpcomingActivities"
+import '../../css/UpcomingActivities.css';
 
-import ButtonDashboardPazienti from "../Components/ButtonDashboardPazienti";    
+import PaymentsTable from "../../Components/PaymentsTable"
+import '../../css/PaymentsTable.css';
+
+import ButtonDashboardPazienti from "../../Components/Pazienti/ButtonDashboardPazienti";    
 
 import { useState } from "react"
 

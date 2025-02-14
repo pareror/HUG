@@ -1,4 +1,4 @@
-import "../css/ActivityStats.css"
+import "../../css/ActivityStats.css"
 
 /*import React from "react";*/
 {/* import "../css/ActivityStats.css"

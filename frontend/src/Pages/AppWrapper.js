@@ -31,7 +31,10 @@ import DettaglioPreventivo from './DettaglioPreventivo';
 import DettaglioAttivitaEsterne from '../Components/CartellaAttivitaEsterna/DettaglioAttivitaEsterne';
 import PaginaDettaglioAttivitaEsterne from './PaginaDettaglioAttivitaEsterne';
 
-import PazientiPage from './PazientiPage'
+import PazientiPage from './Pazienti/PazientiPage'
+import AttivitaInternePazienti from './Pazienti/AttivitaInternePazienti';
+import AttivitaEsternePazienti from './Pazienti/AttivitaEsternePazienti';
+import PagamentiAttivitaPaziente from './Pazienti/PagamentiAttivitaPaziente';
 
 const Website = () => {
     return ( 
@@ -222,6 +225,7 @@ const Website = () => {
                 }
             />
 
+{/** PAZIENTI */}
             <Route path="/pazienti" element={
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <PazientiPage />
@@ -229,6 +233,26 @@ const Website = () => {
                  }
                  />
 
+            <Route path="/pazienti/attivita/interna" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <AttivitaInternePazienti />
+                </ProtectedRoute>
+                 }
+                 />
+
+            <Route path="/pazienti/attivita/esterna" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <AttivitaEsternePazienti />
+                </ProtectedRoute>
+                 }
+                 />
+
+            <Route path="/pazienti/pagamenti/attivita" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <PagamentiAttivitaPaziente />
+                </ProtectedRoute>
+                 }
+                 />
 
         </Routes>  
         </div>
