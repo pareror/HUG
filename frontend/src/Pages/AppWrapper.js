@@ -30,11 +30,11 @@ import GestisciAttivita from './GestisciAttivita';
 import DettaglioPreventivo from './DettaglioPreventivo';
 import DettaglioAttivitaEsterne from '../Components/CartellaAttivitaEsterna/DettaglioAttivitaEsterne';
 import PaginaDettaglioAttivitaEsterne from './PaginaDettaglioAttivitaEsterne';
-
 import PazientiPage from './Pazienti/PazientiPage'
 import AttivitaInternePazienti from './Pazienti/AttivitaInternePazienti';
 import AttivitaEsternePazienti from './Pazienti/AttivitaEsternePazienti';
 import PagamentiAttivitaPaziente from './Pazienti/PagamentiAttivitaPaziente';
+import DashboardRouter from "./DashboardRouter";
 
 const Website = () => {
     return ( 
@@ -49,15 +49,13 @@ const Website = () => {
             <Route path="/register" element={<Register />} />
             {/* Rotte protette */}
             <Route path="/dashboard" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
-                <Dashboard />
-                </ProtectedRoute>
+                
+                <DashboardRouter />
+
             }
             />
             <Route path="/dashboard/calendario" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
                 <CalendarPage />
-                </ProtectedRoute>
             }
             />
             <Route path="/dashboard/calendario/day/:day" element={
