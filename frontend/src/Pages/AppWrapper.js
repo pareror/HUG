@@ -257,6 +257,14 @@ const Website = () => {
                 }       
                 />
 
+                <Route path="pazienti/profilo" element={
+                    <ProtectedRoute requiredPermission={[1]}>
+                        <Profilo />                 
+                    </ProtectedRoute>
+                }       
+                />  
+
+              
         </Routes>  
         </div>
      );
