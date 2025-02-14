@@ -65,4 +65,56 @@ router.post("/change-password", authenticateJWT, async (req, res) => {
     }
   });
   
+const SALT_ROUNDS = 10;
+
+// Endpoint per il force-change-password
+router.put("/force-change-password/:userId", authenticateJWT, (req, res) => {
+  const centerId = req.user.id; // ID del centro diurno autenticato
+  const { userId } = req.params; // ID del profilo (paziente o caregiver) a cui cambiare la password
+  const { newPassword, confirmNewPassword } = req.body; // Nuova password e conferma
+
+  // Controllo che entrambe le password siano fornite
+  if (!newPassword || !confirmNewPassword) {
+    return res.status(400).json({ error: "È richiesta la nuova password e la sua conferma." });
+  }
+
+  // Controllo che le due password coincidano
+  if (newPassword !== confirmNewPassword) {
+    return res.status(400).json({ error: "Le password non coincidono." });
+  }
+
+  // Verifica che il profilo appartenga al centro diurno autenticato
+  // e che il ruolo sia "paziente" o "caregiver"
+  const query = "SELECT id FROM profiles WHERE id = ? AND centroDiurnoId = ? AND role IN ('paziente', 'caregiver')";
+  db.get(query, [userId, centerId], (err, row) => {
+    if (err) {
+      console.error("Errore nel recupero del profilo:", err);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!row) {
+      return res.status(403).json({ error: "Non autorizzato a modificare la password di questo utente." });
+    }
+
+    // Hash della nuova password
+    bcrypt.hash(newPassword, SALT_ROUNDS, (err, hash) => {
+      if (err) {
+        console.error("Errore nell'hashing della password:", err);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+
+      // Aggiorna la password nel database (tabella "profiles")
+      const updateQuery = "UPDATE profiles SET password = ? WHERE id = ?";
+      db.run(updateQuery, [hash, userId], function (err) {
+        if (err) {
+          console.error("Errore nell'aggiornamento della password:", err);
+          return res.status(500).json({ error: "Errore nell'aggiornamento della password." });
+        }
+        return res.json({ message: "Password aggiornata con successo." });
+      });
+    });
+  });
+});
+
+
+
 module.exports = router;
