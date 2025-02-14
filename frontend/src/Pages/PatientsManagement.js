@@ -4,13 +4,15 @@ import { Accessibility, Key, Edit2, ArrowLeft, Plus } from "lucide-react";
 import "../css/PatientsManagement.css";
 import NavbarDashboard from "../Components/NavbarDashboard";
 import axios from "axios";
-import ChangeCredentialsModal from "../Components/ForceChangePasswordModal";
+import ForceChangePasswordModal from "../Components/ForceChangePasswordModal";
+
 const PatientsManagement = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [patients, setPatients] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  // Funzione per recuperare i pazienti dall'API
+  const [selectedPatient, setSelectedPatient] = useState(null);
+
   const fetchPatients = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/patients", {
@@ -29,14 +31,18 @@ const PatientsManagement = () => {
     fetchPatients();
   }, []);
 
-  // Filtra i pazienti in base al termine di ricerca (nome, cognome, codice fiscale, id)
-  const filteredPatients = patients.filter(
-    (patient) =>
-      patient.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.cognome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.codiceFiscale.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPatients = patients.filter((patient) =>
+    patient.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.cognome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.codiceFiscale.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    patient.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleOpenModal = (patient) => {
+    console.log("Apertura modal per:", patient); // Debug
+    setSelectedPatient(patient);
+    setShowModal(true);
+  };
 
   return (
     <div className="patients-management-page">
@@ -52,9 +58,7 @@ const PatientsManagement = () => {
           <div className="header-center">
             <h1>Gestione Pazienti</h1>
           </div>
-          <div className="header-right">
-            {/* Vuoto per bilanciare l'header */}
-          </div>
+          <div className="header-right">{/* Vuoto per bilanciare l'header */}</div>
         </header>
 
         <div className="pm-controls">
@@ -96,23 +100,19 @@ const PatientsManagement = () => {
                     <td>{patient.cognome}</td>
                     <td>{patient.codiceFiscale}</td>
                     <td className="actions-cell">
-                      {/* 🔹 Mostra l'icona Accessibilità solo se `disabilita` è true */}
                       {Boolean(patient.disabilita) && (
                         <Accessibility size={16} color="#007bff" />
                       )}
                       <button
                         className="icon-button"
-                        onClick={() => setShowModal(true)}
+                        onClick={() => handleOpenModal(patient)}
                       >
                         <Key size={16} />
                       </button>
-                      {showModal && <ChangeCredentialsModal userId={patient.id} onClose={() => setShowModal(false)} />}
                       <button
                         className="icon-button"
                         onClick={() =>
-                          navigate(
-                            `/dashboard/utenza/pazienti/${patient.id}/modifica`
-                          )
+                          navigate(`/dashboard/utenza/pazienti/${patient.id}/modifica`)
                         }
                       >
                         <Edit2 size={16} />
@@ -125,6 +125,14 @@ const PatientsManagement = () => {
           )}
         </div>
       </div>
+      {/* Modal viene reso una sola volta, fuori dal mapping */}
+      {showModal && selectedPatient && (
+        <ForceChangePasswordModal
+          userId={selectedPatient.id}
+          username={selectedPatient.username}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

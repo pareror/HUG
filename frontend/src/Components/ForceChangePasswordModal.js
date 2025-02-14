@@ -5,7 +5,7 @@ import "../css/CCM.css"; // CSS per il modal
 import "../css/ErrorPopup.css"; // CSS per il popup di errore
 import "../css/SuccessPopup.css"; // CSS per il popup di successo
 
-const ForceChangePasswordModal = ({ userId, onClose }) => {
+const ForceChangePasswordModal = ({ userId, onClose, username }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -68,7 +68,7 @@ const ForceChangePasswordModal = ({ userId, onClose }) => {
         <button className="modal-close" onClick={onClose}>
           <X size={20} />
         </button>
-        <h2>Cambia Password Forzata</h2>
+        <h2>Cambia Password Per: {username}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Nuova Password:</label>

@@ -374,6 +374,7 @@ router.get("/patients", authenticateJWT, authorizeRole(5), (req, res) => {
     const query = `
       SELECT
         id,
+        username,
         nome,
         cognome,
         codiceFiscale,
