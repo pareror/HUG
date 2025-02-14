@@ -8,6 +8,16 @@ export default function AttivitaPazientiCard({ name, date, amount, status, payme
     navigate("/dashboard/pazienti/attivita/dettaglio")
   }
 
+  const renderDateInfo = () => {
+    if (status === "Gratuito") {
+      return <p className="list-att-paz-payment-date">Data iscrizione: {paymentDate}</p>
+    }
+    if (status === "Da pagare") {
+      return null // Non mostrare nessuna data per le attività da pagare
+    }
+    return <p className="list-att-paz-payment-date">Data pagamento: {paymentDate}</p>
+  }
+
   return (
     <div className="list-att-paz-activity-card" onClick={handleCardClick}>
       <div className="list-att-paz-card-content">
@@ -21,9 +31,7 @@ export default function AttivitaPazientiCard({ name, date, amount, status, payme
           >
             {status}
           </span>
-          {status !== "Da pagare" && paymentDate && (
-            <p className="list-att-paz-payment-date">Data pagamento: {paymentDate}</p>
-          )}
+          {renderDateInfo()}
         </div>
         <div className="list-att-paz-payment-info">
           <span className="list-att-paz-total-amount">€{amount.toFixed(2)}</span>
