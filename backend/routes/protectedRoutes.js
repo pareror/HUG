@@ -803,7 +803,7 @@ router.get("/paziente/:id",
       console.log("📌 Recupero lista caregiver");
       try {
         db.all(
-          `SELECT id, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, genere, telefono, fotoProfilo 
+          `SELECT id, username, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, genere, telefono, fotoProfilo 
            FROM profiles 
            WHERE role = 'caregiver'`,
           (err, rows) => {
