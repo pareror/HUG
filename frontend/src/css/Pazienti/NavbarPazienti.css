@@ -1,5 +1,5 @@
 /* NAVBAR DASHBOARD */
-.navbar-dashboard {
+.pazienti-navbar-dashboard {
     position: sticky;
     top: 15px;
     left: 0;
@@ -16,11 +16,11 @@
   }
   
   /* Logo */
-  .navbar-logo {
+  .pazienti-navbar-logo {
     display: flex;
     align-items: center;
   }
-  .logo {
+  .pazienti-logo {
     height: 45px;
     max-height: 100%;
   }
@@ -49,12 +49,12 @@
   }
   
   /* Dropdown wrapper */
-  .dropdown {
+  .pazienti-dropdown {
     position: relative;
   }
   
   /* Bottone dropdown (font-size ridotto da 18px a 16px) */
-  .dropdown-toggle {
+  .pazienti-dropdown-toggle {
     background: none;
     border: none;
     font-size: 16px;
@@ -66,12 +66,12 @@
     gap: 5px;
     transition: color 0.3s ease-in-out;
   }
-  .dropdown-toggle:hover {
+  .pazienti-dropdown-toggle:hover {
     color: #007bff;
   }
   
   /* Contenuto dropdown */
-  .dropdown-menu {
+  .pazienti-dropdown-menu {
     position: absolute;
     top: 50px;
     left: 0; /* Allinea a sinistra di default */
@@ -88,14 +88,14 @@
     transform: translateY(-10px);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s;
   }
-  .dropdown-menu.show {
+  .pazienti-dropdown-menu.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
   
   /* Link nel dropdown (font-size ridotto da 16px a 14px) */
-  .dropdown-menu a {
+  .pazienti-dropdown-menu a {
     padding: 10px;
     font-size: 14px;
     color: #333;
@@ -105,13 +105,13 @@
     text-decoration: none;
     border-radius: 5px;
   }
-  .dropdown-menu a:hover {
+  .pazienti-dropdown-menu a:hover {
     background: #f3f4f6;
     color: #007bff;
   }
   
   /* SEZIONE DESTRA (profilo, notifiche, menu) */
-  .navbar-right {
+  .pazienti-navbar-right {
     display: flex;
     align-items: center;
     justify-content: flex-end;

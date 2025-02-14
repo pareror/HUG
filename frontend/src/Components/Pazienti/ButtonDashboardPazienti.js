@@ -1,6 +1,6 @@
 import { Plus, Users, FileText, Calculator } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import "../css/ButtonDashboardPazienti.css"
+import "../../css/Pazienti/ButtonDashboardPazienti.css"
 
 const ButtonDashboard = () => {
   const navigate = useNavigate()
