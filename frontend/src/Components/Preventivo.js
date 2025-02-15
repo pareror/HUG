@@ -1,6 +1,7 @@
 import { Calendar, FileText } from "lucide-react"
-
-function Preventivo({ titoloPreventivo, data, numeroPreventivi, status }) {
+import { useNavigate } from "react-router-dom";
+function Preventivo({ idAttivita, titoloPreventivo, data, numeroPreventivi, status }) {
+  const navigate = useNavigate();
   return (
     <div className="activity-card">
       <div className="activity-content">
@@ -19,7 +20,12 @@ function Preventivo({ titoloPreventivo, data, numeroPreventivi, status }) {
         </div>
         <div className="activity-actions">
           <span className="status">{status}</span>
-          <button className="manage-button">Gestisci preventivi</button>
+          <button className="manage-button" 
+              onClick={() =>
+                navigate(`/dashboard/attivita/esterna/preventivi/${idAttivita}`)
+              }>
+            Gestisci preventivi
+          </button>
         </div>
       </div>
     </div>

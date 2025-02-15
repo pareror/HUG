@@ -194,7 +194,7 @@ const Website = () => {
             }
             />
 
-            <Route path="/dashboard/attivita/esterna/preventivi" element={
+            <Route path="/dashboard/attivita/esterna/preventivi/:id" element={
         
                 <ProtectedRoute requiredPermission={[2,3,5]}>
                 <ConsultaPreventivi />
@@ -207,7 +207,7 @@ const Website = () => {
                 //route da rendere protetta
             }
             />
-             <Route path="/dashboard/attivita/esterna/preventivi/preventivo" element={
+             <Route path="/dashboard/attivita/esterna/preventivi/:idAttivita/preventivo/:idPreventivo" element={
                     <DettaglioPreventivo />
                 //route da rendere protetta
             }
@@ -218,10 +218,6 @@ const Website = () => {
                 }
              />
 
-                <Route path="/dashboard/attivita/esterna/4/consulta-preventivi" element={
-                    <ConsultaPreventivi />
-                }
-            />
 
 {/** PAZIENTI */}
             <Route path="/pazienti" element={

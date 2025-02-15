@@ -1,82 +1,116 @@
-import React from 'react';
-import NavbarDashboard from "../Components/NavbarDashboard"
-import PreventivoCard from '../Components/PreventivoCard';
-
-import { ArrowLeft, Search } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Search, ArrowLeft } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import NavbarDashboard from "../Components/NavbarDashboard";
+import PreventivoCard from "../Components/PreventivoCard";
 import "../css/ConsultaPreventivi.css";
 
-const ConsultaPreventivi = () => {
+export default function ConsultaPreventivi() {
+  const { id } = useParams(); // L'id dell'attività esterna passato tramite URL
+  const navigate = useNavigate();
 
-    const preventivi = [
-        {
-            id: 1,
-            title: "Tour Operator 1",
-            date: "22/10/2024",
-            amount: "250 €"
-        },
-        {
-            id: 2,
-            title: "Tour Operator 2",
-            date: "23/10/2024",
-            amount: "300 €"
-        },
-        {
-            id: 3,
-            title: "Tour Operator 3",
-            date: "24/10/2024",
-            amount: "350 €"
-        },
-        {
-            id: 4,
-            title: "Tour Operator 4",
-            date: "22/10/2024",
-            amount: "250 €"
-        }
-    ];
+  const [activity, setActivity] = useState(null);
+  const [preventivi, setPreventivi] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    const navigate = useNavigate(); //Inizializza navigate
-    
-    return (
-        <div className='preventivi'>
-            <NavbarDashboard />
-            <div className = "main-content">
-            <button className="back-button" onClick={() => navigate(-1)}>
-                <ArrowLeft size={20} />
-                Torna indietro
-            </button>
+  // Recupera i dettagli dell'attività esterna
+  const fetchActivityDetails = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const response = await axios.get(`http://localhost:5000/api/attivita/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { tipo: "E" }
+      });
+      setActivity(response.data.activity);
+    } catch (err) {
+      console.error("Errore nel recupero dei dettagli dell'attività:", err);
+      setError("Errore durante il recupero dei dettagli dell'attività.");
+    }
+  };
 
-    <div className="container">
-      <div className="header">
-        <h1>Preventivi per Visita al museo archeologico</h1>
-        <p>Qui troverai la lista dei preventivi per attività </p>
-      </div>
-      <div className="search-containerr">
-        <Search className="search-icon" />
-        <input type="text" placeholder="Cerca tour operator..." className="search-inputt" />
-      </div>
+  // Recupera l'elenco dei preventivi per l'attività
+  const fetchPreventivi = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const response = await axios.get(`http://localhost:5000/api/attivita/${id}/preventivi`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(response.data.preventivi);
+      setPreventivi(response.data.preventivi || []);
+    } catch (err) {
+      console.error("Errore nel recupero dei preventivi:", err);
+      setError("Errore durante il recupero dei preventivi.");
+    }
+  };
 
-      <div className="preventivi-list">
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchActivityDetails();
+      await fetchPreventivi();
+      setLoading(false);
+    };
+    fetchData();
+  }, [id]);
 
-        {preventivi.map((preventivo) => (
-            <PreventivoCard
-            id={preventivo.id}
-            titolo={preventivo.title}
-            data={preventivo.date}
-            cifra={preventivo.amount}
+  // Filtra i preventivi in base al termine di ricerca sul campo "title"
+  const filteredPreventivi = preventivi.filter((prev) =>
+    prev.nomeTouroperator.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="consulta-preventivi">
+      <NavbarDashboard />
+      <div className="main-content">
+        <button className="back-button" onClick={() => navigate(-1)}>
+          <ArrowLeft size={20} />
+          Torna indietro
+        </button>
+        <div className="container">
+          <div className="header">
+            {activity ? (
+              <>
+                <h1>Preventivi per {activity.titolo}</h1>
+                <p>Data attività: {activity.datainizio}</p>
+              </>
+            ) : (
+              <h1>Preventivi</h1>
+            )}
+          </div>
+          <div className="search-containerr">
+            <Search className="search-icon" />
+            <input
+              type="text"
+              placeholder="Cerca tour operator..."
+              className="search-inputt"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-        ))}
-
+          </div>
+          {loading ? (
+            <p>Caricamento in corso...</p>
+          ) : error ? (
+            <p className="error-message">{error}</p>
+          ) : filteredPreventivi.length === 0 ? (
+            <p className="no-data">Nessun preventivo trovato.</p>
+          ) : (
+            <div className="preventivi-list">
+              {filteredPreventivi.map((prev) => (
+                <PreventivoCard
+                  key={prev.id}
+                  idPrev={prev.id}
+                  idAttivita={prev.idAttivita}
+                  titolo={prev.nomeTouroperator}
+                  data={prev.dataPreventivo}
+                  cifra={prev.prezzoTotale}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
-
-          </div>
-
-
-
-        </div>
-    );
-};
-
-export default ConsultaPreventivi;
+  );
+}
