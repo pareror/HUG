@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, User, Settings, LogOut, Menu, X } from "lucide-
 import "../../css/Pazienti/NavbarPazienti.css"
 import LogoutButton from "../LogoutButton"
 import NotificationDropdown from "../NotificationDropdown"
+/** bissogna creare un notification DropDown per i pazienti */
 import axios from "axios"
 
 const NavbarPazienti = () => {
