@@ -99,9 +99,9 @@
     font-weight: 500;
   }
   
-  .pay-button {
-    background-color: #b91c1c;
-    color: white;
+  .pazienti-pay-button {
+    background-color: #fee2e2;
+    color: #b91c1c;
     border: none;
     border-radius: 4px;
     padding: 8px 12px;
@@ -109,10 +109,12 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-  
-  .pay-button:hover {
-    background-color: #991b1b;
-  }
+
+  .pazienti-pay-button.paid {
+    background-color: #dcfce7;
+    color: #15803d;
+    }
+
   
   
 
@@ -199,3 +201,6 @@
   display: inline-block;
   margin-bottom: 8px;
 }
+
+
+
