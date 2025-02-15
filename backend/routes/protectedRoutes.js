@@ -1593,7 +1593,107 @@ router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
 });
 
 
+// Endpoint per ottenere il numero di preventivi per una specifica attività esterna
+router.get("/attivita/:id/preventivi/count", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
 
+  const sql = "SELECT COUNT(*) AS numeroPreventivi FROM preventivi WHERE idAttivita = ?";
+  db.get(sql, [activityId], (err, row) => {
+    if (err) {
+      console.error("Errore nel recupero dei preventivi per l'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    // row potrebbe essere undefined se non ci sono record, in questo caso restituiamo 0
+    const numeroPreventivi = row ? row.numeroPreventivi : 0;
+    return res.json({ numeroPreventivi });
+  });
+});
 
+// Endpoint per ottenere i preventivi o il loro conteggio in base al parametro di query
+router.get("/attivita/:id/preventivi", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  
+  const sql = `
+    SELECT 
+      p.id,
+      p.idAttivita,
+      p.idTouroperator,
+      p.dataPreventivo,
+      p.durataViaggio,
+      p.partecipantiMinimi,
+      p.serviziInclusi,
+      p.prezzoPerPersona,
+      p.prezzoTotale,
+      p.dettagliTrasporto,
+      p.itinerario,
+      p.note,
+      pr.ragioneSociale AS nomeTouroperator
+    FROM preventivi p
+    LEFT JOIN profiles pr ON p.idTouroperator = pr.id
+    WHERE p.idAttivita = ?
+  `;
+  
+  db.all(sql, [activityId], (err, rows) => {
+    if (err) {
+      console.error("Errore nel recupero dei preventivi per l'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    return res.json({ preventivi: rows });
+  });
+});
+
+// Endpoint per ottenere i dettagli di un preventivo per un'attività specifica
+router.get("/preventivi/:idPreventivo", authenticateJWT, (req, res) => {
+  const idPreventivo = req.params.idPreventivo;
+  
+  const sql = `
+    SELECT 
+      p.id,
+      a.titolo AS titoloAttivita,
+      pr.ragioneSociale,
+      p.dataPreventivo,
+      p.durataViaggio,
+      p.partecipantiMinimi AS numPartecipanti,
+      p.serviziInclusi,
+      p.prezzoPerPersona,
+      p.prezzoTotale,
+      p.dettagliTrasporto,
+      p.itinerario,
+      p.note
+    FROM preventivi p
+    LEFT JOIN profiles pr ON p.idTouroperator = pr.id
+    LEFT JOIN activities a ON p.idAttivita = a.id
+    WHERE p.id = ?
+  `;
+  
+  db.get(sql, [idPreventivo], (err, row) => {
+    if (err) {
+      console.error("Errore nel recupero del preventivo:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!row) {
+      return res.status(404).json({ error: "Preventivo non trovato." });
+    }
+    
+    // Prova a convertire i campi 'serviziInclusi' e 'itinerario' in array.
+    // Se sono salvati come JSON, li parse; altrimenti, li split su newline.
+    try {
+      row.servizi = JSON.parse(row.serviziInclusi);
+    } catch (e) {
+      row.servizi = row.serviziInclusi ? row.serviziInclusi.split("\n") : [];
+    }
+    
+    try {
+      row.itinerario = JSON.parse(row.itinerario);
+    } catch (e) {
+      row.itinerario = row.itinerario ? row.itinerario.split("\n") : [];
+    }
+    
+    // Rimuovi il campo originale se non necessario
+    delete row.serviziInclusi;
+    
+    return res.json({ preventivo: row });
+  });
+});
 
   module.exports = router;
