@@ -1,0 +1,90 @@
+/* Contenitore principale */
+.notifications-container {
+    max-width: 90%;
+    margin: 0px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-height: 500px; /* Limita l'altezza massima della lista notifiche */
+    overflow: hidden; /* Evita che esca dal contenitore */
+}
+
+/* Titolo della sezione */
+.notifications-title {
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    margin-top: 10px;
+
+}
+
+/* Lista delle notifiche */
+.notifications-list {
+    display: flex;
+    flex-direction: column;/* Dispone gli elementi in verticale */
+    overflow-y: auto; /* Abilita lo scroll verticale */
+    max-height: 400px; /* Altezza massima della lista, regolala se serve */
+    padding-right: 10px; /* Per evitare che lo scroll verticale si sovrapponga al testo */
+}
+
+/*Nascondi la scrollbar su WebKit (Chrome, Safari) */
+.notifications-list::-webkit-scrollbar {
+    width: 6px;
+}
+.notifications-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
+.notifications-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* Singola notifica */
+.notification-item {
+    padding: 15px 0;
+}
+
+/* Intestazione della notifica */
+.notification-header {
+    display: flex;
+    align-items: center;
+}
+
+/*Contenitore per titolo + badge */
+.notification-title-container {
+    display: flex;
+    align-items: center; /* Allinea titolo e badge sulla stessa riga */
+    gap: 8px; /* Spazio tra titolo e badge */
+}
+
+/* Titolo della notifica */
+.notification-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    margin-top: 2px;
+}
+
+/* Descrizione della notifica */
+.notification-description {
+    font-size: 14px;
+    color: #555;
+    margin: 8px 0;
+}
+
+/* Tempo della notifica */
+.notification-time {
+    font-size: 12px;
+    color: #888;
+}
+
+/* Linea di separazione tra le notifiche */
+.notification-divider {
+    border: none;
+    height: 1px;
+    background: #ddd;
+    margin-top: 10px;
+}
