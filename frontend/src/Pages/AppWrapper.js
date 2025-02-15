@@ -36,7 +36,7 @@ import AttivitaEsternePazienti from './Pazienti/AttivitaEsternePazienti';
 import PagamentiAttivitaPaziente from './Pazienti/PagamentiAttivitaPaziente';
 import ImpostazioniPazienti from './Pazienti/ImpostazioniPazienti';
 import NotifichePazienti from './Pazienti/NotifichePazienti';
-
+import ProfiloPazienti from './Pazienti/ProfiloPazienti';
 import DashboardRouter from "./DashboardRouter";
 import AttivitaIscrittoPazienti from "./Pazienti/AttivitaIscrittoPazienti";
 const Website = () => {
@@ -261,14 +261,14 @@ const Website = () => {
                 }       
                 />
             <Route path="/pazienti/impostazioni" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[1]}>
                 <ImpostazioniPazienti />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/pazienti/notifiche" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[1]}>
                 <NotifichePazienti />
                 </ProtectedRoute>
                  }
@@ -276,7 +276,7 @@ const Website = () => {
 
                 <Route path="pazienti/profilo" element={
                     <ProtectedRoute requiredPermission={[1]}>
-                        <Profilo />                 
+                        <ProfiloPazienti />                 
                     </ProtectedRoute>
                 }       
                 />  
