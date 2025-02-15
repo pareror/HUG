@@ -152,7 +152,9 @@ const aggiungiAttivitaEsterneFittizie = () => {
         prezzoTotale: 3500.0,
         dettagliTrasporto: "Pullman privato con Wi-Fi, servizio navetta per escursioni",
         itinerario: "Giorno 1: Arrivo e sistemazione\nGiorno 2: Tour storico\nGiorno 3: Escursione in montagna\nGiorno 4: Relax e attività libere\nGiorno 5: Partenza",
-        note: "Possibilità di aggiungere attività extra a richiesta"
+        note: "Possibilità di aggiungere attività extra a richiesta",
+        luogoPartenza: "Stazione Centrale Milano",       
+        luogoArrivo: "Piazza del Duomo, Milano"  // Aggiornato per evitare riferimento a Termini
       },
       {
         idAttivita: 14,
@@ -165,7 +167,9 @@ const aggiungiAttivitaEsterneFittizie = () => {
         prezzoTotale: 4400.0,
         dettagliTrasporto: "Volo A/R incluso, transfer privato aeroporto-hotel",
         itinerario: "Giorno 1: Volo e arrivo in resort\nGiorno 2: Attività di benvenuto\nGiorno 3: Tour naturalistico\nGiorno 4: Giornata di sport acquatici\nGiorno 5: Relax\nGiorno 6: Escursione in città\nGiorno 7: Partenza",
-        note: "Tariffe speciali per gruppi numerosi (>15 pax)"
+        note: "Tariffe speciali per gruppi numerosi (>15 pax)",
+        luogoPartenza: "Aeroporto Malpensa, Milano",  // Cambiato per usare un aeroporto milanese
+        luogoArrivo: "Centro Congressi, Firenze"
       },
       {
         idAttivita: 11,
@@ -178,15 +182,17 @@ const aggiungiAttivitaEsterneFittizie = () => {
         prezzoTotale: 2640.0,
         dettagliTrasporto: "Minivan con autista per tutta la durata del viaggio",
         itinerario: "Giorno 1: Arrivo e visita ai monumenti storici\nGiorno 2: Tour gastronomico\nGiorno 3: Escursione panoramica e partenza",
-        note: "Extra disponibili su richiesta: pasti aggiuntivi, tour personalizzati"
+        note: "Extra disponibili su richiesta: pasti aggiuntivi, tour personalizzati",
+        luogoPartenza: "Stazione Centrale Napoli",
+        luogoArrivo: "Aeroporto di Firenze"
       }
     ];
   
     preventivi.forEach((p) => {
       const sql = `
         INSERT INTO preventivi 
-        (idAttivita, idTouroperator, dataPreventivo, durataViaggio, partecipantiMinimi, serviziInclusi, prezzoPerPersona, prezzoTotale, dettagliTrasporto, itinerario, note)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (idAttivita, idTouroperator, dataPreventivo, durataViaggio, partecipantiMinimi, serviziInclusi, prezzoPerPersona, prezzoTotale, dettagliTrasporto, itinerario, note, luogoPartenza, luogoArrivo)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
   
       db.run(
@@ -202,7 +208,9 @@ const aggiungiAttivitaEsterneFittizie = () => {
           p.prezzoTotale,
           p.dettagliTrasporto,
           p.itinerario,
-          p.note
+          p.note,
+          p.luogoPartenza,
+          p.luogoArrivo
         ],
         function (err) {
           if (err) {
@@ -214,4 +222,6 @@ const aggiungiAttivitaEsterneFittizie = () => {
       );
     });
   };
+  
+  
   module.exports = {aggiungiAttivitaEsterneFittizie, insertFakePreventivi};

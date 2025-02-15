@@ -1659,7 +1659,9 @@ router.get("/preventivi/:idPreventivo", authenticateJWT, (req, res) => {
       p.prezzoTotale,
       p.dettagliTrasporto,
       p.itinerario,
-      p.note
+      p.note,
+      p.luogoPartenza,
+      p.luogoArrivo
     FROM preventivi p
     LEFT JOIN profiles pr ON p.idTouroperator = pr.id
     LEFT JOIN activities a ON p.idAttivita = a.id
