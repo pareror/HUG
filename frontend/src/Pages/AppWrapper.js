@@ -52,9 +52,7 @@ const Website = () => {
             <Route path="/register" element={<Register />} />
             {/* Rotte protette */}
             <Route path="/dashboard" element={
-                
                 <DashboardRouter />
-
             }
             />
             <Route path="/dashboard/calendario" element={
@@ -62,64 +60,64 @@ const Website = () => {
             }
             />
             <Route path="/dashboard/calendario/day/:day" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <DayActivitiesPage />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/utenza/pazienti" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <PatientsManagement />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/utenza/caregiver" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <CaregiversManagement />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/utenza/caregiver/:id/modifica" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <EditCaregiver />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/utenza/caregiver/nuovo" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <CreateCaregiver />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/attivita/interna" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <AttivitaInterne />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/attivita/interna/crea" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <CreateActivity />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/attivita/esterna" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <AttivitaEsterne />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/utenza/pazienti/nuovo" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <CreatePatient />
                 </ProtectedRoute>
             }
             />
             <Route path="/dashboard/utenza/pazienti/:id/modifica" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <EditPatient />
                 </ProtectedRoute>
                  }
@@ -127,54 +125,54 @@ const Website = () => {
             
 
             <Route path="/dashboard/notifiche" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <Notifiche />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/preventivi" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <PreventiviPage />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/impostazioni" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <Impostazioni />
                 </ProtectedRoute>
                  }
                  />
             <Route path="/dashboard/profilo" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <Profilo />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/pagamenti/paziente" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <PagamentiPazienti />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/dashboard/pagamenti/attivita" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <PagamentiAttivita />
                 </ProtectedRoute>
                  }
                  />
             
             <Route path="/dashboard/pagamenti/attivita/:activityId" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <DettaglioPagamenti />
                 </ProtectedRoute>
                  }
                 />
             <Route path="/dashboard/pagamenti/paziente/paziente" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <PagamentiPaziente />
                 </ProtectedRoute>
                  }
@@ -182,7 +180,7 @@ const Website = () => {
 
             <Route path="/dashboard/attivita/interna/:id" element={
                 
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <PaginaDettaglioAttivita />
                 </ProtectedRoute>
              
@@ -190,7 +188,7 @@ const Website = () => {
                  />
             <Route path="/dashboard/attivita/interna/:id/modifica" element={
         
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <EditActivity />
                 </ProtectedRoute>
         
@@ -199,64 +197,72 @@ const Website = () => {
 
             <Route path="/dashboard/attivita/esterna/preventivi" element={
         
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[5]}>
                 <ConsultaPreventivi />
                 </ProtectedRoute>
 
             }
             />
             <Route path="/dashboard/attivita/esterna/gestisciattivita" element={
+                 <ProtectedRoute requiredPermission={[5]}>
                     <GestisciAttivita />
-                //route da rendere protetta
+                    </ProtectedRoute>
             }
             />
              <Route path="/dashboard/attivita/esterna/preventivi/preventivo" element={
+                <ProtectedRoute requiredPermission={[5]}>
                     <DettaglioPreventivo />
-                //route da rendere protetta
+                </ProtectedRoute>
             }
             />
                
              <Route path="/dashboard/attivita/esterna/:id" element={
+                <ProtectedRoute requiredPermission={[5]}>
                 <PaginaDettaglioAttivitaEsterne />
+                </ProtectedRoute>
                 }
              />
 
                 <Route path="/dashboard/attivita/esterna/4/consulta-preventivi" element={
+                 <ProtectedRoute requiredPermission={[5]}>
                     <ConsultaPreventivi />
+                    </ProtectedRoute>
                 }
             />
 
 {/** PAZIENTI */}
             <Route path="/pazienti" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[1]}>
                 <PazientiPage />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/pazienti/attivita/interna" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[1]}>
                 <AttivitaInternePazienti />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/pazienti/attivita/esterna" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[1]}>
                 <AttivitaEsternePazienti />
                 </ProtectedRoute>
                  }
                  />
 
             <Route path="/pazienti/pagamenti/attivita" element={
-                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ProtectedRoute requiredPermission={[1]}>
                 <PagamentiAttivitaPaziente />
                 </ProtectedRoute>
                  }
                  />
 
                  <Route path="pazienti/attivita/iscritto" element={
+                    <ProtectedRoute requiredPermission={[1]}>
                     <AttivitaIscrittoPazienti />
+                    </ProtectedRoute>
                 }       
                 />
             <Route path="/pazienti/impostazioni" element={
@@ -273,6 +279,14 @@ const Website = () => {
                  }
                  />
 
+                <Route path="pazienti/profilo" element={
+                    <ProtectedRoute requiredPermission={[1]}>
+                        <Profilo />                 
+                    </ProtectedRoute>
+                }       
+                />  
+
+              
         </Routes>  
         </div>
      );

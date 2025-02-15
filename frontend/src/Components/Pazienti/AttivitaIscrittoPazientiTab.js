@@ -29,7 +29,7 @@ export default function AttivitaIscrittoPazientiTab() {
         date: "29/11/2024",
         amount: 0,
         status: "Gratuito",
-        paymentDate: "-",
+        paymentDate: "25/11/2024",
       },
       {
         id: 4,
