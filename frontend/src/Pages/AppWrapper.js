@@ -34,6 +34,9 @@ import PazientiPage from './Pazienti/PazientiPage'
 import AttivitaInternePazienti from './Pazienti/AttivitaInternePazienti';
 import AttivitaEsternePazienti from './Pazienti/AttivitaEsternePazienti';
 import PagamentiAttivitaPaziente from './Pazienti/PagamentiAttivitaPaziente';
+import ImpostazioniPazienti from './Pazienti/ImpostazioniPazienti';
+import NotifichePazienti from './Pazienti/NotifichePazienti';
+
 import DashboardRouter from "./DashboardRouter";
 import AttivitaIscrittoPazienti from "./Pazienti/AttivitaIscrittoPazienti";
 const Website = () => {
@@ -256,6 +259,19 @@ const Website = () => {
                     <AttivitaIscrittoPazienti />
                 }       
                 />
+            <Route path="/pazienti/impostazioni" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <ImpostazioniPazienti />
+                </ProtectedRoute>
+                 }
+                 />
+
+            <Route path="/pazienti/notifiche" element={
+                <ProtectedRoute requiredPermission={[2,3,5]}>
+                <NotifichePazienti />
+                </ProtectedRoute>
+                 }
+                 />
 
         </Routes>  
         </div>
