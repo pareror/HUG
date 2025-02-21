@@ -69,11 +69,12 @@ export default function ConsultaPreventivi() {
     <div className="consulta-preventivi">
       <NavbarDashboard />
       <div className="main-content">
+        
+        <div className="container">
         <button className="back-button" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} />
           Torna indietro
         </button>
-        <div className="container">
           <div className="header">
             {activity ? (
               <>
