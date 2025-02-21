@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Search } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import "../css/PreventiviPage.css";
 import Preventivo from "./Preventivo"; // Componente che mostra un singolo preventivo
-
+import { Link, useNavigate } from "react-router-dom";
 export default function PreventiviTab() {
   const [activities, setActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
+  const navigate = useNavigate();
   // Funzione per recuperare le attività esterne dal backend e aggiornare ciascuna con il numero di preventivi
   const fetchActivities = async () => {
     try {
@@ -63,6 +64,11 @@ export default function PreventiviTab() {
 
   return (
     <div className="container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+                    <ArrowLeft size={20} />
+                    Torna indietro
+                </button>
+      
       <div className="header">
         <h1>Preventivi Attività Esterne</h1>
         <p>

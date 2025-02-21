@@ -1,7 +1,7 @@
 /* Container principale che occupa l'intera altezza della viewport */
 .attivita-interne {
     min-height: 100vh; /* Altezza minima pari all'intera viewport */
-    background-color: #f8f9fa;
+    background-color: #e7ebee;
     padding: 20px;
 }
   
