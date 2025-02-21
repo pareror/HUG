@@ -164,7 +164,7 @@ function DettaglioAttivitaEsterne() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary" onClick={() => navigate("/dashboard/attivita/esterna/4/consulta-preventivi")}>
+        <button className="button button-primary" onClick={() => navigate(`/dashboard/attivita/esterna/preventivi/${id}`)}>
           Consulta Preventivi
         </button>
 
