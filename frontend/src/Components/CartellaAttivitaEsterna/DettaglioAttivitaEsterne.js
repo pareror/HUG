@@ -66,7 +66,7 @@ function DettaglioAttivitaEsterne() {
     }
   };
 
-
+ 
 
   fetchCostoPreventivo();
 
