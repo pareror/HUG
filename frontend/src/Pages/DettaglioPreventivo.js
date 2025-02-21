@@ -98,7 +98,6 @@ const DettaglioPreventivo = () => {
                   <span>{preventivo.numPartecipanti}</span>
                 </div>
               </div>
-
               <div className="pre-det-row">
                 <div className="pre-det-field">
                   <span className="pre-det-label">Luogo di Partenza</span>

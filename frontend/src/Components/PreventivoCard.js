@@ -13,6 +13,7 @@ const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra, luogoPartenza
             <div className="detail-item">
               <Calendar className="icon" />
               <p>Ricevuto il {data}</p>
+
             </div>
             <div className="detail-item">
               <p>
@@ -23,11 +24,13 @@ const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra, luogoPartenza
               <p>
                 <strong>Arrivo:</strong> {luogoArrivo}
               </p>
+
             </div>
           </div>
         </div>
         <div className="preventivi-actions">
-          <p className="cifra">{cifra}€</p>
+          <p className='cifra'>{cifra}€</p>
+
           <button
             className="manage-button"
             onClick={() =>

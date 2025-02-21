@@ -65,6 +65,7 @@ export default function ConsultaPreventivi() {
     );
   });
 
+
   return (
     <div className="consulta-preventivi">
       <NavbarDashboard />

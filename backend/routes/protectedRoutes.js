@@ -1609,6 +1609,7 @@ router.get("/attivita/:id/preventivi/count", authenticateJWT, (req, res) => {
   });
 });
 
+
 // Endpoint per ottenere tutti preventivi  per un attività
 router.get("/attivita/:id/preventivi", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
