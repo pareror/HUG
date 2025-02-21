@@ -1748,6 +1748,107 @@ router.get("/preventivi/:id/accettazione", authenticateJWT, (req, res) => {
   });
 });
 
+//lista pazienti pagina pagamento per paziente
+router.get("/pazienti/stats", authenticateJWT, (req, res) => {
+  const centerId = req.user.id;
+  const sql = `
+    SELECT 
+      p.id, 
+      p.nome, 
+      p.cognome,
+      COALESCE(ap_stats.numeroAttivita, 0) AS numeroAttivita,
+      COALESCE(ap_stats.listaAttivita, '') AS listaAttivita,
+      COALESCE(ap_stats.totaleSpesa, 0) AS totaleSpesa
+    FROM profiles p
+    LEFT JOIN (
+      SELECT 
+        ap.patientId,
+        COUNT(DISTINCT ap.activityId) AS numeroAttivita,
+        GROUP_CONCAT(DISTINCT ap.activityId) AS listaAttivita,
+        SUM(
+          CASE 
+            WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
+            ELSE 0
+          END
+        ) AS totaleSpesa
+      FROM activity_participants ap
+      JOIN activities a ON a.id = ap.activityId
+      LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
+      GROUP BY ap.patientId
+    ) AS ap_stats ON p.id = ap_stats.patientId
+    WHERE p.role = 'paziente'
+      AND p.centroDiurnoId = ?
+  `;
 
+  db.all(sql, [centerId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore durante il recupero dei dati dei pazienti:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    // Stampiamo in console la lista delle attività per ciascun paziente per debug
+    rows.forEach(row => {
+      console.log(`Paziente ID ${row.id} - Attività: ${row.listaAttivita}`);
+    });
+    res.json({ patients: rows });
+  });
+});
+
+router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
+  const patientId = req.params.id;
+  const sql = `
+    SELECT 
+      p.nome || ' ' || p.cognome AS patientName,
+      a.titolo AS activity,
+      a.datainizio AS date,
+      CASE 
+        WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
+        ELSE 0
+      END AS amount,
+      CASE 
+        WHEN ap.saldato = 1 THEN 'paid'
+        ELSE 'pending'
+      END AS status,
+      ap.paymentDate,
+      a.id AS activityId
+    FROM activity_participants ap
+    JOIN activities a ON a.id = ap.activityId
+    JOIN profiles p ON p.id = ap.patientId
+    LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
+    WHERE ap.patientId = ?
+    ORDER BY CASE WHEN ap.saldato = 1 THEN 1 ELSE 0 END, a.datainizio DESC
+  `;
+
+  db.all(sql, [patientId], (err, rows) => {
+    if (err) {
+      console.error("Errore nel recupero dei pagamenti per il paziente:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    res.json({ payments: rows });
+  });
+});
+
+
+router.put("/pazienti/:patientId/payments/:activityId", authenticateJWT, (req, res) => {
+  const { patientId, activityId } = req.params;
+  // Se il frontend invia una data di pagamento, la usa; altrimenti, usa la data corrente in formato YYYY-MM-DD
+  const paymentDate = req.body.paymentDate || new Date().toISOString().slice(0, 10);
+
+  const sql = `
+    UPDATE activity_participants
+    SET saldato = 1, paymentDate = ?
+    WHERE patientId = ? AND activityId = ?
+  `;
+
+  db.run(sql, [paymentDate, patientId, activityId], function(err) {
+    if (err) {
+      console.error("Errore nel registrare il pagamento:", err.message);
+      return res.status(500).json({ error: "Errore interno del server" });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Pagamento non registrato. Record non trovato." });
+    }
+    res.json({ message: "Pagamento registrato correttamente" });
+  });
+});
 
   module.exports = router;

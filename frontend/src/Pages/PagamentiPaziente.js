@@ -19,7 +19,6 @@ export default function PagamentiPaziente() {
               <ArrowLeft size={20} />
               Torna indietro
             </button>
-            <h1>Mario Rossi</h1>
             </div>  
                 <PagamentoPerPaziente/>
         </div> 

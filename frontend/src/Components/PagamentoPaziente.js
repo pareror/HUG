@@ -1,11 +1,11 @@
 import "../css/PagamentiPazienti.css"
 import { useNavigate } from "react-router-dom";
 
-export default function ActivityCard({ name, activitiesCount, totalAmount, amountToPay}) {
+export default function ActivityCard({ id, name, activitiesCount, totalAmount, amountToPay}) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate("/dashboard/pagamenti/paziente/paziente");
+    navigate(`/dashboard/pagamenti/paziente/${id}`);
   };
 
   return (
@@ -17,7 +17,7 @@ export default function ActivityCard({ name, activitiesCount, totalAmount, amoun
         </div>
         <div className="payment-info">
           <span className="total-amount">€{totalAmount}</span>
-          <button className="pay-button" onClick={() => navigate("/dashboard/pagamenti/paziente/paziente")}>€{amountToPay} da pagare</button>
+          <button className="pay-button" onClick={() => navigate(`/dashboard/pagamenti/paziente/${id}`)}>€{amountToPay} da pagare</button>
         </div>
       </div>
     </div>
