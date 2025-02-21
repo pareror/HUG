@@ -1,8 +1,8 @@
+import React, { useState, useEffect } from "react";
 import { ArrowLeft, Search } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/PagamentiPazienti.css";
 import NavbarDashboard from "../Components/NavbarDashboard";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function GestisciAttivita() {
@@ -17,11 +17,30 @@ export default function GestisciAttivita() {
     const fetchActivities = async () => {
       try {
         const token = localStorage.getItem("jwt");
+        // Recupera le attività esterne da approvare
         const response = await axios.get("http://localhost:5000/api/attivita-esterne/gestione", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        const activitiesFetched = response.data.activities || [];
 
-        setActivities(response.data.activities || []);
+        // Per ogni attività, richiedi il numero di preventivi
+        const activitiesWithPreventivi = await Promise.all(
+          activitiesFetched.map(async (activity) => {
+            try {
+              const countResponse = await axios.get(
+                `http://localhost:5000/api/attivita/${activity.id}/preventivi/count`,
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              return { ...activity, numeroPreventivi: countResponse.data.numeroPreventivi };
+            } catch (err) {
+              console.error(`Errore nel recupero dei preventivi per l'attività ${activity.id}:`, err);
+              // In caso di errore, imposta il numero di preventivi a 0
+              return { ...activity, numeroPreventivi: 0 };
+            }
+          })
+        );
+
+        setActivities(activitiesWithPreventivi);
       } catch (err) {
         console.error("Errore nel recupero delle attività non approvate:", err);
         setError("Impossibile caricare le attività non approvate.");
@@ -33,8 +52,9 @@ export default function GestisciAttivita() {
     fetchActivities();
   }, []);
 
+  // Filtra le attività in base al termine di ricerca (per titolo)
   const filteredActivities = activities.filter((activity) =>
-    activity.titolo.toLowerCase().includes(searchTerm.toLowerCase())
+    (activity.titolo || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -66,7 +86,7 @@ export default function GestisciAttivita() {
           {loading ? (
             <p>Caricamento...</p>
           ) : error ? (
-            <p>{error}</p>
+            <p className="error-message">{error}</p>
           ) : (
             <div className="pagamenti-list">
               {filteredActivities.length > 0 ? (
@@ -93,7 +113,7 @@ function ActivityCard({ activity }) {
           <h3 className="user-name">{activity.titolo}</h3>
           <div className="flex items-center gap-4">
             <p className="activity-count">{activity.datainizio}</p>
-            <p className="activity-count">0 preventivi</p>
+            <p className="activity-count">{activity.numeroPreventivi} preventivi</p>
           </div>
         </div>
         <div className="payment-info">

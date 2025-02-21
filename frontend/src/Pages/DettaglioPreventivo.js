@@ -66,7 +66,7 @@ const DettaglioPreventivo = () => {
       <div className="pre-det-container">
         <div className="pre-det-content-box">
           <div className="pre-det-header">
-            <button className="pre-det-back-button" onClick={() => navigate(-1)}>
+            <button className="back-button" onClick={() => navigate(-1)}>
               <ArrowLeft size={20} />
               Torna indietro
             </button>
@@ -96,6 +96,16 @@ const DettaglioPreventivo = () => {
                 <div className="pre-det-field">
                   <span className="pre-det-label">Numero minimo partecipanti</span>
                   <span>{preventivo.numPartecipanti}</span>
+                </div>
+              </div>
+              <div className="pre-det-row">
+                <div className="pre-det-field">
+                  <span className="pre-det-label">Luogo di Partenza</span>
+                  <span>{preventivo.luogoPartenza}</span>
+                </div>
+                <div className="pre-det-field">
+                  <span className="pre-det-label">Luogo di Arrivo</span>
+                  <span>{preventivo.luogoArrivo}</span>
                 </div>
               </div>
             </div>
