@@ -55,7 +55,7 @@ export default function ConsultaPreventivi() {
     fetchData();
   }, [id]);
 
-  // Filtra i preventivi in base al termine di ricerca sul campo "nomeTouroperator", "luogoPartenza" o "luogoArrivo"
+  // Filtra i preventivi in base al termine di ricerca (controlla nome tour operator, luogo di partenza o di arrivo)
   const filteredPreventivi = preventivi.filter((prev) => {
     const search = searchTerm.toLowerCase();
     return (
@@ -64,8 +64,7 @@ export default function ConsultaPreventivi() {
       (prev.luogoArrivo && prev.luogoArrivo.toLowerCase().includes(search))
     );
   });
-
-
+  
   return (
     <div className="consulta-preventivi">
       <NavbarDashboard />
@@ -113,6 +112,7 @@ export default function ConsultaPreventivi() {
                   cifra={prev.prezzoTotale}
                   luogoPartenza={prev.luogoPartenza}
                   luogoArrivo={prev.luogoArrivo}
+                  accettato={prev.accettato}  // Passa lo stato di accettazione
                 />
               ))}
             </div>

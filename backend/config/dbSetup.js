@@ -185,6 +185,7 @@ const createPreventiviTable = () => {
       note TEXT,                          -- Eventuali note aggiuntive
       luogoPartenza TEXT,                 -- Luogo di partenza
       luogoArrivo TEXT,                   -- Luogo di arrivo
+      accettato INTEGER DEFAULT 0,        
       FOREIGN KEY (idAttivita) REFERENCES activities(id) ON DELETE CASCADE,
       FOREIGN KEY (idTouroperator) REFERENCES profiles(id) ON DELETE CASCADE
     )`,

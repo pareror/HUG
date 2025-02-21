@@ -1630,6 +1630,7 @@ router.get("/attivita/:id/preventivi", authenticateJWT, (req, res) => {
       p.note,
       p.luogoPartenza,
       p.luogoArrivo,
+      p.accettato,
       pr.ragioneSociale AS nomeTouroperator
     FROM preventivi p
     LEFT JOIN profiles pr ON p.idTouroperator = pr.id
@@ -1664,7 +1665,8 @@ router.get("/preventivi/:idPreventivo", authenticateJWT, (req, res) => {
       p.itinerario,
       p.note,
       p.luogoPartenza,
-      p.luogoArrivo
+      p.luogoArrivo,
+      p.accettato
     FROM preventivi p
     LEFT JOIN profiles pr ON p.idTouroperator = pr.id
     LEFT JOIN activities a ON p.idAttivita = a.id
@@ -1700,5 +1702,52 @@ router.get("/preventivi/:idPreventivo", authenticateJWT, (req, res) => {
     return res.json({ preventivo: row });
   });
 });
+
+// Endpoint per accettare un preventivo (imposta accettato = 1)
+router.put("/preventivi/:id/accetta", authenticateJWT, (req, res) => {
+  const idPreventivo = req.params.id;
+  const sql = "UPDATE preventivi SET accettato = 1 WHERE id = ?";
+  
+  db.run(sql, [idPreventivo], function(err) {
+    if (err) {
+      console.error("Errore durante l'accettazione del preventivo:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    return res.json({ message: "Preventivo accettato con successo." });
+  });
+});
+
+// Endpoint per annullare l'accettazione del preventivo (imposta accettato = 0)
+router.put("/preventivi/:id/annulla", authenticateJWT, (req, res) => {
+  const idPreventivo = req.params.id;
+  const sql = "UPDATE preventivi SET accettato = 0 WHERE id = ?";
+  
+  db.run(sql, [idPreventivo], function(err) {
+    if (err) {
+      console.error("Errore durante l'annullamento dell'accettazione del preventivo:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    return res.json({ message: "Accettazione del preventivo annullata con successo." });
+  });
+});
+
+// Endpoint per ottenere lo stato di accettazione di un preventivo
+router.get("/preventivi/:id/accettazione", authenticateJWT, (req, res) => {
+  const idPreventivo = req.params.id;
+  const sql = "SELECT accettato FROM preventivi WHERE id = ?";
+  
+  db.get(sql, [idPreventivo], (err, row) => {
+    if (err) {
+      console.error("Errore nel recupero dello stato di accettazione:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!row) {
+      return res.status(404).json({ error: "Preventivo non trovato." });
+    }
+    return res.json({ accettato: row.accettato });
+  });
+});
+
+
 
   module.exports = router;

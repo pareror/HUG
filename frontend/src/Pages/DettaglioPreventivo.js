@@ -6,9 +6,10 @@ import NavbarDashboard from "../Components/NavbarDashboard";
 import "../css/DettaglioPreventivo.css";
 
 const DettaglioPreventivo = () => {
-  const { idPreventivo } = useParams(); // Assumiamo che l'URL contenga :idPreventivo
+  const { idPreventivo } = useParams(); // L'URL contiene :idPreventivo
   const navigate = useNavigate();
   const [preventivo, setPreventivo] = useState(null);
+  const [accettato, setAccettato] = useState(null); // 0 = non accettato, 1 = accettato
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,7 +21,9 @@ const DettaglioPreventivo = () => {
         `http://localhost:5000/api/preventivi/${idPreventivo}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setPreventivo(response.data.preventivo);
+      const data = response.data.preventivo;
+      setPreventivo(data);
+      setAccettato(data.accettato);
     } catch (err) {
       console.error("Errore nel recupero del preventivo:", err);
       setError("Errore durante il recupero dei dettagli del preventivo.");
@@ -32,6 +35,33 @@ const DettaglioPreventivo = () => {
   useEffect(() => {
     fetchPreventivo();
   }, [idPreventivo]);
+
+  // Funzione per gestire il toggle dell'accettazione
+  const handleToggleAccettazione = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (accettato === 1) {
+        // Annulla l'accettazione
+        await axios.put(
+          `http://localhost:5000/api/preventivi/${idPreventivo}/annulla`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        // Accetta il preventivo
+        await axios.put(
+          `http://localhost:5000/api/preventivi/${idPreventivo}/accetta`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+      // Ricarica i dati per aggiornare lo stato
+      fetchPreventivo();
+    } catch (err) {
+      console.error("Errore durante il toggle dell'accettazione:", err);
+      setError("Errore durante l'aggiornamento dello stato del preventivo.");
+    }
+  };
 
   if (loading) {
     return (
@@ -71,6 +101,12 @@ const DettaglioPreventivo = () => {
               Torna indietro
             </button>
             <h1 className="pre-det-title">Dettagli preventivo</h1>
+            {/* Banner di stato (in alto a destra) */}
+            {accettato === 1 && (
+              <div className="accepted-banner">
+                Preventivo accettato
+              </div>
+            )}
           </div>
 
           <h2 className="pre-det-subtitle">{preventivo.titolo}</h2>
@@ -87,14 +123,13 @@ const DettaglioPreventivo = () => {
                   <span>{preventivo.dataPreventivo}</span>
                 </div>
               </div>
-
               <div className="pre-det-row">
                 <div className="pre-det-field">
                   <span className="pre-det-label">Durata</span>
                   <span>{preventivo.durataViaggio}</span>
                 </div>
                 <div className="pre-det-field">
-                  <span className="pre-det-label">Numero minimo partecipanti</span>
+                  <span className="pre-det-label">N. min. Partecipanti</span>
                   <span>{preventivo.numPartecipanti}</span>
                 </div>
               </div>
@@ -109,7 +144,6 @@ const DettaglioPreventivo = () => {
                 </div>
               </div>
             </div>
-
             <div className="pre-det-right-section">
               <div className="pre-det-servizi">
                 <h3 className="pre-det-label">Servizi inclusi:</h3>
@@ -153,7 +187,9 @@ const DettaglioPreventivo = () => {
 
           <div className="pre-det-footer">
             <p className="pre-det-nota">Il prezzo include tutti i servizi elencati.</p>
-            <button className="pre-det-submit">Accetta preventivo</button>
+            <button className="pre-det-submit" onClick={handleToggleAccettazione}>
+              {accettato === 1 ? "Annulla accettazione" : "Accetta preventivo"}
+            </button>
           </div>
         </div>
       </div>
