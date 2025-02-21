@@ -1758,7 +1758,8 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
       p.cognome,
       COALESCE(ap_stats.numeroAttivita, 0) AS numeroAttivita,
       COALESCE(ap_stats.listaAttivita, '') AS listaAttivita,
-      COALESCE(ap_stats.totaleSpesa, 0) AS totaleSpesa
+      COALESCE(ap_stats.totaleSpesa, 0) AS totaleSpesa,
+      COALESCE(ap_stats.totaleDaPagare, 0) AS totaleDaPagare
     FROM profiles p
     LEFT JOIN (
       SELECT 
@@ -1767,10 +1768,16 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
         GROUP_CONCAT(DISTINCT ap.activityId) AS listaAttivita,
         SUM(
           CASE 
-            WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
+            WHEN a.tipo = 'E' THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
             ELSE 0
           END
-        ) AS totaleSpesa
+        ) AS totaleSpesa,
+        SUM(
+          CASE 
+            WHEN a.tipo = 'E' AND ap.saldato = 0 THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
+            ELSE 0
+          END
+        ) AS totaleDaPagare
       FROM activity_participants ap
       JOIN activities a ON a.id = ap.activityId
       LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
@@ -1785,13 +1792,15 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
       console.error("❌ Errore durante il recupero dei dati dei pazienti:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
     }
-    // Stampiamo in console la lista delle attività per ciascun paziente per debug
+    // Debug: stampa la lista delle attività per ciascun paziente
     rows.forEach(row => {
       console.log(`Paziente ID ${row.id} - Attività: ${row.listaAttivita}`);
     });
     res.json({ patients: rows });
   });
 });
+
+
 
 router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
   const patientId = req.params.id;
@@ -1801,7 +1810,7 @@ router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
       a.titolo AS activity,
       a.datainizio AS date,
       CASE 
-        WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
+        WHEN a.tipo = 'E' THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
         ELSE 0
       END AS amount,
       CASE 
@@ -1828,6 +1837,7 @@ router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
 });
 
 
+//api per segnare se il paziente ha pagato
 router.put("/pazienti/:patientId/payments/:activityId", authenticateJWT, (req, res) => {
   const { patientId, activityId } = req.params;
   // Se il frontend invia una data di pagamento, la usa; altrimenti, usa la data corrente in formato YYYY-MM-DD
@@ -1848,6 +1858,28 @@ router.put("/pazienti/:patientId/payments/:activityId", authenticateJWT, (req, r
       return res.status(404).json({ error: "Pagamento non registrato. Record non trovato." });
     }
     res.json({ message: "Pagamento registrato correttamente" });
+  });
+});
+
+//ottenere costo preventivo della singola attività
+router.get("/attivita/:id/preventivo-accettato", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+
+  const sql = `
+    SELECT 
+      IFNULL(pr.prezzoPerPersona, 'Da definire') AS costoPreventivo
+    FROM activities a
+    LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
+    WHERE a.id = ?
+  `;
+
+  db.get(sql, [activityId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore nel recupero del preventivo accettato:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    
+    res.json({ costoPreventivo: row ? row.costoPreventivo : "Da definire" });
   });
 });
 

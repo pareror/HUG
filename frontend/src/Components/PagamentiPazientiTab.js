@@ -16,25 +16,32 @@ export default function PagamentiPazientiTab() {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(response.data.patients);
-
-      // Mappiamo i dati ricevuti in modo da adattarli al componente PagamentoPaziente:
-      // - name: concatenazione di nome e cognome
-      // - totalAmount: totale spesa (totaleSpesa)
-      // - activitiesCount: numero di attività (numeroAttivita)
-      // - amountToPay: qui impostato uguale a totalAmount, ma potrebbe essere personalizzato
-      const mappedData = response.data.patients.map((paziente) => ({
+  
+      // Ordina i pazienti prima per totaleDaPagare (desc), poi per totaleSpesa (desc) in caso di parità
+      const sortedPatients = response.data.patients.sort((a, b) => {
+        if (b.totaleDaPagare !== a.totaleDaPagare) {
+          return b.totaleDaPagare - a.totaleDaPagare; // Ordina per totale da pagare (desc)
+        }
+        return b.totaleSpesa - a.totaleSpesa; // In caso di parità, ordina per totale speso (desc)
+      });
+  
+      // Mappa i dati ordinati
+      const mappedData = sortedPatients.map((paziente) => ({
         idPaziente: paziente.id,
         name: `${paziente.nome} ${paziente.cognome}`,
         totalAmount: paziente.totaleSpesa,
         activitiesCount: paziente.numeroAttivita,
-        amountToPay: paziente.totaleSpesa,
+        amountToPay: paziente.totaleDaPagare,
       }));
+  
       setPagamenti(mappedData);
     } catch (err) {
       console.error("Errore nel recupero dei dati dei pazienti:", err);
       setError("Errore durante il recupero dei dati dei pazienti.");
     }
   };
+  
+  
 
   useEffect(() => {
     fetchPatientStats();

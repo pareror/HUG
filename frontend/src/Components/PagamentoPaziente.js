@@ -17,7 +17,7 @@ export default function ActivityCard({ id, name, activitiesCount, totalAmount, a
         </div>
         <div className="payment-info">
           <span className="total-amount">€{totalAmount}</span>
-          <button className="pay-button" onClick={() => navigate(`/dashboard/pagamenti/paziente/${id}`)}>€{amountToPay} da pagare</button>
+          <button className="pazienti-pay-button" onClick={() => navigate(`/dashboard/pagamenti/paziente/${id}`)}>€{amountToPay} da pagare</button>
         </div>
       </div>
     </div>
