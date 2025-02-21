@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, EyeOff, Eye } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, EyeOff, Eye, Euro } from "lucide-react";
 import axios from "axios";
 import '../../css/DettaglioAttivita.css';
 import GestisciUtenzaModal from "../GestisciUtenzaModal";
-import ConsultaPreventivi from "../../Pages/ConsultaPreventivi";
 
 function DettaglioAttivitaEsterne() {
   const { id } = useParams();
@@ -14,6 +13,8 @@ function DettaglioAttivitaEsterne() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [visibilita, setVisibilita] = useState(null);
+  const [costoPreventivo, setCostoPreventivo] = useState("Da definire"); // ✅ Costo del preventivo
+  const [costoAttivita, setCostoAttivita] = useState(0); // ✅ Costo base dell'attività
 
   useEffect(() => {
     const fetchActivity = async () => {
@@ -24,12 +25,19 @@ function DettaglioAttivitaEsterne() {
           },
           params: { tipo: "E" }
         });
-        // Se il campo "visibile" non è presente, assumiamo il valore di default 0 (non visibile)
+
         const vis = typeof response.data.activity.visibile !== "undefined" 
           ? response.data.activity.visibile 
           : 0;
+
         setVisibilita(vis);
         setActivity(response.data.activity);
+        setCostoAttivita(response.data.activity.costo || 0); // ✅ Imposta il costo base
+
+        // Se esiste un preventivo accettato, aggiorna il costo del trasporto
+        if (response.data.activity.prezzoPerPersona !== undefined) {
+          setCostoPreventivo(response.data.activity.prezzoPerPersona);
+        }
       } catch (err) {
         console.error("Errore durante il recupero dell'attività:", err);
         setError("Errore durante il caricamento dell'attività.");
@@ -40,12 +48,35 @@ function DettaglioAttivitaEsterne() {
 
     fetchActivity();
   }, [id]);
+ // ✅ Fetch del costo del preventivo accettato
+
+ useEffect(() => {
+  const fetchCostoPreventivo = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/attivita/${id}/preventivo-accettato`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        }
+      });
+
+      setCostoPreventivo(response.data.costoPreventivo); // ✅ Imposta il costo del preventivo
+    } catch (err) {
+      console.error("Errore nel recupero del preventivo accettato:", err);
+      setCostoPreventivo("Da definire"); // Se errore, default
+    }
+  };
+
+
+
+  fetchCostoPreventivo();
+
+}, [id]);
+
 
   if (loading) return <p>Caricamento in corso...</p>;
   if (error) return <p>{error}</p>;
   if (!activity) return <p>Attività non trovata.</p>;
 
-  // L'attività è visibile se "visibilita" è 1
   const isVisible = visibilita === 1;
 
   const formattaData = (data) => {
@@ -53,8 +84,6 @@ function DettaglioAttivitaEsterne() {
     return `${giorno}-${mese}-${anno}`;
   };
 
-  // Se l'attività è visibile (visibilita === 1) al click impostiamo la nuova visibilità a 0 (non visibile),
-  // altrimenti la impostiamo a 1 (visibile)
   const handleToggleVisibility = async () => {
     try {
       const newVisibility = isVisible ? 0 : 1;
@@ -155,6 +184,24 @@ function DettaglioAttivitaEsterne() {
               <strong>Scadenza iscrizioni:</strong> {formattaData(activity.scadenzaIscrizioni)}
             </div>
           </div>
+
+          {/* ✅ Sezione per il costo */}
+          <div className="detail-item">
+              <Euro className="detail-icon" /> 
+
+            <div>
+
+              <strong>Costo attività:</strong> {costoAttivita} €
+
+            </div>
+          </div>
+
+          <div className="detail-item">
+          <Euro className="detail-icon" />
+            <div>
+              <strong>Costo preventivo trasporti:</strong> {costoPreventivo !== "Da definire" ? `${costoPreventivo} €` : "Da definire"}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -172,28 +219,11 @@ function DettaglioAttivitaEsterne() {
           Gestisci Utenza
         </button>
 
-        {showModal && (
-          <GestisciUtenzaModal
-            onClose={() => setShowModal(false)}
-            activityId={id}
-          />
-        )}
+        {showModal && <GestisciUtenzaModal onClose={() => setShowModal(false)} activityId={id} />}
 
-        {/* Il pulsante viene visualizzato in base allo stato "visibilita" */}
-        <button
-  onClick={handleToggleVisibility}
-  className={`button ${isVisible ? "button-danger" : "button-success"}`}
->
-  {isVisible ? (
-    <>
-      <EyeOff size={18} /> Nascondi Attività
-    </>
-  ) : (
-    <>
-      <Eye size={18} /> Mostra Attività
-    </>
-  )}
-</button>
+        <button onClick={handleToggleVisibility} className={`button ${isVisible ? "button-danger" : "button-success"}`}>
+          {isVisible ? <><EyeOff size={18} /> Nascondi Attività</> : <><Eye size={18} /> Mostra Attività</>}
+        </button>
       </div>
     </div>
   );

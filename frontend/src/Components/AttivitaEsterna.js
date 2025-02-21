@@ -26,7 +26,8 @@ const AttivitaEsterna = ({
   numeroMassimoPartecipanti,
   numeroIscritti,
   luogo,
-  istruttore
+  istruttore,
+  costo
 }) => {
   const orarioFine = calcolaOrarioFine(orarioInizio, durata);
   const navigate = useNavigate();

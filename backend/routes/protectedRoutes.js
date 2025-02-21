@@ -1861,4 +1861,26 @@ router.put("/pazienti/:patientId/payments/:activityId", authenticateJWT, (req, r
   });
 });
 
+//ottenere costo preventivo della singola attività
+router.get("/attivita/:id/preventivo-accettato", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+
+  const sql = `
+    SELECT 
+      IFNULL(pr.prezzoPerPersona, 'Da definire') AS costoPreventivo
+    FROM activities a
+    LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
+    WHERE a.id = ?
+  `;
+
+  db.get(sql, [activityId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore nel recupero del preventivo accettato:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    
+    res.json({ costoPreventivo: row ? row.costoPreventivo : "Da definire" });
+  });
+});
+
   module.exports = router;

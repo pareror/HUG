@@ -65,6 +65,7 @@ useEffect(() => {
           numeroIscritti={activity.numeroIscritti}
           luogo={activity.luogo}
           istruttore={activity.istruttore}
+          costo={activity.costo}
         />
       ))}
     </div>
