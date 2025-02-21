@@ -1609,7 +1609,8 @@ router.get("/attivita/:id/preventivi/count", authenticateJWT, (req, res) => {
   });
 });
 
-// Endpoint per ottenere i preventivi o il loro conteggio in base al parametro di query
+
+// Endpoint per ottenere tutti preventivi  per un attività
 router.get("/attivita/:id/preventivi", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
   
@@ -1627,6 +1628,8 @@ router.get("/attivita/:id/preventivi", authenticateJWT, (req, res) => {
       p.dettagliTrasporto,
       p.itinerario,
       p.note,
+      p.luogoPartenza,
+      p.luogoArrivo,
       pr.ragioneSociale AS nomeTouroperator
     FROM preventivi p
     LEFT JOIN profiles pr ON p.idTouroperator = pr.id
@@ -1659,7 +1662,9 @@ router.get("/preventivi/:idPreventivo", authenticateJWT, (req, res) => {
       p.prezzoTotale,
       p.dettagliTrasporto,
       p.itinerario,
-      p.note
+      p.note,
+      p.luogoPartenza,
+      p.luogoArrivo
     FROM preventivi p
     LEFT JOIN profiles pr ON p.idTouroperator = pr.id
     LEFT JOIN activities a ON p.idAttivita = a.id

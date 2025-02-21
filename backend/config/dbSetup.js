@@ -183,6 +183,8 @@ const createPreventiviTable = () => {
       dettagliTrasporto TEXT,             -- Informazioni sui trasporti
       itinerario TEXT,                    -- Itinerario dettagliato
       note TEXT,                          -- Eventuali note aggiuntive
+      luogoPartenza TEXT,                 -- Luogo di partenza
+      luogoArrivo TEXT,                   -- Luogo di arrivo
       FOREIGN KEY (idAttivita) REFERENCES activities(id) ON DELETE CASCADE,
       FOREIGN KEY (idTouroperator) REFERENCES profiles(id) ON DELETE CASCADE
     )`,

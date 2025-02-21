@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra }) => {
+const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra, luogoPartenza, luogoArrivo }) => {
   const navigate = useNavigate();
   return (
     <div className="preventivi-card">
@@ -13,11 +13,24 @@ const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra }) => {
             <div className="detail-item">
               <Calendar className="icon" />
               <p>Ricevuto il {data}</p>
+
+            </div>
+            <div className="detail-item">
+              <p>
+                <strong>Partenza:</strong> {luogoPartenza}
+              </p>
+            </div>
+            <div className="detail-item">
+              <p>
+                <strong>Arrivo:</strong> {luogoArrivo}
+              </p>
+
             </div>
           </div>
         </div>
         <div className="preventivi-actions">
           <p className='cifra'>{cifra}€</p>
+
           <button
             className="manage-button"
             onClick={() =>
