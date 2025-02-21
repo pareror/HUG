@@ -1758,7 +1758,8 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
       p.cognome,
       COALESCE(ap_stats.numeroAttivita, 0) AS numeroAttivita,
       COALESCE(ap_stats.listaAttivita, '') AS listaAttivita,
-      COALESCE(ap_stats.totaleSpesa, 0) AS totaleSpesa
+      COALESCE(ap_stats.totaleSpesa, 0) AS totaleSpesa,
+      COALESCE(ap_stats.totaleDaPagare, 0) AS totaleDaPagare
     FROM profiles p
     LEFT JOIN (
       SELECT 
@@ -1770,7 +1771,13 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
             WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
             ELSE 0
           END
-        ) AS totaleSpesa
+        ) AS totaleSpesa,
+        SUM(
+          CASE 
+            WHEN a.tipo = 'E' AND ap.saldato = 0 THEN IFNULL(pr.prezzoPerPersona, 0)
+            ELSE 0
+          END
+        ) AS totaleDaPagare
       FROM activity_participants ap
       JOIN activities a ON a.id = ap.activityId
       LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
@@ -1785,13 +1792,14 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
       console.error("❌ Errore durante il recupero dei dati dei pazienti:", err.message);
       return res.status(500).json({ error: "Errore interno del server." });
     }
-    // Stampiamo in console la lista delle attività per ciascun paziente per debug
+    // Debug: stampa la lista delle attività per ciascun paziente
     rows.forEach(row => {
       console.log(`Paziente ID ${row.id} - Attività: ${row.listaAttivita}`);
     });
     res.json({ patients: rows });
   });
 });
+
 
 router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
   const patientId = req.params.id;

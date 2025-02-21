@@ -27,7 +27,7 @@ export default function PagamentiPazientiTab() {
         name: `${paziente.nome} ${paziente.cognome}`,
         totalAmount: paziente.totaleSpesa,
         activitiesCount: paziente.numeroAttivita,
-        amountToPay: paziente.totaleSpesa,
+        amountToPay: paziente.totaleDaPagare,
       }));
       setPagamenti(mappedData);
     } catch (err) {
