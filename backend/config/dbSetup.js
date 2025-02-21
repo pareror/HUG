@@ -105,6 +105,7 @@ const createActivitiesTable = () => {
       luogo TEXT,
       istruttore TEXT,
       immagine TEXT,
+      costo REAL DEFAULT 0,
       createdBy INTEGER,
       FOREIGN KEY (createdBy) REFERENCES profiles(id) ON DELETE CASCADE
     )`,

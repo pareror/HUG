@@ -1768,13 +1768,13 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
         GROUP_CONCAT(DISTINCT ap.activityId) AS listaAttivita,
         SUM(
           CASE 
-            WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
+            WHEN a.tipo = 'E' THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
             ELSE 0
           END
         ) AS totaleSpesa,
         SUM(
           CASE 
-            WHEN a.tipo = 'E' AND ap.saldato = 0 THEN IFNULL(pr.prezzoPerPersona, 0)
+            WHEN a.tipo = 'E' AND ap.saldato = 0 THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
             ELSE 0
           END
         ) AS totaleDaPagare
@@ -1801,6 +1801,7 @@ router.get("/pazienti/stats", authenticateJWT, (req, res) => {
 });
 
 
+
 router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
   const patientId = req.params.id;
   const sql = `
@@ -1809,7 +1810,7 @@ router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
       a.titolo AS activity,
       a.datainizio AS date,
       CASE 
-        WHEN a.tipo = 'E' THEN IFNULL(pr.prezzoPerPersona, 0)
+        WHEN a.tipo = 'E' THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
         ELSE 0
       END AS amount,
       CASE 
@@ -1836,6 +1837,7 @@ router.get("/pazienti/:id/payments", authenticateJWT, (req, res) => {
 });
 
 
+//api per segnare se il paziente ha pagato
 router.put("/pazienti/:patientId/payments/:activityId", authenticateJWT, (req, res) => {
   const { patientId, activityId } = req.params;
   // Se il frontend invia una data di pagamento, la usa; altrimenti, usa la data corrente in formato YYYY-MM-DD
