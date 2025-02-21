@@ -39,6 +39,7 @@ import NotifichePazienti from './Pazienti/NotifichePazienti';
 import ProfiloPazienti from './Pazienti/ProfiloPazienti';
 import DashboardRouter from "./DashboardRouter";
 import AttivitaIscrittoPazienti from "./Pazienti/AttivitaIscrittoPazienti";
+import CalendarioPazienti from "./Pazienti/CalendarioPazienti";
 const Website = () => {
     return ( 
         <div className="x">
@@ -254,10 +255,10 @@ const Website = () => {
                  }
                  />
 
-                 <Route path="pazienti/attivita/iscritto" element={
-                    <ProtectedRoute requiredPermission={[1]}>
-                    <AttivitaIscrittoPazienti />
-                    </ProtectedRoute>
+            <Route path="pazienti/attivita/iscritto" element={
+                <ProtectedRoute requiredPermission={[1]}>
+                <AttivitaIscrittoPazienti />
+                </ProtectedRoute>
                 }       
                 />
             <Route path="/pazienti/impostazioni" element={
@@ -276,10 +277,16 @@ const Website = () => {
 
                 <Route path="pazienti/profilo" element={
                     <ProtectedRoute requiredPermission={[1]}>
-                        <ProfiloPazienti />                 
+                    <ProfiloPazienti />                 
                     </ProtectedRoute>
                 }       
                 />  
+                <Route path="pazienti/calendario" element={
+                    <ProtectedRoute requiredPermission={[1]}>
+                    <CalendarioPazienti />                 
+                    </ProtectedRoute>
+                }       
+                /> 
 
               
         </Routes>  

@@ -1,0 +1,125 @@
+/* Contenitore principale della pagina calendario */
+.calendar-page-pazienti {
+    padding: 20px;
+    background: #e7ebee;
+    min-height: 100vh;
+}
+  
+/* Main content del calendario */
+.calendar-main-pazienti {
+    flex: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+  
+/* Header con navigazione tra mesi e pulsante torna indietro */
+.calendar-header-pazienti {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+  
+/* Header sinistro: pulsante torna indietro */
+.header-left-pazienti .back-button-pazienti {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+  
+.header-left-pazienti .back-button-pazienti svg {
+    margin-right: 8px;
+}
+  
+/* Header centrale: titolo mese e anno */
+.header-center-pazienti h1 {
+    font-size: 24px;
+    margin: 0;
+    text-align: center;
+}
+  
+/* Header destro: pulsanti per navigare tra i mesi */
+.header-right-pazienti {
+    display: flex;
+    gap: 10px;
+}
+
+.month-nav-button-pazienti {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease;
+}
+
+.month-nav-button-pazienti:hover {
+    transform: scale(1.1);
+}
+
+/* Griglia del calendario con celle di dimensione fissa */
+.calendar-grid-pazienti {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+}
+  
+.calendar-day-pazienti {
+    width: 80px;
+    height: 80px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #333;
+    overflow: hidden;
+}
+  
+.day-number-pazienti {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+  
+.activities-indicator-pazienti {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+  
+.activity-dot-pazienti {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+  
+.more-dots-pazienti {
+    font-size: 12px;
+    color: #888;
+}
+  
+/* Responsività per dispositivi piccoli */
+@media (max-width: 600px) {
+    .calendar-grid-pazienti {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    }
+    .header-center-pazienti h1 {
+        font-size: 20px;
+    }
+    .month-nav-button-pazienti {
+        padding: 3px;
+    }
+}

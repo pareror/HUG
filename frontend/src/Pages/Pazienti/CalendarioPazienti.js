@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import NavbarPazienti from "../Components/NavbarPazienti";
+import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import "../css/CalendarPage.css";
+import "../../css/Pazienti/CalendarioPazienti.css"; 
 
 const CalendarioPazienti = () => {
   const today = new Date();
@@ -36,35 +36,35 @@ const CalendarioPazienti = () => {
   };
 
   return (
-    <div className="calendar-page">
+    <div className="calendar-page-pazienti">
       <NavbarPazienti />
-      <div className="main-content">
-        <main className="calendar-main">
-          <header className="calendar-header">
-            <div className="header-left">
-              <button className="back-button" onClick={() => navigate(-1)}>
+      <div className="main-content-pazienti">
+        <main className="calendar-main-pazienti">
+          <header className="calendar-header-pazienti">
+            <div className="header-left-pazienti">
+              <button className="back-button-pazienti" onClick={() => navigate(-1)}>
                 <ArrowLeft size={20} /> Torna indietro
               </button>
             </div>
-            <div className="header-center">
+            <div className="header-center-pazienti">
               <h1>
                 {monthName} {currentYear}
               </h1>
             </div>
-            <div className="header-right">
-              <button className="month-nav-button" onClick={handlePrevMonth}>
+            <div className="header-right-pazienti">
+              <button className="month-nav-button-pazienti" onClick={handlePrevMonth}>
                 <ArrowLeft size={20} />
               </button>
-              <button className="month-nav-button" onClick={handleNextMonth}>
+              <button className="month-nav-button-pazienti" onClick={handleNextMonth}>
                 <ArrowRight size={20} />
               </button>
             </div>
           </header>
 
-          <div className="calendar-grid">
+          <div className="calendar-grid-pazienti">
             {days.map((day) => (
-              <Link key={day} to={`/pazienti/calendario/day/${day}`} className="calendar-day">
-                <div className="day-number">{day}</div>
+              <Link key={day} to={`/pazienti/calendario/day/${day}`} className="calendar-day-pazienti">
+                <div className="day-number-pazienti">{day}</div>
               </Link>
             ))}
           </div>
