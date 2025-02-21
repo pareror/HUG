@@ -123,7 +123,8 @@ const createActivityParticipantsTable = () => {
     `CREATE TABLE IF NOT EXISTS activity_participants (
       activityId INTEGER NOT NULL,  -- ID dell'attività
       patientId INTEGER NOT NULL,   -- ID del paziente
-
+      saldato INTEGER DEFAULT 0,    -- 1 = sì, 0 = no
+      paymentDate TEXT,
       -- Chiave primaria composta per evitare duplicati
       PRIMARY KEY (activityId, patientId),
 
