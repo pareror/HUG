@@ -3,9 +3,10 @@ import { Link } from "react-router-dom"
 import { ChevronDown, ChevronUp, User, Settings, LogOut, Menu, X } from "lucide-react"
 import "../../css/Pazienti/NavbarPazienti.css"
 import LogoutButton from "../LogoutButton"
-import NotificationDropdown from "../NotificationDropdown"
+import NotificationDropdown from "../../Components/Pazienti/NotificationDropdownPazienti"
 /** bissogna creare un notification DropDown per i pazienti */
 import axios from "axios"
+import NotificationDropdownPazienti from "../../Components/Pazienti/NotificationDropdownPazienti"
 
 const NavbarPazienti = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -133,7 +134,7 @@ const NavbarPazienti = () => {
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
-        <NotificationDropdown />
+        <NotificationDropdownPazienti />
 
         <div className="pazienti-dropdown pazienti-profile-dropdown">
           <button className="pazienti-profile-toggle" onClick={() => toggleDropdown("profilo")}>
