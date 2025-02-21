@@ -1,28 +1,25 @@
 import React from "react";
-import "../../css/AttivitaIntEst.css"
-
-import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti"
+import "../../css/Pazienti/AttivitaIntEstPazienti.css"; // Updated import (renamed CSS file)
+import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti";
 import ActivityBarPazienti from "../../Components/Pazienti/ActivityBarPazienti";
+import AttivitaInternaTabPazienti from "../../Components/Pazienti/AttivitaInternaTabPazienti";
 
-import AttivitaInternaTab from "../../Components/AttivitaInternaTab";
 export default function AttivitaInternePazienti() {
   const handleSearch = (searchTerm) => {
-    // Implementa qui la logica di ricerca
-    console.log('Searching for:', searchTerm);
+    // Implementa la logica di ricerca
+    console.log("Searching for:", searchTerm);
   };
+
   return (
-    <div className="attivita-interne">
+    <div className="attivita-interne-pazienti">
       <NavbarPazienti />
       <ActivityBarPazienti onSearch={handleSearch} />
-      <header className="main-content-attivita">
-      <p className="page-subtitle">
-        Qui troverai la lista delle attività interne del centro
-      </p>
-
-        <AttivitaInternaTab />
-        
+      <header className="main-content-attivita-pazienti">
+        <p className="page-subtitle-pazienti">
+          Qui troverai la lista delle attività interne del centro
+        </p>
+        <AttivitaInternaTabPazienti />
       </header>
-
     </div>
   );
 }
