@@ -2,13 +2,19 @@ import React from "react";
 import { Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra, luogoPartenza, luogoArrivo }) => {
+const PreventivoCard = ({ idPrev, idAttivita, titolo, data, cifra, luogoPartenza, luogoArrivo, accettato }) => {
   const navigate = useNavigate();
   return (
     <div className="preventivi-card">
       <div className="preventivi-content">
         <div className="preventivi-info">
           <h2>{titolo}</h2>
+          {/* Banner per lo stato di accettazione, posizionato in alto a destra della card */}
+          {accettato === 1 && (
+            <div className="accepted-banner">
+              Preventivo accettato
+            </div>
+          )}
           <div className="preventivi-details">
             <div className="detail-item">
               <Calendar className="icon" />
