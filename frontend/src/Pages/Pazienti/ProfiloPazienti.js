@@ -356,6 +356,7 @@ const Profilo = () => {
                   checked={profileData.disabilita || false}
                   onChange={handleChange}
                   disabled={!isEditing}
+                  style={{width:"40px"}}
                 />
               </div>
               {profileData.disabilita && (
