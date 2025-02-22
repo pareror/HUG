@@ -7,6 +7,7 @@ import { ArrowLeft, Search } from "lucide-react";
 export default function PagamentiPazientiTab() {
   const [pagamenti, setPagamenti] = useState([]);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // Stato per la ricerca
 
   // Funzione per recuperare i dati statistici dei pazienti dal backend
   const fetchPatientStats = async () => {
@@ -16,7 +17,7 @@ export default function PagamentiPazientiTab() {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(response.data.patients);
-  
+
       // Ordina i pazienti prima per totaleDaPagare (desc), poi per totaleSpesa (desc) in caso di parità
       const sortedPatients = response.data.patients.sort((a, b) => {
         if (b.totaleDaPagare !== a.totaleDaPagare) {
@@ -24,7 +25,7 @@ export default function PagamentiPazientiTab() {
         }
         return b.totaleSpesa - a.totaleSpesa; // In caso di parità, ordina per totale speso (desc)
       });
-  
+
       // Mappa i dati ordinati
       const mappedData = sortedPatients.map((paziente) => ({
         idPaziente: paziente.id,
@@ -33,19 +34,22 @@ export default function PagamentiPazientiTab() {
         activitiesCount: paziente.numeroAttivita,
         amountToPay: paziente.totaleDaPagare,
       }));
-  
+
       setPagamenti(mappedData);
     } catch (err) {
       console.error("Errore nel recupero dei dati dei pazienti:", err);
       setError("Errore durante il recupero dei dati dei pazienti.");
     }
   };
-  
-  
 
   useEffect(() => {
     fetchPatientStats();
   }, []);
+
+  // Filtra i pagamenti in base al search query (nome del paziente)
+  const filteredPagamenti = pagamenti.filter((pagamento) =>
+    pagamento.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="container">
@@ -55,13 +59,19 @@ export default function PagamentiPazientiTab() {
       </div>
       <div className="search-container">
         <Search className="search-icon" />
-        <input type="text" placeholder="Cerca paziente..." className="search-input" />
+        <input
+          type="text"
+          placeholder="Cerca paziente..."
+          className="search-input"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {error && <p className="error">{error}</p>}
 
       <div className="pagamenti-list">
-        {pagamenti.map((pagamento, index) => (
+        {filteredPagamenti.map((pagamento, index) => (
           <PagamentoPaziente
             key={index}
             id={pagamento.idPaziente}
