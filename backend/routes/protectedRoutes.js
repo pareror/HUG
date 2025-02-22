@@ -2063,6 +2063,46 @@ router.get("/pazienti/:id/calendario-attivita", authenticateJWT, (req, res) => {
   });
 });
 
+router.get("/pazienti/attivita/interni", authenticateJWT, (req, res) => {
+  // L'ID del paziente è in req.user.id
+  const patientId = req.user.id;
+
+  // Prima query: ottieni il centro diurno associato al paziente
+  const getCenterSql = `
+    SELECT centroDiurnoId 
+    FROM profiles 
+    WHERE id = ?
+  `;
+  db.get(getCenterSql, [patientId], (err, row) => {
+    if (err) {
+      console.error("Errore nel recupero del centro del paziente:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!row || !row.centroDiurnoId) {
+      return res.status(404).json({ error: "Centro diurno non trovato per il paziente." });
+    }
+    const centerId = row.centroDiurnoId;
+
+    // Seconda query: recupera tutte le attività interne create dal centro
+    const activitiesSql = `
+      SELECT 
+        a.*, 
+        COALESCE(COUNT(ap.patientId), 0) AS numeroIscritti
+      FROM activities a
+      LEFT JOIN activity_participants ap ON a.id = ap.activityId
+      WHERE a.tipo = 'I' AND a.createdBy = ?
+      GROUP BY a.id
+      ORDER BY a.datainizio DESC, a.orainizio DESC
+    `;
+    db.all(activitiesSql, [centerId], (err, rows) => {
+      if (err) {
+        console.error("Errore nel recupero delle attività interne:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      res.json({ activities: rows });
+    });
+  });
+});
 
 
 

@@ -3,6 +3,7 @@ import "../../css/Pazienti/AttivitaIntEstPazienti.css"; // Updated import (renam
 import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti";
 import ActivityBarPazienti from "../../Components/Pazienti/ActivityBarPazienti";
 import AttivitaInternaTabPazienti from "../../Components/Pazienti/AttivitaInternaTabPazienti";
+import AttivitaInternaPazientiTab from "../../Components/Pazienti/AttivitaInternaPazientiTab";
 
 export default function AttivitaInternePazienti() {
   const handleSearch = (searchTerm) => {
@@ -14,11 +15,14 @@ export default function AttivitaInternePazienti() {
     <div className="attivita-interne-pazienti">
       <NavbarPazienti />
       <ActivityBarPazienti onSearch={handleSearch} />
-      <header className="main-content-attivita-pazienti">
-        <p className="page-subtitle-pazienti">
-          Qui troverai la lista delle attività interne del centro
-        </p>
-        <AttivitaInternaTabPazienti />
+
+      <header className="main-content-attivita">
+      <p className="page-subtitle">
+        Qui troverai la lista delle attività interne del centro
+      </p>
+
+        <AttivitaInternaPazientiTab />
+
       </header>
     </div>
   );
