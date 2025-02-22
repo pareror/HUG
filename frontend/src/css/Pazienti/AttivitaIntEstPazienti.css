@@ -1,0 +1,263 @@
+/* 
+  Attivita Int/Est per Pazienti
+  CSS with unique class names to avoid clashes with the center version
+*/
+
+/* Container principale (Attività Interne per i Pazienti) */
+.attivita-interne-pazienti {
+    min-height: 100vh;
+    background-color: #e7ebee;
+    padding: 20px;
+  }
+  
+  /* Container principale (Attività Esterne per i Pazienti) */
+  .attivita-esterne-pazienti {
+    min-height: 100vh;
+    background-color: #e7ebee;
+    padding: 20px;
+  }
+  
+  /* Main content del calendario o elenco attività */
+  .main-content-attivita-pazienti {
+    margin: 1% auto 0;
+    padding: 20px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+  }
+  
+  /* Stile del titolo della pagina */
+  .page-title-pazienti {
+    color: #333;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  
+  /* Stile del sottotitolo della pagina */
+  .page-subtitle-pazienti {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 0.1rem;
+  }
+  
+  /* Griglia per le carte delle attività */
+  .activities-grid-pazienti {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 0%;
+  }
+  
+  /* Quando la larghezza del viewport è inferiore a 1000px => 2 colonne */
+  @media (max-width: 1000px) {
+    .activities-grid-pazienti {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* Quando la larghezza del viewport è inferiore a 700px => 1 colonna */
+  @media (max-width: 700px) {
+    .activities-grid-pazienti {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Placeholder per le carte delle attività */
+  .activity-card-placeholder-pazienti {
+    background-color: #f4f4f4;
+    border-radius: 1rem;
+    height: 500px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: auto;
+    box-sizing: border-box;
+  }
+  
+  /* Ridimensionamento su schermi piccoli */
+  @media (max-width: 768px) {
+    .activity-card-placeholder-pazienti {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+  
+  .image-card-pazienti {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .attivita-card-content-pazienti {
+    padding: 10px; 
+    flex-direction: column;
+    align-items: start;
+  }
+  
+  .course-header-pazienti {
+    margin-bottom: 0px;
+    overflow: hidden;
+    max-width: 311.27px;
+  }
+  
+  .course-title-pazienti {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 0px 0;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .course-description-pazienti {
+    font-size: 14px;
+    color: #666;
+    margin-top: 0%;
+    margin-bottom: 4px;
+    line-height: 1.4;
+    height: 39.19px;
+  }
+  
+  .course-details-pazienti {
+    margin-bottom: 0;
+  }
+  
+  .detail-row-pazienti {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .detail-row-pazienti:last-child {
+    border-bottom: none;
+  }
+  
+  .label-pazienti {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .value-pazienti {
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .deadline-pazienti {
+    padding-top: 2px;
+    border-top: 1px solid #eee;
+  }
+  
+  /* Responsive per < 700px */
+  @media (max-width: 700px) {
+    .detail-row-pazienti {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+      gap: 2px;
+    }
+  
+    .attivita-card-content-pazienti {
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .course-details-pazienti {
+      margin-bottom: 7px;
+    }
+  
+    .course-header-pazienti {
+      max-width: 100%;
+    }
+  }
+  
+  @media (max-width: 684px) {
+    .course-details-pazienti {
+      margin-bottom: 0;
+    }
+    .attivita-card-content-pazienti {
+      padding-top: 3px;
+    }
+  }
+  
+  @media (min-width: 916px) and (max-width: 1000px) {
+    .course-details-pazienti {
+      margin-bottom: 0;
+    }
+  }
+  
+  @media (min-width: 830px) and (max-width: 1000px) {
+    .course-header-pazienti {
+      max-width: 100%;
+    }
+  }
+  
+  /* Stile del bottone "Apri attività" */
+  @media (max-width: 700px) {
+    .open-activity-btn-pazienti {
+      width: 100%;
+      padding: 12px;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 0px;
+    }
+  
+    .open-activity-btn-pazienti:hover {
+      background: #006699;
+    }
+  }
+  
+  @media (min-width: 700px) {
+    .open-activity-btn-pazienti {
+      width: 100%;
+      padding: 12px;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+  
+    .open-activity-btn-pazienti:hover {
+      background: #006699;
+    }
+  }
+  
+  /* Stile della carta attività */
+  .activity-card-pazienti {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  
+  /* Effetto hover sulla carta attività */
+  .activity-card-pazienti:hover {
+    transform: translateY(-5px);
+  }
+  
