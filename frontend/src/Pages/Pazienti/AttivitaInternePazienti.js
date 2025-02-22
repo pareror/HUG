@@ -4,7 +4,7 @@ import "../../css/AttivitaIntEst.css"
 import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti"
 import ActivityBarPazienti from "../../Components/Pazienti/ActivityBarPazienti";
 
-import AttivitaInternaTab from "../../Components/AttivitaInternaTab";
+import AttivitaInternaPazientiTab from "../../Components/Pazienti/AttivitaInternaPazientiTab";
 export default function AttivitaInternePazienti() {
   const handleSearch = (searchTerm) => {
     // Implementa qui la logica di ricerca
@@ -19,7 +19,7 @@ export default function AttivitaInternePazienti() {
         Qui troverai la lista delle attività interne del centro
       </p>
 
-        <AttivitaInternaTab />
+        <AttivitaInternaPazientiTab />
         
       </header>
 
