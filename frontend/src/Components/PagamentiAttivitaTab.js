@@ -66,6 +66,7 @@ export default function PagamentiAttivitaTab() {
           sortedActivities.map((activity) => (
             <PagamentiAttivitaCard
               key={activity.id}
+              id={activity.id}
               name={activity.titolo}
               date={activity.dataAttivita}
               participants={activity.numeroPartecipanti}
