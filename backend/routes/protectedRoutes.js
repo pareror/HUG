@@ -1883,4 +1883,49 @@ router.get("/attivita/:id/preventivo-accettato", authenticateJWT, (req, res) => 
   });
 });
 
+//restituisce lista attività da pagare/pagate
+router.get("/pagamenti-attivita", authenticateJWT, (req, res) => {
+  const centerId = req.user.id;
+  const sql = `
+    SELECT 
+      a.id,
+      a.titolo,
+      a.datainizio AS dataAttivita,
+      COUNT(ap.patientId) AS numeroPartecipanti,
+      (IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)) AS costoTotale,
+      SUM(
+        CASE 
+          WHEN ap.saldato = 0 THEN (IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0))
+          ELSE 0
+        END
+      ) AS totaleDaRecuperare,
+      COUNT(
+        CASE WHEN ap.saldato = 0 THEN 1 ELSE NULL END
+      ) AS numeroNonPaganti
+    FROM activities a
+    LEFT JOIN activity_participants ap ON a.id = ap.activityId
+    LEFT JOIN preventivi pr ON a.id = pr.idAttivita AND pr.accettato = 1
+    INNER JOIN activity_visibility av 
+      ON a.id = av.activityId 
+      AND av.centerId = ?
+    WHERE (IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)) > 0
+      AND av.visibile = 1
+    GROUP BY a.id
+    ORDER BY a.datainizio DESC
+  `;
+
+  db.all(sql, [centerId], (err, rows) => {
+    if (err) {
+      console.error("Errore nel recupero delle attività con pagamenti:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    res.json({ attivita: rows });
+  });
+});
+
+
+
+
+
+
   module.exports = router;

@@ -19,7 +19,7 @@ export default function AttivitaCard({ name, date, participants, amount, pending
         </div>
         <div className="payment-info">
           <span className="total-amount">€{amount.toFixed(2)}</span>
-          <button className="pay-button">{pendingPayments} pagamenti in sospeso</button>
+          <button className="pazienti-pay-button">{pendingPayments} pagamenti in sospeso</button>
         </div>
       </div>
     </div>
