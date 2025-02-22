@@ -2104,6 +2104,44 @@ router.get("/pazienti/attivita/interni", authenticateJWT, (req, res) => {
   });
 });
 
+router.get("/pazienti/attivita/esterne", authenticateJWT, (req, res) => {
+  const patientId = req.user.id;
+
+  // Query per ottenere il centro diurno associato al paziente
+  const centerSql = "SELECT centroDiurnoId FROM profiles WHERE id = ?";
+  db.get(centerSql, [patientId], (err, row) => {
+    if (err) {
+      console.error("❌ Errore nel recupero del centro del paziente:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!row || !row.centroDiurnoId) {
+      return res.status(404).json({ error: "Centro diurno non trovato per il paziente." });
+    }
+    const centerId = row.centroDiurnoId;
+
+    // Query per ottenere le attività esterne visibili per il centro
+    const activitiesSql = `
+      SELECT 
+        a.*, 
+        COALESCE(COUNT(ap.patientId), 0) AS numeroIscritti
+      FROM activities a
+      LEFT JOIN activity_participants ap ON a.id = ap.activityId
+      INNER JOIN activity_visibility av 
+        ON a.id = av.activityId AND av.centerId = ? AND av.visibile = 1
+      WHERE a.tipo = 'E'
+      GROUP BY a.id
+      ORDER BY a.datainizio DESC, a.orainizio DESC
+    `;
+
+    db.all(activitiesSql, [centerId], (err, rows) => {
+      if (err) {
+        console.error("❌ Errore nel recupero delle attività esterne:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      res.json({ activities: rows });
+    });
+  });
+});
 
 
   module.exports = router;
