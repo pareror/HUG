@@ -1,57 +1,44 @@
-import { useState } from "react"
-import "../css/PagamentiPazienti.css"
-import PagamentiAttivitaCard from "./PagamentiAttivitaCard"
-import { Search } from "lucide-react"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import "../css/PagamentiPazienti.css";
+import PagamentiAttivitaCard from "./PagamentiAttivitaCard";
+import { Search } from "lucide-react";
 
 export default function PagamentiAttivitaTab() {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activities, setActivities] = useState([]);
+  const [error, setError] = useState(null);
 
-  const activities = [
-    {
-      id: 1,
-      name: "Visita al museo",
-      date: "27/11/2024",
-      participants: 12,
-      amount: 240.0,
-      pendingPayments: 3,
-    },
-    {
-      id: 2,
-      name: "Gita al Lago",
-      date: "28/11/2024",
-      participants: 10,
-      amount: 120.0,
-      pendingPayments: 2,
-    },
-    {
-      id: 3,
-      name: "Visita ai Mercatini",
-      date: "29/11/2024",
-      participants: 8,
-      amount: 300.0,
-      pendingPayments: 2,
-    },
-    {
-      id: 4,
-      name: "Corso di Informatica",
-      date: "30/11/2024",
-      participants: 12,
-      amount: 250.0,
-      pendingPayments: 2,
-    },
-    {
-      id: 5,
-      name: "Corso di Teatro",
-      date: "4/12/2024",
-      participants: 15,
-      amount: 180.0,
-      pendingPayments: 1,
-    },
-  ]
+  // **Funzione per recuperare le attività con pagamenti**
+  const fetchActivities = async () => {
+    try {
+      const token = localStorage.getItem("jwt"); // Recupera il JWT
+      const response = await axios.get("http://localhost:5000/api/pagamenti-attivita", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
+      console.log("Attività con pagamenti:", response.data.attivita);
+      setActivities(response.data.attivita || []);
+    } catch (err) {
+      console.error("Errore nel recupero delle attività:", err);
+      setError("Errore durante il recupero delle attività.");
+    }
+  };
+
+  // **Effettua la chiamata API al primo rendering**
+  useEffect(() => {
+    fetchActivities();
+  }, []);
+
+  // Filtra le attività in base alla ricerca
   const filteredActivities = activities.filter((activity) =>
-    activity.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+    activity.titolo.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Ordina in ordine decrescente in base al totale da recuperare
+  const sortedActivities = [...filteredActivities].sort(
+    (a, b) => b.totaleDaRecuperare - a.totaleDaRecuperare
+  );
 
   return (
     <div className="container">
@@ -59,6 +46,7 @@ export default function PagamentiAttivitaTab() {
         <h1>Pagamenti per Attività</h1>
         <p>Qui troverai la lista dei pagamenti per attività</p>
       </div>
+
       <div className="search-container">
         <Search className="search-icon" />
         <input
@@ -69,19 +57,26 @@ export default function PagamentiAttivitaTab() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+
+      {/* Mostra errore se presente */}
+      {error && <p className="error">{error}</p>}
+
       <div className="pagamenti-list">
-        {filteredActivities.map((activity) => (
-          <PagamentiAttivitaCard
-            key={activity.id}
-            name={activity.name}
-            date={activity.date}
-            participants={activity.participants}
-            amount={activity.amount}
-            pendingPayments={activity.pendingPayments}
-          />
-        ))}
+        {sortedActivities.length > 0 ? (
+          sortedActivities.map((activity) => (
+            <PagamentiAttivitaCard
+              key={activity.id}
+              name={activity.titolo}
+              date={activity.dataAttivita}
+              participants={activity.numeroPartecipanti}
+              amount={activity.totaleDaRecuperare}
+              pendingPayments={activity.numeroNonPaganti}
+            />
+          ))
+        ) : (
+          <p>Nessuna attività trovata.</p>
+        )}
       </div>
     </div>
-  )
+  );
 }
-
