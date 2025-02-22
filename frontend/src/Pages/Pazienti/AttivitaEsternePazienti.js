@@ -2,8 +2,7 @@ import React from "react";
 import "../../css/AttivitaIntEst.css"
 import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti"
 import ActivityBarPazienti from "../../Components/Pazienti/ActivityBarPazienti";
-import AttivitaEsternaTab from "../../Components/AttivitaEsternaTab";
-
+import AttivitaEsternaPazientiTab from "../../Components/Pazienti/AttivitaEsternaPazientiTab";
 export default function AttivitaEsterne() {
   return (
     <div className="attivita-interne">
@@ -14,7 +13,7 @@ export default function AttivitaEsterne() {
         Qui troverai la lista delle attività esterne del centro
       </p>
 
-      <AttivitaEsternaTab />
+      <AttivitaEsternaPazientiTab />
       </header>
 
     </div>
