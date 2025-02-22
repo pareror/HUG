@@ -10,37 +10,46 @@ const CalendarPage = () => {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [activitiesData, setActivitiesData] = useState({});
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
+  // Imposta la data di inizio del mese corrente per visualizzare il nome del mese
   const currentDate = new Date(currentYear, currentMonth, 1);
-  const monthName = currentDate.toLocaleString("default", { month: "long" });
+  const monthName = currentDate.toLocaleString("it-IT", { month: "long" });
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
+        const token = localStorage.getItem("jwt");
         const response = await axios.get("http://localhost:5000/api/attivita", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+            Authorization: `Bearer ${token}`,
           },
-          params: { tipo: "I" } // ✅ Recupera solo attività interne
+          params: { tipo: "I" } // Recupera solo attività interne
         });
 
         const activities = response.data.activities;
         const organizedActivities = {};
 
+        // Raggruppa le attività solo se la data (anno e mese) corrispondono a quelli correnti
         activities.forEach(activity => {
-          const date = new Date(activity.datainizio);
-          if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) {
-            const day = date.getDate();
+          const activityDate = new Date(activity.datainizio);
+          if (
+            activityDate.getFullYear() === currentYear &&
+            activityDate.getMonth() === currentMonth
+          ) {
+            const day = activityDate.getDate();
             if (!organizedActivities[day]) {
               organizedActivities[day] = [];
             }
             organizedActivities[day].push({
               id: activity.id,
               name: activity.titolo,
-              color: "#" + Math.floor(Math.random() * 16777215).toString(16) // Colore casuale
+              // Usa un colore fisso per le attività interne (puoi modificarlo se necessario)
+              color: "#007bff"
             });
           }
         });
@@ -48,14 +57,12 @@ const CalendarPage = () => {
         setActivitiesData(organizedActivities);
       } catch (error) {
         console.error("Errore nel recupero delle attività:", error);
+        setError("Errore durante il recupero delle attività.");
       }
     };
 
     fetchActivities();
-  }, [currentMonth, currentYear]); 
-
-
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  }, [currentMonth, currentYear]);
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -103,12 +110,14 @@ const CalendarPage = () => {
 
           <div className="calendar-grid">
             {days.map((day) => {
-              const activities = activitiesData[day] || [];
-              const displayActivities = activities.slice(0, 3);
-              const hasMore = activities.length > 3;
+              const dayActivities = activitiesData[day] || [];
+              const displayActivities = dayActivities.slice(0, 3);
+              const hasMore = dayActivities.length > 3;
+              // Costruiamo l'URL includendo giorno, mese e anno
+              const url = `/dashboard/calendario/day/${day}/${currentMonth + 1}/${currentYear}`;
 
               return (
-                <Link key={day} to={`/dashboard/calendario/day/${day}`} className="calendar-day">
+                <Link key={day} to={url} className="calendar-day">
                   <div className="day-number">{day}</div>
                   <div className="activities-indicator">
                     {displayActivities.map((activity) => (
@@ -116,6 +125,7 @@ const CalendarPage = () => {
                         key={activity.id}
                         className="activity-dot"
                         style={{ backgroundColor: activity.color }}
+                        title={activity.name}
                       ></span>
                     ))}
                     {hasMore && <span className="more-dots">…</span>}

@@ -2029,5 +2029,41 @@ router.get("/attivita/:id/pazienti-pagamenti", authenticateJWT, (req, res) => {
 });
 
 
+//-----------------------------------------------------
+router.get("/pazienti/:id/calendario-attivita", authenticateJWT, (req, res) => {
+  const patientId = req.params.id;
+
+  const sql = `
+    SELECT 
+      a.id AS activityId,
+      a.titolo,
+      a.datainizio,
+      a.orainizio,
+      a.durata,
+      a.tipo
+    FROM activity_participants ap
+    JOIN activities a ON a.id = ap.activityId
+    WHERE ap.patientId = ?
+    ORDER BY a.datainizio, a.orainizio
+  `;
+
+  db.all(sql, [patientId], (err, rows) => {
+    if (err) {
+      console.error("❌ Errore nel recupero delle attività del paziente:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+
+    // Converte le date nel formato corretto
+    const formattedRows = rows.map((activity) => ({
+      ...activity,
+      datainizio: new Date(activity.datainizio).toISOString().slice(0, 10) // Assicura che sia in YYYY-MM-DD
+    }));
+
+    res.json({ activities: formattedRows });
+  });
+});
+
+
+
 
   module.exports = router;
