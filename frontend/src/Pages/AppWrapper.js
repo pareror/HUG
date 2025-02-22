@@ -60,7 +60,7 @@ const Website = () => {
                 <CalendarPage />
             }
             />
-            <Route path="/dashboard/calendario/day/:day" element={
+            <Route path="/dashboard/calendario/day/:day/:month/:year" element={
                 <ProtectedRoute requiredPermission={[5]}>
                 <DayActivitiesPage />
                 </ProtectedRoute>
@@ -287,7 +287,7 @@ const Website = () => {
                     </ProtectedRoute>
                 }       
                 /> 
-                <Route path="pazienti/calendario/day/:day" element={
+                <Route path="pazienti/calendario/day/:day/:month/:year" element={
                 <ProtectedRoute requiredPermission={[1]}>
                 <DayActivitiesPage />
                 </ProtectedRoute>

@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import NavbarPazienti from "../../Components/Pazienti/NavbarPazienti";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import axios from "axios";
-import "../../css/Pazienti/CalendarioPazienti.css";
 import {jwtDecode} from "jwt-decode";
+import "../../css/Pazienti/CalendarioPazienti.css";
 
 const CalendarioPazienti = () => {
   const today = new Date();
@@ -15,6 +15,7 @@ const CalendarioPazienti = () => {
 
   const navigate = useNavigate();
 
+  // Costruiamo la data di inizio del mese corrente per mostrare il nome del mese
   const currentDate = new Date(currentYear, currentMonth, 1);
   const monthName = currentDate.toLocaleString("it-IT", { month: "long" });
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -24,7 +25,9 @@ const CalendarioPazienti = () => {
     const fetchActivities = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const patientId = jwtDecode(token).id;
+        const decoded = jwtDecode(token);
+        const patientId = decoded.id;
+
         const response = await axios.get(
           `http://localhost:5000/api/pazienti/${patientId}/calendario-attivita`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -32,17 +35,20 @@ const CalendarioPazienti = () => {
 
         console.log("Attività paziente:", response.data.activities);
 
-        // Formattiamo le attività per renderle facili da usare nel calendario
+        // Raggruppa le attività solo se la data, il mese e l'anno corrispondono al mese visualizzato
         const organizedActivities = response.data.activities.reduce((acc, activity) => {
-          const date = new Date(activity.datainizio);
-          if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) {
-            const day = date.getDate();
+          const activityDate = new Date(activity.datainizio);
+          if (
+            activityDate.getFullYear() === currentYear &&
+            activityDate.getMonth() === currentMonth
+          ) {
+            const day = activityDate.getDate();
             if (!acc[day]) acc[day] = [];
             acc[day].push({
               id: activity.activityId,
               name: activity.titolo,
-              type: activity.tipo, // Distinzione interna/esterna
-              color: activity.tipo === "I" ? "#007bff" : "#ff5733", // Blu per interne, rosso per esterne
+              type: activity.tipo, // "I" per interne, "E" per esterne
+              color: activity.tipo === "I" ? "#007bff" : "#ff5733",
             });
           }
           return acc;
@@ -104,12 +110,16 @@ const CalendarioPazienti = () => {
 
           <div className="calendar-grid-pazienti">
             {days.map((day) => {
-              const activities = activitiesData[day] || [];
-              const displayActivities = activities.slice(0, 3);
-              const hasMore = activities.length > 3;
+              const dayActivities = activitiesData[day] || [];
+              const displayActivities = dayActivities.slice(0, 3);
+              const hasMore = dayActivities.length > 3;
 
               return (
-                <Link key={day} to={`/pazienti/calendario/day/${day}`} className="calendar-day-pazienti">
+                <Link
+                  key={day}
+                  to={`/pazienti/calendario/day/${day}/${currentMonth + 1}/${currentYear}`}
+                  className="calendar-day-pazienti"
+                >
                   <div className="day-number-pazienti">{day}</div>
                   <div className="activities-indicator">
                     {displayActivities.map((activity) => (
