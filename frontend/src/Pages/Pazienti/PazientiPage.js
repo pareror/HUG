@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from "react";
+
 import NavbarPazienti from  '../../Components/Pazienti/NavbarPazienti'
 
 import '../../css/Pazienti/PazientiPage.css'
@@ -10,12 +11,7 @@ import ActivityStatsPazienti from "../../Components/Pazienti/ActivityStatsPazien
 import UpcomingActivities from "../../Components/UpcomingActivities"
 import '../../css/UpcomingActivities.css';
 
-import PaymentsTable from "../../Components/PaymentsTable"
-import '../../css/PaymentsTable.css';
-
 import ButtonDashboardPazienti from "../../Components/Pazienti/ButtonDashboardPazienti";    
-
-import { useState } from "react"
 
 const PazientiPage = () => {
 
@@ -43,24 +39,6 @@ const PazientiPage = () => {
           },
         ])
       
-        const [payments] = useState([
-          {
-            activity: "Gita a Lecce",
-            total: "300 €",
-            status: "Da pagare",
-          },
-          {
-            activity: "Gita in barca",
-            total: "120 €",
-            status: "Pagato",
-          },
-          {
-            activity: "Visita al museo",
-            total: "100 €",
-            status: "Da pagare",
-          },
-        ])
-      
         const stats = {
           attivitaInterne: 12,
           attivitaEsterne: 4,
@@ -78,9 +56,7 @@ const PazientiPage = () => {
             
                 <ButtonDashboardPazienti />
                 <br />
-                <UpcomingActivities activities={activities}/>
-                <br />
-                <PaymentsTable payments={payments}/>    
+                <UpcomingActivities activities={activities}/>  
           </div>
       </div>
     );

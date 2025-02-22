@@ -35,7 +35,36 @@ router.get('/admin', authenticateJWT, authorizeRole(3), (req, res) => {
     res.json({ msg: 'Benvenuto nella sezione admin' });
   });
   */
-// 📌 API per ottenere tutti i pazienti
+
+
+  router.get("/stats/dashboard", authenticateJWT, (req, res) => {
+    const centerId = req.user.id; // ID del centro che sta effettuando la richiesta
+  
+    const sql = `
+      SELECT 
+        (SELECT COUNT(*) FROM activities WHERE tipo = 'I' AND createdBy = ?) AS attivitaInterne,
+        (SELECT COUNT(*) FROM activities a
+         JOIN activity_visibility av ON a.id = av.activityId 
+         WHERE a.tipo = 'E' AND av.centerId = ? AND av.visibile = 1) AS attivitaEsterne,
+        (SELECT COUNT(*) FROM profiles WHERE role = 'paziente' AND centroDiurnoId = ?) AS pazientiRegistrati,
+        (SELECT COUNT(*) FROM profiles WHERE role = 'caregiver' AND centroDiurnoId = ?) AS caregiverRegistrati
+    `;
+  
+    db.get(sql, [centerId, centerId, centerId, centerId], (err, row) => {
+      if (err) {
+        console.error("❌ Errore nel recupero delle statistiche:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      res.json({
+        attivitaInterne: row.attivitaInterne,
+        attivitaEsterne: row.attivitaEsterne,
+        totaleAttivita: row.attivitaInterne + row.attivitaEsterne,
+        pazientiRegistrati: row.pazientiRegistrati,
+        caregiverRegistrati: row.caregiverRegistrati
+      });
+    });
+  });
+  
 
 // API GET unificata per il profilo
 router.get("/profilo", authenticateJWT, async (req, res) => {
