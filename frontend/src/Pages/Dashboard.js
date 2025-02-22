@@ -4,8 +4,6 @@ import '../Components/ActivityStats';
 import ActivityStats from "../Components/ActivityStats"
 import UpcomingActivities from "../Components/UpcomingActivities"
 import '../css/UpcomingActivities.css';
-import PaymentsTable from "../Components/PaymentsTable"
-import '../css/PaymentsTable.css';
 import ButtonDashboard from "../Components/ButtonDashboard";    
 import '../css/ButtonDashboard.css';
 import { useState } from "react"
@@ -15,29 +13,6 @@ import NavbarDashboard from "../Components/NavbarDashboard";
 
 
 function Dashboard() {
-    const [activities] = useState([
-      {
-        name: "Yoga",
-        date: "11 gen 2025",
-        time: "16:00",
-        status: "In progress",
-        participants: "6/12",
-      },
-      {
-        name: "Tennis",
-        date: "11 gen 2025",
-        time: "15:00",
-        status: "In arrivo",
-        participants: "22/22",
-      },
-      {
-        name: "Ping Pong",
-        date: "11 gen 2025",
-        time: "17:00",
-        status: "Da approvare",
-        participants: "2/10",
-      },
-    ])
   
     const [payments] = useState([
       {
@@ -75,9 +50,8 @@ function Dashboard() {
             
             <ButtonDashboard />
             <br />
-            <UpcomingActivities activities={activities}/>
-            <br />
-            <PaymentsTable payments={payments}/>
+            <UpcomingActivities/>
+
 
             
           </div>
