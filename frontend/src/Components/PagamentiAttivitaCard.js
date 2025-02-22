@@ -1,11 +1,11 @@
 import "../css/PagamentiPazienti.css"
 import { useNavigate } from "react-router-dom"
 
-export default function AttivitaCard({ name, date, participants, amount, pendingPayments }) {
+export default function AttivitaCard({ id, name, date, participants, amount, pendingPayments }) {
   const navigate = useNavigate()
 
   const handleCardClick = () => {
-    navigate("/dashboard/pagamenti/attivita/dettaglio")
+    navigate(`/dashboard/pagamenti/attivita/${id}`)
   }
 
   return (

@@ -1924,7 +1924,80 @@ router.get("/pagamenti-attivita", authenticateJWT, (req, res) => {
 });
 
 
-
+router.get("/attivita/:id/pazienti-pagamenti", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  
+  // Query per recuperare le informazioni dell'attività
+  const activitySql = `
+    SELECT id, titolo, datainizio, orainizio, durata, costo, tipo
+    FROM activities
+    WHERE id = ?
+  `;
+  
+  db.get(activitySql, [activityId], (err, activityRow) => {
+    if (err) {
+      console.error("Errore nel recupero dell'attività:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!activityRow) {
+      return res.status(404).json({ error: "Attività non trovata." });
+    }
+    
+    // Query per la summary: numero totale di partecipanti e totale da riscuotere
+    const summarySql = `
+      SELECT 
+        COUNT(*) AS totalePartecipanti,
+        (IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)) * 
+          COUNT(CASE WHEN ap.saldato = 0 THEN 1 ELSE NULL END) AS totaleDaRecuperare
+      FROM activity_participants ap
+      JOIN activities a ON a.id = ap.activityId
+      LEFT JOIN preventivi pr 
+        ON a.id = pr.idAttivita AND pr.accettato = 1
+      WHERE a.id = ?
+    `;
+    
+    db.get(summarySql, [activityId], (err, summaryRow) => {
+      if (err) {
+        console.error("Errore nel recupero della summary:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      
+      // Query per i dettagli di ogni partecipante
+      const detailsSql = `
+        SELECT 
+          p.id AS patientId,
+          p.nome || ' ' || p.cognome AS patientName,
+          CASE 
+            WHEN a.tipo = 'E' THEN IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)
+            ELSE 0
+          END AS importo,
+          CASE 
+            WHEN ap.saldato = 1 THEN 'paid'
+            ELSE 'pending'
+          END AS stato,
+          ap.paymentDate
+        FROM activity_participants ap
+        JOIN profiles p ON p.id = ap.patientId
+        JOIN activities a ON a.id = ap.activityId
+        LEFT JOIN preventivi pr 
+          ON a.id = pr.idAttivita AND pr.accettato = 1
+        WHERE a.id = ?
+      `;
+      
+      db.all(detailsSql, [activityId], (err, detailsRows) => {
+        if (err) {
+          console.error("Errore nel recupero dei dettagli:", err.message);
+          return res.status(500).json({ error: "Errore interno del server." });
+        }
+        res.json({
+          activity: activityRow,
+          summary: summaryRow,
+          patients: detailsRows
+        });
+      });
+    });
+  });
+});
 
 
 

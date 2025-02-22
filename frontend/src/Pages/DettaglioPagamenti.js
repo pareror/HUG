@@ -1,67 +1,69 @@
-import { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
-import "../css/DettaglioPagamenti.css"
-import NavbarDashboard from "../Components/NavbarDashboard"
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import "../css/DettaglioPagamenti.css";
+import NavbarDashboard from "../Components/NavbarDashboard";
+import axios from "axios";
 
 export default function DettaglioPagamenti() {
-  const { activityId } = useParams()
-  const navigate = useNavigate()
+  const { activityId } = useParams();
+  const navigate = useNavigate();
+  const [activityData, setActivityData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [activity, setActivity] = useState({
-    id: activityId,
-    title: "Visita al museo",
-    date: "27/11/2024",
-    totalParticipants: 3,
-    totalAmount: 40.0,
-    participants: [
-      {
-        id: "1",
-        name: "Mario Rossi",
-        amount: 40,
-        status: "pending",
-        paymentDate: "20/11/2024",
-      },
-      {
-        id: "2",
-        name: "Giulia Bianchi",
-        amount: 40,
-        status: "pending",
-        paymentDate: "20/11/2024",
-      },
-      {
-        id: "3",
-        name: "Luca Verdi",
-        amount: 40,
-        status: "paid",
-        paymentDate: "20/11/2024",
-      },
-    ],
-  })
-
-  const [totalToCollect, setTotalToCollect] = useState(0)
-
+  // Chiamata API per ottenere i dettagli dell'attività e dei pagamenti
   useEffect(() => {
-    calculateTotalToCollect()
-  }, [activity]) //Fixed dependency
+    const fetchPaymentDetails = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const response = await axios.get(
+          `http://localhost:5000/api/attivita/${activityId}/pazienti-pagamenti`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log("Payment details:", response.data);
+        setActivityData(response.data);
+      } catch (err) {
+        console.error("Errore nel recupero dei pagamenti per l'attività:", err);
+        setError("Errore durante il recupero dei pagamenti.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const calculateTotalToCollect = () => {
-    const total = activity.participants.reduce((sum, participant) => {
-      return participant.status === "pending" ? sum + participant.amount : sum
-    }, 0)
-    setTotalToCollect(total)
+    fetchPaymentDetails();
+  }, [activityId]);
+
+  if (loading) return <p>Caricamento in corso...</p>;
+  if (error) return <p>{error}</p>;
+
+  // Controlla se la risposta ha la struttura attesa
+  if (!activityData || !activityData.activity) {
+    console.error("La risposta dell'API non contiene 'activity'.", activityData);
+    return <p>Dettagli non trovati.</p>;
   }
 
-  const handleRegisterPayment = (participantId) => {
-    setActivity((prevActivity) => ({
-      ...prevActivity,
-      participants: prevActivity.participants.map((participant) =>
-        participant.id === participantId
-          ? { ...participant, status: "paid", paymentDate: new Date().toLocaleDateString("it-IT") }
-          : participant,
+  // Destrutturiamo i dati ottenuti dall'API
+  const { activity, summary, patients } = activityData;
+
+  // Funzione per registrare il pagamento di un partecipante (simulazione)
+  const handleRegisterPayment = async (patientId) => {
+    // Qui dovresti chiamare l'API per registrare il pagamento e poi aggiornare i dati.
+    // Per questo esempio simuliamo l'aggiornamento locale:
+    setActivityData((prevData) => ({
+      ...prevData,
+      patients: prevData.patients.map((p) =>
+        p.patientId === patientId
+          ? { ...p, stato: "paid", paymentDate: new Date().toLocaleDateString("it-IT") }
+          : p
       ),
-    }))
-  }
+      summary: {
+        ...prevData.summary,
+        totaleDaRecuperare: prevData.summary.totaleDaRecuperare - 
+          prevData.patients.find((p) => p.patientId === patientId).importo,
+      },
+    }));
+  };
 
   return (
     <div className="det-pag-main">
@@ -71,18 +73,22 @@ export default function DettaglioPagamenti() {
           <button className="det-pag-back-button" onClick={() => navigate(-1)}>
             <ArrowLeft size={20} /> Torna indietro
           </button>
-          <h1 className="det-pag-title">{activity.title}</h1>
-          <p className="det-pag-date">Data: {activity.date}</p>
+          <h1 className="det-pag-title">{activity.titolo}</h1>
+          <p className="det-pag-date">
+            Data: {new Date(activity.datainizio).toLocaleDateString("it-IT")}
+          </p>
         </div>
 
         <div className="det-pag-payment-status-card">
           <div className="det-pag-status-header">
             <h2>Stato Pagamenti</h2>
             <div className="det-pag-total-info">
-              <span className="det-pag-participants-count">{activity.totalParticipants} partecipanti totali</span>
+              <span className="det-pag-participants-count">
+                {summary.totalePartecipanti} partecipanti totali
+              </span>
               <div className="det-pag-total-amount">
                 <span>Totale da riscuotere:</span>
-                <span className="det-pag-amount">€{totalToCollect.toFixed(2)}</span>
+                <span className="det-pag-amount">€{summary.totaleDaRecuperare.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -97,28 +103,31 @@ export default function DettaglioPagamenti() {
             </div>
 
             <div className="det-pag-table-body">
-              {activity.participants.map((participant) => (
-                <div key={participant.id} className="det-pag-table-row">
-                  <div className="det-pag-col det-pag-col-participant">{participant.name}</div>
-                  <div className="det-pag-col det-pag-col-amount">€{participant.amount}</div>
+              {patients.map((participant) => (
+                <div key={participant.patientId} className="det-pag-table-row">
+                  <div className="det-pag-col det-pag-col-participant">
+                    {participant.patientName}
+                  </div>
+                  <div className="det-pag-col det-pag-col-amount">€{participant.importo}</div>
                   <div className="det-pag-col det-pag-col-status">
-                    <span className={`det-pag-status-badge ${participant.status}`}>
-                      {participant.status === "pending" ? "Da pagare" : "Pagato"}
+                    <span className={`det-pag-status-badge ${participant.stato}`}>
+                      {participant.stato === "pending" ? "Da pagare" : "Pagato"}
                     </span>
                   </div>
-                  <div className="det-pag-col det-pag-col-date">{participant.paymentDate}</div>
+                  <div className="det-pag-col det-pag-col-date">
+                    {participant.paymentDate || "-"}
+                  </div>
                   <div className="det-pag-col det-pag-col-actions">
-                    {participant.status === "pending" ? (
+                    {participant.stato === "pending" ? (
                       <button
                         className="det-pag-register-payment-button"
-                        onClick={() => handleRegisterPayment(participant.id)}
+                        onClick={() => handleRegisterPayment(participant.patientId)}
                       >
                         Registra Pagamento
                       </button>
                     ) : (
-                      <button className="det-pag-register-payment-button det-pag-paid-button" disabled>
-                        Pagato
-                      </button>
+                      <>
+                      </>
                     )}
                   </div>
                 </div>
@@ -128,6 +137,5 @@ export default function DettaglioPagamenti() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
