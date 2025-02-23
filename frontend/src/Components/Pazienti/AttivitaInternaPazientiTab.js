@@ -15,7 +15,7 @@ const AttivitaInternaPazientiTab = () => {
         const token = localStorage.getItem("jwt");
         // Chiamata all'API dedicata per i pazienti:
         const response = await axios.get(
-          "http://localhost:5000/api/pazienti/attivita/interni",
+          "http://localhost:5000/api/pazienti/attivita/interne",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log("Attività interne per pazienti:", response.data.activities);

@@ -1323,55 +1323,96 @@ router.put("/attivita-esterna/:id/visibilita", authenticateJWT, (req, res) => {
 
 router.get("/attivita/:id", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
-  const { tipo } = req.query; // Tipo passato nella query (es. ?tipo=E o ?tipo=I)
-  const userId = req.user.id; // ID dell'utente loggato
+  const { tipo } = req.query; // es. ?tipo=E o ?tipo=I
+  const userId = req.user.id; // ID presente nel JWT
+  const userRole = req.user.role; // Supponiamo che il middleware authenticateJWT aggiunga anche il ruolo
 
-  // Assicuriamoci che il tipo sia maiuscolo (I o E)
+  // Assicuriamoci che il tipo sia in maiuscolo
   const tipoAttivita = tipo ? tipo.toUpperCase() : null;
-
-  // Validazione del tipo di attività
-  if (tipoAttivita !== 'I' && tipoAttivita !== 'E') {
+  if (tipoAttivita !== "I" && tipoAttivita !== "E") {
     return res.status(400).json({ error: "Tipo di attività non valido. Usa 'I' per interne o 'E' per esterne." });
   }
 
-  // Costruisco la query base
-  let sql = `
-    SELECT a.*, 
-           COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti
-  `;
-
-  // Se l'attività è esterna, aggiungo anche la visibilità (default 0 se non presente)
-  if (tipoAttivita === 'E') {
-    sql += `,
-            COALESCE((SELECT visibile FROM activity_visibility WHERE activityId = a.id AND centerId = ?), 0) AS visibile
+  // Se l'attività è interna e l'utente è un paziente,
+  // recupera il centro diurno associato al paziente
+  if (tipoAttivita === "I" && userRole === "paziente") {
+    db.get("SELECT centroDiurnoId FROM profiles WHERE id = ?", [userId], (err, row) => {
+      if (err) {
+        console.error("Errore nel recupero del centro del paziente:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      if (!row || !row.centroDiurnoId) {
+        return res.status(404).json({ error: "Centro diurno non trovato per il paziente." });
+      }
+      const centerId = row.centroDiurnoId;
+      // Costruiamo la query per le attività interne usando il centerId
+      const sql = `
+        SELECT a.*, 
+               COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti
+        FROM activities a
+        WHERE a.id = ?
+          AND a.tipo = ?
+          AND a.createdBy = ?
+      `;
+      const params = [activityId, tipoAttivita, centerId];
+      db.get(sql, params, (err, activity) => {
+        if (err) {
+          console.error("❌ Errore nel recupero dell'attività:", err.message);
+          return res.status(500).json({ error: "Errore interno del server." });
+        }
+        if (!activity) {
+          return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
+        }
+        res.json({ activity });
+      });
+    });
+  } else if (tipoAttivita === "I") {
+    // Caso in cui l'utente non è un paziente (quindi un centro) e si richiede un'attività interna
+    const sql = `
+      SELECT a.*, 
+             COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti
+      FROM activities a
+      WHERE a.id = ?
+        AND a.tipo = ?
+        AND a.createdBy = ?
     `;
+    const params = [activityId, tipoAttivita, userId];
+    db.get(sql, params, (err, activity) => {
+      if (err) {
+        console.error("❌ Errore nel recupero dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      if (!activity) {
+        return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
+      }
+      res.json({ activity });
+    });
+  } else {
+    // Caso delle attività esterne
+    const sql = `
+      SELECT a.*, 
+             COALESCE((SELECT COUNT(*) FROM activity_participants WHERE activityId = a.id), 0) AS numeroIscritti,
+             COALESCE((SELECT visibile FROM activity_visibility WHERE activityId = a.id AND centerId = ?), 0) AS visibile
+      FROM activities a
+      WHERE a.id = ?
+        AND a.tipo = ?
+        AND (a.tipo = 'E' OR a.createdBy = ?)
+    `;
+    // In questo caso, userId viene usato come centerId per attività esterne
+    const params = [userId, activityId, tipoAttivita, userId];
+    db.get(sql, params, (err, activity) => {
+      if (err) {
+        console.error("❌ Errore nel recupero dell'attività:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      if (!activity) {
+        return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
+      }
+      res.json({ activity });
+    });
   }
-
-  sql += `
-    FROM activities a
-    WHERE a.id = ?
-    AND a.tipo = ?
-    AND (a.tipo = 'E' OR a.createdBy = ?)
-  `;
-
-  // Costruisco i parametri in base al tipo di attività
-  const params = tipoAttivita === 'E'
-    ? [userId, activityId, tipoAttivita, userId]
-    : [activityId, tipoAttivita, userId];
-
-  db.get(sql, params, (err, activity) => {
-    if (err) {
-      console.error("❌ Errore nel recupero dell'attività:", err.message);
-      return res.status(500).json({ error: "Errore interno del server." });
-    }
-
-    if (!activity) {
-      return res.status(404).json({ error: "Attività non trovata o accesso non autorizzato." });
-    }
-
-    res.json({ activity });
-  });
 });
+
 
   
   router.put("/attivita/interna/:id", authenticateJWT, upload.single("image"), (req, res) => {
@@ -2126,7 +2167,7 @@ router.get("/pazienti/:id/calendario-attivita", authenticateJWT, (req, res) => {
   });
 });
 
-router.get("/pazienti/attivita/interni", authenticateJWT, (req, res) => {
+router.get("/pazienti/attivita/interne", authenticateJWT, (req, res) => {
   // L'ID del paziente è in req.user.id
   const patientId = req.user.id;
 

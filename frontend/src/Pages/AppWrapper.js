@@ -299,6 +299,14 @@ const Website = () => {
                 </ProtectedRoute>
                 }
              />
+             <Route path="/pazienti/attivita/interna/:id" element={
+                
+                <ProtectedRoute requiredPermission={[1]}>
+                <PaginaDettaglioAttivita />
+                </ProtectedRoute>
+             
+                 }
+                 />
         </Routes>  
         </div>
      );
