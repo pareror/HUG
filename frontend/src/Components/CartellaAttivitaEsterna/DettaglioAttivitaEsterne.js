@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, MapPin, Users, User2, EyeOff, Eye, Euro } from "lucide-react";
 import axios from "axios";
-import '../../css/DettaglioAttivita.css';
+import { jwtDecode } from "jwt-decode";
+import "../../css/DettaglioAttivita.css";
 import GestisciUtenzaModal from "../GestisciUtenzaModal";
+import VisualizzaCaregiverModal from "../Pazienti/VisualizzaCaregiverModal"; // Assicurati che il percorso sia corretto
 
 function DettaglioAttivitaEsterne() {
   const { id } = useParams();
@@ -12,29 +14,37 @@ function DettaglioAttivitaEsterne() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCaregiverModal, setShowCaregiverModal] = useState(false);
   const [visibilita, setVisibilita] = useState(null);
-  const [costoPreventivo, setCostoPreventivo] = useState("Da definire"); // ✅ Costo del preventivo
-  const [costoAttivita, setCostoAttivita] = useState(0); // ✅ Costo base dell'attività
+  const [costoPreventivo, setCostoPreventivo] = useState("Da definire");
+  const [costoAttivita, setCostoAttivita] = useState(0);
 
+  // Decodifica il token per ottenere il ruolo e l'ID dell'utente
+  const token = localStorage.getItem("jwt");
+  let role = "";
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      role = decoded.role; // "paziente" oppure altro (centro)
+    } catch (error) {
+      console.error("Errore nella decodifica del JWT:", error);
+    }
+  }
+
+  // Carica i dettagli dell'attività
   useEffect(() => {
     const fetchActivity = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/attivita/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
           params: { tipo: "E" }
         });
-
         const vis = typeof response.data.activity.visibile !== "undefined" 
           ? response.data.activity.visibile 
           : 0;
-
         setVisibilita(vis);
         setActivity(response.data.activity);
-        setCostoAttivita(response.data.activity.costo || 0); // ✅ Imposta il costo base
-
-        // Se esiste un preventivo accettato, aggiorna il costo del trasporto
+        setCostoAttivita(response.data.activity.costo || 0);
         if (response.data.activity.prezzoPerPersona !== undefined) {
           setCostoPreventivo(response.data.activity.prezzoPerPersona);
         }
@@ -47,56 +57,52 @@ function DettaglioAttivitaEsterne() {
     };
 
     fetchActivity();
-  }, [id]);
- // ✅ Fetch del costo del preventivo accettato
+  }, [id, token]);
 
- useEffect(() => {
-  const fetchCostoPreventivo = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/api/attivita/${id}/preventivo-accettato`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        }
-      });
+  // Carica il costo del preventivo accettato (opzionale)
+  useEffect(() => {
+    const fetchCostoPreventivo = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/attivita/${id}/preventivo-accettato`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCostoPreventivo(response.data.costoPreventivo);
+      } catch (err) {
+        console.error("Errore nel recupero del preventivo accettato:", err);
+        setCostoPreventivo("Da definire");
+      }
+    };
 
-      setCostoPreventivo(response.data.costoPreventivo); // ✅ Imposta il costo del preventivo
-    } catch (err) {
-      console.error("Errore nel recupero del preventivo accettato:", err);
-      setCostoPreventivo("Da definire"); // Se errore, default
+    fetchCostoPreventivo();
+  }, [id, token]);
+
+  // Se l'utente è un paziente, controlla se è iscritto all'attività
+  useEffect(() => {
+    const checkIscrizione = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/attivita/${id}/iscritto`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setActivity((prev) => prev ? { ...prev, iscritto: response.data.isIscritto } : prev);
+      } catch (err) {
+        console.error("Errore nel controllo iscrizione:", err);
+      }
+    };
+
+    if (role === "paziente") {
+      checkIscrizione();
     }
-  };
+  }, [id, token, role]);
 
- 
-
-  fetchCostoPreventivo();
-
-}, [id]);
-
-
-  if (loading) return <p>Caricamento in corso...</p>;
-  if (error) return <p>{error}</p>;
-  if (!activity) return <p>Attività non trovata.</p>;
-
-  const isVisible = visibilita === 1;
-
-  const formattaData = (data) => {
-    const [anno, mese, giorno] = data.split("-");
-    return `${giorno}-${mese}-${anno}`;
-  };
-
+  // Handler per toggle della visibilità (per centri)
   const handleToggleVisibility = async () => {
     try {
       const newVisibility = isVisible ? 0 : 1;
       await axios.put(
         `http://localhost:5000/api/attivita-esterna/${id}/visibilita`,
         { visibile: newVisibility },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setVisibilita(newVisibility);
       setActivity((prev) => ({ ...prev, visibile: newVisibility }));
     } catch (error) {
@@ -104,6 +110,59 @@ function DettaglioAttivitaEsterne() {
       alert("Errore durante la modifica della visibilità.");
     }
   };
+
+  // Handler per iscrivere un paziente all'attività
+  const handleIscrizione = async () => {
+    try {
+      const confirm = window.confirm("Confermi l'iscrizione all'attività?");
+      if (!confirm) return;
+      const decoded = jwtDecode(token);
+      const patientId = decoded.id;
+      await axios.post(
+        `http://localhost:5000/api/attivita/${id}/iscrivi`,
+        { userId: patientId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("Iscrizione registrata con successo.");
+      setActivity((prev) => ({ ...prev, iscritto: true }));
+    } catch (err) {
+      console.error("Errore durante l'iscrizione:", err);
+      alert("Errore durante l'iscrizione.");
+    }
+  };
+
+  // Handler per disiscrivere un paziente dall'attività
+  const handleAnnullaIscrizione = async () => {
+    try {
+      const decoded = jwtDecode(token);
+      const patientId = decoded.id;
+      await axios.delete(`http://localhost:5000/api/attivita/${id}/disiscrivi`, {
+        data: { userId: patientId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Iscrizione annullata con successo.");
+      setActivity((prev) => ({ ...prev, iscritto: false }));
+    } catch (err) {
+      console.error("Errore durante la disiscrizione:", err);
+      alert("Errore durante la disiscrizione.");
+    }
+  };
+
+  // Handler per aprire il modal per visualizzare i caregiver
+  const handleVisualizzaCaregiver = () => {
+    setShowCaregiverModal(true);
+  };
+
+  const formattaData = (data) => {
+    const [anno, mese, giorno] = data.split("-");
+    return `${giorno}-${mese}-${anno}`;
+  };
+
+  const isVisible = visibilita === 1;
+
+  if (loading) return <p>Caricamento in corso...</p>;
+  if (error) return <p>{error}</p>;
+  if (!activity) return <p>Attività non trovata.</p>;
 
   return (
     <div className="activity-detail">
@@ -185,19 +244,15 @@ function DettaglioAttivitaEsterne() {
             </div>
           </div>
 
-          {/* ✅ Sezione per il costo */}
+          {/* Sezione costi */}
           <div className="detail-item">
-              <Euro className="detail-icon" /> 
-
+            <Euro className="detail-icon" />
             <div>
-
               <strong>Costo attività:</strong> {costoAttivita} €
-
             </div>
           </div>
-
           <div className="detail-item">
-          <Euro className="detail-icon" />
+            <Euro className="detail-icon" />
             <div>
               <strong>Costo preventivo trasporti:</strong> {costoPreventivo !== "Da definire" ? `${costoPreventivo} €` : "Da definire"}
             </div>
@@ -211,19 +266,38 @@ function DettaglioAttivitaEsterne() {
       </div>
 
       <div className="button-container">
-        <button className="button button-primary" onClick={() => navigate(`/dashboard/attivita/esterna/preventivi/${id}`)}>
-          Consulta Preventivi
-        </button>
-
-        <button className="button button-secondary" onClick={() => setShowModal(true)}>
-          Gestisci Utenza
-        </button>
-
-        {showModal && <GestisciUtenzaModal onClose={() => setShowModal(false)} activityId={id} />}
-
-        <button onClick={handleToggleVisibility} className={`button ${isVisible ? "button-danger" : "button-success"}`}>
-          {isVisible ? <><EyeOff size={18} /> Nascondi Attività</> : <><Eye size={18} /> Mostra Attività</>}
-        </button>
+        {role !== "paziente" ? (
+          <>
+            <button className="button button-primary" onClick={() => navigate(`/dashboard/attivita/esterna/preventivi/${id}`)}>
+              Consulta Preventivi
+            </button>
+            <button className="button button-secondary" onClick={() => setShowModal(true)}>
+              Gestisci Utenza
+            </button>
+            {showModal && <GestisciUtenzaModal onClose={() => setShowModal(false)} activityId={id} />}
+            <button onClick={handleToggleVisibility} className={`button ${isVisible ? "button-danger" : "button-success"}`}>
+              {isVisible ? <><EyeOff size={18} /> Nascondi Attività</> : <><Eye size={18} /> Mostra Attività</>}
+            </button>
+          </>
+        ) : (
+          <>
+            {activity.iscritto ? (
+              <button className="button button-secondary" onClick={handleAnnullaIscrizione}>
+                Annulla Iscrizione
+              </button>
+            ) : (
+              <button className="button button-primary" onClick={handleIscrizione}>
+                Iscriviti all'attività
+              </button>
+            )}
+            <button className="button button-tertiary" onClick={handleVisualizzaCaregiver}>
+              Visualizza Caregiver
+            </button>
+            {showCaregiverModal && (
+              <VisualizzaCaregiverModal onClose={() => setShowCaregiverModal(false)} activityId={id} />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

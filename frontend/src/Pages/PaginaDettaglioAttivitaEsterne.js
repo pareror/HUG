@@ -1,20 +1,30 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import NavbarDashboard from "../Components/NavbarDashboard";
+import NavbarPazienti from "../Components/Pazienti/NavbarPazienti";
 import DatiAttivitaEsterne from "../Components/CartellaAttivitaEsterna/DatiAttivitaEsterne";
 
 function PaginaDettaglioAttivitaEsterne() {
-  // Recuperiamo l'id dall'URL, ma non lo usiamo per chiamate al backend
   const { id } = useParams();
+  const token = localStorage.getItem("jwt");
+  let role = "";
+  
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      role = decoded.role; // Assumiamo che il token contenga la proprietà 'role'
+    } catch (error) {
+      console.error("Errore nella decodifica del JWT:", error);
+    }
+  }
+  
+  const NavbarComponent = role === "paziente" ? NavbarPazienti : NavbarDashboard;
 
   return (
     <div className="activity-detail">
-      <NavbarDashboard />
+      <NavbarComponent />
       <div className="main-content-dettaglio">
-        {/*
-          Passiamo l'id a DatiAttivitaEsterne che ora usa dati fittizi
-          e non effettua alcuna chiamata al server.
-        */}
         <DatiAttivitaEsterne selectedKey={id} />
       </div>
     </div>

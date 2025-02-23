@@ -1,15 +1,13 @@
-import React from 'react';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../css/AttivitaIntEst.css";
-import { useNavigate } from 'react-router-dom';
 
 const calcolaOrarioFine = (orarioInizio, durata) => {
   const [ore, minuti] = orarioInizio.split(':').map(Number);
   const fine = new Date();
   fine.setHours(ore);
   fine.setMinutes(minuti);
-
   fine.setHours(fine.getHours() + parseInt(durata));
-
   return fine.toTimeString().slice(0, 5);
 };
 
@@ -31,9 +29,14 @@ const AttivitaEsterna = ({
 }) => {
   const orarioFine = calcolaOrarioFine(orarioInizio, durata);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOpenActivity = () => {
-    navigate(`/dashboard/attivita/esterna/${id}`);
+    if (location.pathname.includes("/pazienti")) {
+      navigate(`/pazienti/attivita/esterna/${id}`);
+    } else {
+      navigate(`/dashboard/attivita/esterna/${id}`);
+    }
   };
 
   return (
