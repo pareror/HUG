@@ -16,7 +16,7 @@ const AttivitaEsternaTab = () => {
     const fetchActivities = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const response = await axios.get("http://localhost:5000/api/attivita", {
+        const response = await axios.get("http://localhost:5000/api/pazienti/attivita/esterne", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

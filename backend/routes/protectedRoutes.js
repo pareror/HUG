@@ -1553,34 +1553,75 @@ router.get("/attivita/:id/pazienti", authenticateJWT, (req, res) => {
 
 router.get("/attivita/:id/caregiver", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
-  const centerId = req.user.id; // ✅ ID del centro diurno dal JWT
+  const userRole = req.user.role;
+  let centerId;
 
-  const sql = `
-    SELECT 
-      p.id, 
-      p.nome, 
-      p.cognome, 
-      p.codiceFiscale,
-      CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
-    FROM profiles p
-    LEFT JOIN activity_participants ap 
-      ON p.id = ap.patientId AND ap.activityId = ?
-    WHERE p.role = 'caregiver' 
-      AND p.centroDiurnoId = ? -- ✅ Mostra solo i caregiver registrati dal centro loggato
-      AND EXISTS (SELECT 1 FROM activities WHERE id = ?) -- ✅ Verifica che l'attività esista
-    ORDER BY iscritto DESC, p.nome ASC
-  `;
-
-  db.all(sql, [activityId, centerId, activityId], (err, rows) => {
-    if (err) {
-      console.error("❌ Errore durante il recupero dei caregiver:", err.message);
-      return res.status(500).json({ error: "Errore interno del server." });
-    }
-
-    console.log("✅ Caregiver trovati:", rows);
-    res.json(rows);
-  });
+  // Se l'utente è un centro, usa direttamente req.user.id.
+  // Se l'utente è un paziente, recupera il centro diurno dal suo profilo.
+  if (userRole === "paziente") {
+    const patientId = req.user.id;
+    const centerQuery = "SELECT centroDiurnoId FROM profiles WHERE id = ?";
+    db.get(centerQuery, [patientId], (err, row) => {
+      if (err) {
+        console.error("Errore nel recupero del centro del paziente:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      if (!row || !row.centroDiurnoId) {
+        return res.status(404).json({ error: "Centro diurno non trovato per il paziente." });
+      }
+      centerId = row.centroDiurnoId;
+      // Ora esegui la query per i caregiver usando il centerId
+      const sql = `
+        SELECT 
+          p.id, 
+          p.nome, 
+          p.cognome, 
+          p.codiceFiscale,
+          CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
+        FROM profiles p
+        LEFT JOIN activity_participants ap 
+          ON p.id = ap.patientId AND ap.activityId = ?
+        WHERE p.role = 'caregiver' 
+          AND p.centroDiurnoId = ?
+          AND EXISTS (SELECT 1 FROM activities WHERE id = ?)
+        ORDER BY iscritto DESC, p.nome ASC
+      `;
+      db.all(sql, [activityId, centerId, activityId], (err, rows) => {
+        if (err) {
+          console.error("Errore durante il recupero dei caregiver:", err.message);
+          return res.status(500).json({ error: "Errore interno del server." });
+        }
+        return res.json(rows);
+      });
+    });
+  } else {
+    // Caso in cui l'utente non è un paziente (presumibilmente un centro)
+    centerId = req.user.id;
+    const sql = `
+      SELECT 
+        p.id, 
+        p.nome, 
+        p.cognome, 
+        p.codiceFiscale,
+        CASE WHEN ap.patientId IS NOT NULL THEN 1 ELSE 0 END AS iscritto
+      FROM profiles p
+      LEFT JOIN activity_participants ap 
+        ON p.id = ap.patientId AND ap.activityId = ?
+      WHERE p.role = 'caregiver' 
+        AND p.centroDiurnoId = ?
+        AND EXISTS (SELECT 1 FROM activities WHERE id = ?)
+      ORDER BY iscritto DESC, p.nome ASC
+    `;
+    db.all(sql, [activityId, centerId, activityId], (err, rows) => {
+      if (err) {
+        console.error("Errore durante il recupero dei caregiver:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      return res.json(rows);
+    });
+  }
 });
+
 
 router.post("/attivita/:id/iscrivi", authenticateJWT, (req, res) => {
   const activityId = req.params.id;
@@ -1618,6 +1659,28 @@ router.delete("/attivita/:id/disiscrivi", authenticateJWT, (req, res) => {
     }
 
     res.status(200).json({ message: "Utente disiscritto con successo." });
+  });
+});
+
+//controlla se un paziente è iscritto a un'attività
+router.get("/attivita/:id/iscritto", authenticateJWT, (req, res) => {
+  const activityId = req.params.id;
+  // Assumiamo che l'ID del paziente sia nel JWT (decodificato dal middleware)
+  const patientId = req.user.id;
+
+  const sql = `
+    SELECT COUNT(*) AS count
+    FROM activity_participants
+    WHERE activityId = ? AND patientId = ?
+  `;
+
+  db.get(sql, [activityId, patientId], (err, row) => {
+    if (err) {
+      console.error("Errore nel controllo iscrizione:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    const isIscritto = row.count > 0;
+    res.json({ isIscritto });
   });
 });
 
