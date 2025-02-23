@@ -1,6 +1,6 @@
 import React from 'react';
 import "../css/AttivitaIntEst.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const calcolaOrarioFine = (orarioInizio, durata) => {
   const [ore, minuti] = orarioInizio.split(':').map(Number);
@@ -32,9 +32,14 @@ const AttivitaInterna = ({
 }) => {
   const orarioFine = calcolaOrarioFine(orarioInizio, durata);
   const navigate = useNavigate();
-
+  const location = useLocation();
+  
   const handleOpenActivity = () => {
-    navigate(`/dashboard/attivita/interna/${id}`);
+    if (location.pathname.includes("/pazienti")) {
+      navigate(`/pazienti/attivita/interna/${id}`);
+    } else {
+      navigate(`/dashboard/attivita/interna/${id}`);
+    }
   };
 
   return (
