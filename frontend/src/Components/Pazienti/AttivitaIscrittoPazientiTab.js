@@ -57,17 +57,17 @@ export default function AttivitaIscrittoPazientiTab() {
         <h1>Attività a cui sei iscritto</h1>
         <p>Qui troverai le attività future a cui sei iscritto</p>
       </div>
-      <div className="attivita-tab-search-container">
-        <Search className="attivita-search-icon" />
+      <div className="list-att-paz-search-container">
+        <Search className="list-att-paz-search-icon" />
         <input
           type="text"
           placeholder="Cerca attività..."
-          className="attivita-search-input"
+          className="list-att-paz-search-input"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <div className="attivita-tab-list">
+      <div className="list-att-paz-activities-list">
         {filteredActivities.map((activity) => (
           <AttivitaPazientiCard
             key={activity.id}
