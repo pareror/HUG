@@ -1,12 +1,17 @@
 import "../../css/PagamentiPazienti.css";
 import { useNavigate } from "react-router-dom";
 
-export default function PagamentiAttivitaCardPazienti({ id, name, date, amount, isPaid }) {
+export default function PagamentiAttivitaCardPazienti({ id, name, date, amount, isPaid, tipo }) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/pazienti/pagamenti/attivita/${id}`);
+    if (tipo === "I") {
+      navigate(`/pazienti/attivita/interna/${id}`);
+    } else if (tipo === "E") {
+      navigate(`/pazienti/attivita/esterna/${id}`);
+    }
   };
+  
 
   return (
     <div className="activity-card" onClick={handleCardClick}>

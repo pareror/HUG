@@ -2027,6 +2027,7 @@ router.get("/pagamenti-attivita", authenticateJWT, (req, res) => {
          a.id,
          a.titolo,
          a.datainizio AS dataAttivita,
+         a.tipo,
          (IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)) AS costoTotale,
          CASE WHEN ap.saldato = 1 THEN 'pagato' ELSE 'da pagare' END AS status
       FROM activities a

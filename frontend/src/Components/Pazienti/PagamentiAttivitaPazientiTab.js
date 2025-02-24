@@ -24,6 +24,7 @@ export default function PagamentiAttivitaPazientiTab() {
           headers: { Authorization: `Bearer ${token}` },
         });
         // Ci aspettiamo che l'API restituisca { payments: [...] }
+        console.log(response.data.payments);
         setPayments(response.data.payments || []);
       } catch (err) {
         console.error("Errore nel recupero dei pagamenti:", err);
@@ -75,6 +76,7 @@ export default function PagamentiAttivitaPazientiTab() {
             date={formatDate(payment.dataAttivita)}
             amount={payment.costoTotale === 0 ? "Gratuito" : payment.costoTotale}
             isPaid={payment.status.toLowerCase() === "pagato"}
+            tipo={payment.tipo}
           />
         ))}
       </div>

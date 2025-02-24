@@ -307,12 +307,6 @@ const Website = () => {
              
                  }
                  />
-            <Route path="/dashboard/pagamenti/attivita/:activityId" element={
-                <ProtectedRoute requiredPermission={[1]}>
-                <DettaglioPagamenti />
-                </ProtectedRoute>
-                    }
-            />
         </Routes>  
         </div>
      );
