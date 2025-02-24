@@ -202,5 +202,8 @@
   margin-bottom: 8px;
 }
 
-
+.pazienti-pay-button.free {
+  background-color: #ADD8E6; /* Celeste */
+  color: #000; /* Colore del testo, puoi modificarlo se necessario */
+}
 

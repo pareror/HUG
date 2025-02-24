@@ -1,12 +1,17 @@
 import "../../css/PagamentiPazienti.css";
 import { useNavigate } from "react-router-dom";
 
-export default function PagamentiAttivitaCardPazienti({ name, date, amount, isPaid}) {
+export default function PagamentiAttivitaCardPazienti({ id, name, date, amount, isPaid, tipo }) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate("/pazienti/pagamenti/attivita/dettaglio");
+    if (tipo === "I") {
+      navigate(`/pazienti/attivita/interna/${id}`);
+    } else if (tipo === "E") {
+      navigate(`/pazienti/attivita/esterna/${id}`);
+    }
   };
+  
 
   return (
     <div className="activity-card" onClick={handleCardClick}>
@@ -16,9 +21,21 @@ export default function PagamentiAttivitaCardPazienti({ name, date, amount, isPa
           <p className="activity-count">Data: {date}</p>
         </div>
         <div className="payment-info">
-          <span className="total-amount">€{amount.toFixed(2)}</span>
-          <button className={`pazienti-pay-button ${isPaid ? "paid" : "unpaid"}`}>
-            {isPaid ? "Pagato" : "Da pagare"}
+          {amount === "Gratuito" ? (
+            <span className="total-amount"></span>
+          ) : (
+            <span className="total-amount">€{amount}</span>
+          )}
+          <button
+            className={`pazienti-pay-button ${
+              isPaid 
+                ? "paid" 
+                : amount === "Gratuito" 
+                  ? "free" 
+                  : "unpaid"
+            }`}
+          >
+            {amount === "Gratuito" ? "Gratuito" : isPaid ? "Pagato" : "Da pagare"}
           </button>
         </div>
       </div>
