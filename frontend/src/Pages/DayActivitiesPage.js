@@ -99,7 +99,11 @@ const DayActivitiesPage = () => {
                   className="activity-item"
                   onClick={() => {
                     if (role === "paziente") {
-                      navigate(`/pazienti/attivita/${activity.activityId}`);
+                      if (activity.tipo === "I") {
+                        navigate(`/pazienti/attivita/interna/${activity.activityId}`);
+                      } else if (activity.tipo === "E") {
+                        navigate(`/pazienti/attivita/esterna/${activity.activityId}`);
+                      }
                     } else {
                       navigate(`/dashboard/attivita/interna/${activity.id}`);
                     }

@@ -2169,7 +2169,8 @@ router.get("/pazienti/:id/calendario-attivita", authenticateJWT, (req, res) => {
       a.datainizio,
       a.orainizio,
       a.durata,
-      a.tipo
+      a.tipo,
+      a.luogo
     FROM activity_participants ap
     JOIN activities a ON a.id = ap.activityId
     WHERE ap.patientId = ?
