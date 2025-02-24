@@ -1,78 +1,67 @@
-import "../../css/ActivityStats.css"
+// ActivityStats.js
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "../../css/ActivityStats.css";
 
-/*import React from "react";*/
-{/* import "../css/ActivityStats.css"
+export default function ActivityStats() {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-export default function ActivityStats({ stats }) {
-  return (
-    <div className="stats-grid">
-      <StatCard title="Attività Interne" value={stats.attivitaInterne} icon="📊" />
-      <StatCard title="Attività Esterne" value={stats.attivitaEsterne} icon="🌍" />
-      <StatCard title="Pazienti Registrati" value={stats.pazientiRegistrati} icon="👥" />
-      <StatCard title="Utenti Registrati" value={stats.utentiRegistrati} icon="📝" />
-    </div>
-  )
-}
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const response = await axios.get("http://localhost:5000/api/pazienti/stats-dashboard", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // Supponiamo che l'API restituisca un oggetto { stats: { attivitaInterne, attivitaOggi, pagamentiSospeso, attivitaCompletate } }
+        setStats(response.data.stats);
+      } catch (err) {
+        console.error("Errore nel recupero delle statistiche:", err);
+        setError("Errore nel recupero delle statistiche.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-function StatCard({ title, value, icon }) {
-  return (
-    <div className="stat-card">
-      <div className="stat-content">
-        <div>
-          <p className="stat-title">{title}</p>
-          <p className="stat-value">{value}</p>
-        </div>
-        <span className="stat-icon">{icon}</span>
-      </div>
-    </div>
-  )
-}
+    fetchStats();
+  }, []);
 
+  if (loading) return <div>Caricamento statistiche...</div>;
+  if (error) return <div>{error}</div>;
+  if (!stats) return <div>Nessuna statistica disponibile.</div>;
 
-*/}
-
-
-
-export default function ActivityStats({ stats }) {
   const metricsData = [
     {
       title: "Attività Totali",
-      value: stats.attivitaInterne + stats.attivitaEsterne,
-      change: "+12.5%",
-      subtitle: "Target mensile: 20",
+      value: stats.attivitaInterne, // Numero di attività interne totali disponibili
+      subtitle: "Attività interne totali disponibili",
       icon: "📊",
-      progress: 75,
       color: "blue",
     },
     {
       title: "Attività attive oggi",
-      value: stats.attivitaOggi,
-      change: "+8.2%",
-      subtitle: "Crescita attività mensile",
+      value: stats.attivitaOggi, // Numero di attività interne attive oggi
+      subtitle: "Attività interne attive oggi",
       icon: "📝",
-      /*icon: "🌍",*/
-      progress: 65,
       color: "yellow",
     },
     {
       title: "Pagamenti in sospeso",
-      value: stats.pagamentiSospeso,
-      change: "+15.7%",
-      subtitle: "Tasso pagamenti",
-      icon: "📊",
-      progress: 85,
+      value: stats.pagamentiSospeso, // Numero di attività da pagare
+      subtitle: "Attività da pagare",
+      icon: "💰",
       color: "green",
     },
     {
       title: "Totale attività completate",
-      value: stats.attivitaCompletate,
-      change: "+10.3%",
-      subtitle: "Tasso completamento attività",
-      icon: "📝",
-      progress: 70,
+      value: stats.attivitaCompletate, // Numero di attività (interne ed esterne) completate
+      subtitle: "Attività completate (interne ed esterne)",
+      icon: "✅",
       color: "purple",
     },
-  ]
+  ];
 
   return (
     <div className="stats-grid">
@@ -80,27 +69,20 @@ export default function ActivityStats({ stats }) {
         <MetricCard key={index} {...metric} />
       ))}
     </div>
-  )
+  );
 }
 
-function MetricCard({ title, value, change, subtitle, icon, progress, color }) {
+function MetricCard({ title, value, subtitle, icon, color }) {
   return (
     <div className="metric-card">
       <div className="metric-header">
         <div className={`metric-icon-wrapper ${color}`}>{icon}</div>
-        <div className="metric-change">{change}</div>
       </div>
-
       <div className="metric-content">
         <h3 className="metric-title">{title}</h3>
         <p className="metric-value">{value.toLocaleString()}</p>
         <p className="metric-subtitle">{subtitle}</p>
       </div>
-
-      <div className="metric-progress-wrapper">
-        <div className={`metric-progress-bar ${color}`} style={{ width: `${progress}%` }} />
-      </div>
     </div>
-  )
+  );
 }
-
