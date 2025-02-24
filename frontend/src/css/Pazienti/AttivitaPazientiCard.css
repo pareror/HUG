@@ -1,0 +1,71 @@
+.attivita-pazienti-card {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .attivita-pazienti-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-image {
+    width: 100px;      /* Dimensione fissa, leggermente più grande */
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0; /* colore di fallback */
+    border-radius: 4px;
+    margin-right: 15px;
+  }
+  
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .card-details {
+    flex: 1;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    margin: 0 0 5px;
+  }
+  
+  .card-date,
+  .card-duration,
+  .card-instructor,
+  .card-location {
+    font-size: 14px;
+    margin: 2px 0;
+  }
+  
+  .card-type-section {
+    margin-left: 10px;
+  }
+  
+  .list-att-paz-status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .list-att-paz-status-interna {
+    background-color: #007bff; /* Blu per interne */
+    color: white;
+  }
+  
+  .list-att-paz-status-esterna {
+    background-color: #ff5733; /* Rosso/arancione per esterne */
+    color: white;
+  }
+  

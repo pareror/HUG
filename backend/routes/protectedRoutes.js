@@ -2272,5 +2272,34 @@ router.get("/pazienti/attivita/esterne", authenticateJWT, (req, res) => {
   });
 });
 
+router.get("/pazienti/:id/attivita-prossime", authenticateJWT, (req, res) => {
+  const patientId = req.params.id; 
+  const sql = `
+    SELECT 
+      a.id,
+      a.titolo,
+      a.datainizio,
+      a.orainizio,
+      a.durata,
+      a.tipo,           -- "I" per interne, "E" per esterne
+      a.immagine,
+      a.luogo,
+      a.istruttore
+    FROM activities a
+    INNER JOIN activity_participants ap ON a.id = ap.activityId
+    WHERE ap.patientId = ?
+      AND date(a.datainizio) >= date('now')
+    ORDER BY a.datainizio ASC, a.orainizio ASC
+  `;
+
+  db.all(sql, [patientId], (err, rows) => {
+    if (err) {
+      console.error("Errore nel recupero delle attività prossime:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    res.json({ attivita: rows });
+  });
+});
+
 
   module.exports = router;

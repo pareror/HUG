@@ -255,7 +255,7 @@ const Website = () => {
                  }
                  />
 
-            <Route path="pazienti/attivita/iscritto" element={
+            <Route path="/pazienti/attivita/iscritto" element={
                 <ProtectedRoute requiredPermission={[1]}>
                 <AttivitaIscrittoPazienti />
                 </ProtectedRoute>
