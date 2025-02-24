@@ -54,6 +54,10 @@ export default function PagamentiAttivitaPazientiTab() {
   return (
     <div className="container">
       <div className="header">
+        <div className="header-info" style={{ textAlign: "right", fontStyle: "italic", marginTop: "10px" }}>
+          Per effettuare un pagamento rivolgersi alla direzione del centro
+        </div>
+
         <h1>Pagamenti</h1>
         <p>Qui troverai la lista dei pagamenti per attività</p>
       </div>
