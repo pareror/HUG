@@ -7,41 +7,42 @@ export default function NotificheTabPazienti() {
     
     const notifications = [
         {
-            id: 1,
-            titolo: "Nuovo Pagamento",
-            descrizione: "Mario Rossi ha effettuato un pagamento per Corso di Pittura",
-            tempo: "2 minuti fa",
-            nuovo: true
+          id: 1,
+          titolo: "Visita Confermata",
+          descrizione: "La tua visita fisioterapica è stata confermata per domani alle 10:00.",
+          tempo: "2 minuti fa",
+          nuovo: true
         },
         {
-            id: 2,
-            titolo: "Iscrizione confermata",
-            descrizione: "Giulia Bianchi si è iscritta a Yoga per Anziani",
-            tempo: "1 ora fa",
-            nuovo: true
+          id: 2,
+          titolo: "Ricetta Pronta",
+          descrizione: "La tua ricetta per gli esami del sangue è ora disponibile in segreteria.",
+          tempo: "1 ora fa",
+          nuovo: true
         },
         {
-            id: 3,
-            titolo: "Promemoria",
-            descrizione: "Laboratorio di Cucina inizierà tra 30 minuti",
-            tempo: "3 ore fa",
-            nuovo: false
+          id: 3,
+          titolo: "Aggiornamento Cartella Clinica",
+          descrizione: "È stata aggiornata la tua cartella clinica con i risultati delle ultime analisi.",
+          tempo: "3 ore fa",
+          nuovo: false
         },
         {
-            id: 4,
-            titolo: "Promemoria",
-            descrizione: "Laboratorio di Cucina inizierà tra 30 minuti",
-            tempo: "3 ore fa",
-            nuovo: false
+          id: 4,
+          titolo: "Promemoria Farmaci",
+          descrizione: "Ricordati di assumere il farmaco prescritto alle ore 14:00.",
+          tempo: "6 ore fa",
+          nuovo: false
         },
         {
-            id: 5,
-            titolo: "Promemoria",
-            descrizione: "Laboratorio di Cucina inizierà tra 30 minuti",
-            tempo: "3 ore fa",
-            nuovo: false
+          id: 5,
+          titolo: "Nuovo Corso",
+          descrizione: "Hai la possibilità di iscriverti al nuovo corso di ginnastica dolce tra 3 giorni.",
+          tempo: "1 giorno fa",
+          nuovo: false
         }
-    ];    
+      ];
+       
     
     return (
         <div className="notifications-container">

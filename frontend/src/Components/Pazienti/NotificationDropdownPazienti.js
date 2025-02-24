@@ -11,20 +11,20 @@ const NotificationDropdownPazienti = () => {
   const patientNotifications = [
     {
       id: 1,
-      title: "Nuovo Trattamento",
-      description: "Giovanni Verdi ha completato una sessione di fisioterapia",
-      time: "5 minuti fa",
+      title: "Visista Confermata",
+      description: "La tua visita fiosioterapica è stata confermata per domani alle 10:00.",
+      time: "2 minuti fa",
     },
     {
       id: 2,
-      title: "Visita Medica Programmata",
-      description: "Anna Rossi ha una visita di controllo il 25 febbraio",
-      time: "2 ore fa",
+      title: "Ricetta pronta",
+      description: "La tua ricetta per gli esami del sangue è ora disponibile in segreteria.",
+      time: "1 ore fa",
     },
     {
       id: 3,
-      title: "Promemoria",
-      description: "Prenotazione per la dieta personalizzata domani",
+      title: "Nuovo corso",
+      description: "Hai la possibilità di iscriverti al nuovo corso di ginnastica dolce tra 3 giorni.",
       time: "1 giorno fa",
     },
   ];
