@@ -281,13 +281,13 @@ const Website = () => {
                     </ProtectedRoute>
                 }       
                 />  
-                <Route path="pazienti/calendario" element={
+                <Route path="/pazienti/calendario" element={
                     <ProtectedRoute requiredPermission={[1]}>
                     <CalendarioPazienti />                 
                     </ProtectedRoute>
                 }       
                 /> 
-                <Route path="pazienti/calendario/day/:day/:month/:year" element={
+                <Route path="/pazienti/calendario/day/:day/:month/:year" element={
                 <ProtectedRoute requiredPermission={[1]}>
                 <DayActivitiesPage />
                 </ProtectedRoute>
