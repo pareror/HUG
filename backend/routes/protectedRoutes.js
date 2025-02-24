@@ -2302,5 +2302,96 @@ router.get("/pazienti/:id/attivita-prossime", authenticateJWT, (req, res) => {
   });
 });
 
+// Endpoint per le statistiche del paziente
+router.get("/pazienti/stats-dashboard", authenticateJWT, (req, res) => {
+  // L'ID del paziente è nel JWT (da req.user)
+  const patientId = req.user.id;
+
+  // Recupera il centro diurno a cui appartiene il paziente
+  const centerQuery = "SELECT centroDiurnoId FROM profiles WHERE id = ?";
+  db.get(centerQuery, [patientId], (err, row) => {
+    if (err) {
+      console.error("Errore nel recupero del centro del paziente:", err.message);
+      return res.status(500).json({ error: "Errore interno del server." });
+    }
+    if (!row || !row.centroDiurnoId) {
+      return res.status(400).json({ error: "Centro diurno non trovato per il paziente." });
+    }
+    const centerId = row.centroDiurnoId;
+
+    // Query 1: Attività interne totali (create dal centro)
+    const query1 = `
+      SELECT COUNT(*) AS attivitaInterne 
+      FROM activities 
+      WHERE tipo = 'I' AND createdBy = ?
+    `;
+    db.get(query1, [centerId], (err, row1) => {
+      if (err) {
+        console.error("Errore nel conteggio delle attività interne:", err.message);
+        return res.status(500).json({ error: "Errore interno del server." });
+      }
+      const attivitaInterne = row1.attivitaInterne;
+
+      // Query 2: Attività interne attive oggi (data di inizio = oggi)
+      const query2 = `
+        SELECT COUNT(*) AS attivitaOggi 
+        FROM activities 
+        WHERE tipo = 'I' AND createdBy = ? AND date(datainizio) = date('now')
+      `;
+      db.get(query2, [centerId], (err, row2) => {
+        if (err) {
+          console.error("Errore nel conteggio delle attività attive oggi:", err.message);
+          return res.status(500).json({ error: "Errore interno del server." });
+        }
+        const attivitaOggi = row2.attivitaOggi;
+
+        // Query 3: Pagamenti in sospeso per il paziente,
+        // escludendo le attività gratuite (cioè quelle per cui costo attività + costo preventivo = 0)
+        const query3 = `
+          SELECT COUNT(*) AS pagamentiSospeso 
+          FROM activity_participants ap
+          JOIN activities a ON a.id = ap.activityId
+          LEFT JOIN preventivi pr 
+            ON a.id = pr.idAttivita AND pr.accettato = 1
+          WHERE ap.patientId = ? 
+            AND ap.saldato = 0
+            AND (IFNULL(a.costo, 0) + IFNULL(pr.prezzoPerPersona, 0)) > 0
+        `;
+        db.get(query3, [patientId], (err, row3) => {
+          if (err) {
+            console.error("Errore nel conteggio dei pagamenti sospesi:", err.message);
+            return res.status(500).json({ error: "Errore interno del server." });
+          }
+          const pagamentiSospeso = row3.pagamentiSospeso;
+
+          // Query 4: Attività completate (tutte quelle con data di inizio inferiore a oggi)
+          const query4 = `
+            SELECT COUNT(*) AS attivitaCompletate 
+            FROM activities 
+            WHERE date(datainizio) < date('now')
+          `;
+          db.get(query4, [], (err, row4) => {
+            if (err) {
+              console.error("Errore nel conteggio delle attività completate:", err.message);
+              return res.status(500).json({ error: "Errore interno del server." });
+            }
+            const attivitaCompletate = row4.attivitaCompletate;
+
+            // Restituisci l'oggetto stats con i quattro valori
+            return res.json({
+              stats: {
+                attivitaInterne,
+                attivitaOggi,
+                pagamentiSospeso,
+                attivitaCompletate,
+              },
+            });
+          });
+        });
+      });
+    });
+  });
+});
+
 
   module.exports = router;

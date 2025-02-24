@@ -168,7 +168,7 @@ const CreateCaregiver = () => {
           </div>
           <div className="form-group">
             <label>Data di nascita</label>
-            <input type="text" name="dataNascita" required onChange={handleChange} />
+            <input type="date" name="dataNascita" required onChange={handleChange} />
           </div>
           <div className="form-group">
             <label>Genere</label>
