@@ -201,6 +201,26 @@ const createPreventiviTable = () => {
   );
 };
 
+const createPreventiviAcceptTable = () => {
+  db.run(
+    `CREATE TABLE IF NOT EXISTS preventivi_centro (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      idCentro INTEGER NOT NULL,        -- ID del centro diurno (collegato a profiles)
+      idTouroperator INTEGER NOT NULL,    -- ID del tour operator che ha fatto il preventivo (collegato a profiles)
+      accettato INTEGER DEFAULT 0,        
+      FOREIGN KEY (idCentro) REFERENCES profiles(id) ON DELETE CASCADE,
+      FOREIGN KEY (idTouroperator) REFERENCES profiles(id) ON DELETE CASCADE
+    )`,
+    (err) => {
+      if (err) {
+        console.error("❌ Errore nella creazione della tabella 'preventivi':", err.message);
+      } else {
+        console.log("✅ Tabella 'preventivi' creata con successo.");
+      }
+    }
+  );
+}
+
 
 
 // Funzione principale per inizializzare il database
