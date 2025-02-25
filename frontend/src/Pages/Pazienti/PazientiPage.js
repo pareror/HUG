@@ -52,7 +52,7 @@ const PazientiPage = () => {
             <NavbarPazienti />
 
             <div className="main-content">
-                <ActivityStatsPazienti stats={stats} />
+                <ActivityStatsPazienti />
             
                 <ButtonDashboardPazienti />
                 <br />
