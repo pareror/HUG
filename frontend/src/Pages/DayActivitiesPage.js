@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "../css/DayActivitiesPage.css";
+import NavbarPazienti from "../Components/Pazienti/NavbarPazienti";
 
 const DayActivitiesPage = () => {
   // Ora la route contiene day, month e year
@@ -25,7 +26,7 @@ const DayActivitiesPage = () => {
       console.error("Errore nella decodifica del JWT:", error);
     }
   }
-
+  const NavbarComponent = role === "paziente" ? NavbarPazienti : NavbarDashboard;
   useEffect(() => {
     const fetchActivities = async () => {
       try {
@@ -79,7 +80,7 @@ const DayActivitiesPage = () => {
 
   return (
     <div className="day-activities-page">
-      <NavbarDashboard />
+      <NavbarComponent />
       <div className="main-content">
         <main className="day-activities-main">
           <header className="day-activities-header">

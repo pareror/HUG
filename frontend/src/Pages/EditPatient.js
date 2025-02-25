@@ -472,6 +472,7 @@ const EditPatient = () => {
               <button className="btn-red" onClick={handleDeleteProfile}>
                 Conferma
               </button>
+              <br></br>
               <button className="btn-gray" onClick={handleCancelDelete}>
                 Annulla
               </button>

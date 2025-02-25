@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 import "../css/UpcomingActivities.css";
 
 function StatusBadge({ status }) {
@@ -18,78 +20,95 @@ function StatusBadge({ status }) {
   return <span className={`status-badge ${getStatusClass(status)}`}>{status}</span>;
 }
 
-export default function UpcomingActivities() {
+function UpcomingActivities() {
   const [activities, setActivities] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Decodifica il token per ottenere ruolo e userId
+  const token = localStorage.getItem("jwt");
+  let role = "";
+  let userId = "";
+  try {
+    const decoded = jwtDecode(token);
+    role = decoded.role;
+    userId = decoded.id;
+  } catch (err) {
+    console.error("Errore nella decodifica del JWT:", err);
+  }
+
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const token = localStorage.getItem("jwt");
-        const response = await axios.get("http://localhost:5000/api/attivita", {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { tipo: "I" } // Recupera solo attività interne
-        });
-        console.log("Internal activities:", response.data.activities);
-
-        // Data odierna in formato ISO (YYYY-MM-DD)
-        const today = new Date().toISOString().slice(0, 10);
-        // Filtra le attività upcoming: la data di inizio deve essere >= oggi
-        const upcomingActivities = response.data.activities.filter(
-          (activity) => activity.datainizio >= today
-        );
-
-        const now = new Date();
-        // Mappa le attività, formattando la data e calcolando lo stato
-        const mappedActivities = upcomingActivities.map((activity) => {
-          // Costruisci l'oggetto Date combinando data e orario (assumendo formato "YYYY-MM-DD" e "HH:mm")
-          const activityStart = new Date(`${activity.datainizio}T${activity.orainizio}:00`);
-          const activityEnd = new Date(activityStart.getTime() + activity.durata * 3600000);
-
-          // Formatta la data in formato "27 novembre 2024"
-          const formattedDate = activityStart.toLocaleDateString("it-IT", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric"
+        const authHeaders = { Authorization: `Bearer ${token}` };
+        let response;
+        if (role === "paziente") {
+          // Endpoint specifico per i pazienti
+          response = await axios.get(
+            `http://localhost:5000/api/pazienti/${userId}/attivita-prossime`,
+            { headers: authHeaders }
+          );
+          // Supponiamo che l'API restituisca { attivita: [...] }
+          setActivities(response.data.attivita || []);
+        } else {
+          // Per i centri: usa l'endpoint per le attività interne
+          response = await axios.get("http://localhost:5000/api/attivita", {
+            headers: authHeaders,
+            params: { tipo: "I" },
           });
-
-          // Calcola lo stato: "In progress" se il tempo corrente rientra nell'intervallo, altrimenti "In arrivo"
-          let status = now >= activityStart && now <= activityEnd ? "In progress" : "In arrivo";
-          
-          return {
-            name: activity.titolo,
-            rawDate: activity.datainizio, // Per l'ordinamento
-            date: formattedDate,
-            time: activity.orainizio,
-            status,
-            participants: activity.numeroIscritti
-          };
-        });
-
-        // Ordina in ordine ascendente per data (l'attività più vicina viene per prima)
-        mappedActivities.sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
-
-        setActivities(mappedActivities);
+          // Filtra le attività future (data di inizio >= oggi)
+          const today = new Date().toISOString().slice(0, 10);
+          const upcoming = (response.data.activities || []).filter(
+            (activity) => activity.datainizio >= today
+          );
+          setActivities(upcoming);
+        }
       } catch (err) {
-        console.error("Errore fetch attività:", err);
-        setError("Impossibile caricare le attività interne upcoming.");
+        console.error("Errore nel recupero delle attività:", err);
+        setError("Impossibile caricare le attività upcoming.");
       }
     };
 
     fetchActivities();
-  }, []);
+  }, [token, role, userId]);
 
-  // Limita la visualizzazione a 5 attività
-  const limitedActivities = activities.slice(0, 5);
+  // Limita il numero di attività visualizzate
+  const limit = role === "paziente" ? 3 : 5;
+  const limitedActivities = activities.slice(0, limit);
 
+  // Ordina le attività per data e orario
+  const sortedActivities = [...limitedActivities].sort((a, b) => {
+    const dateA = new Date(`${a.datainizio}T${a.orainizio}:00`);
+    const dateB = new Date(`${b.datainizio}T${b.orainizio}:00`);
+    return dateA - dateB;
+  });
+
+  const calculateEndTime = (startTime, duration) => {
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const endTime = new Date();
+    endTime.setHours(hours);
+    endTime.setMinutes(minutes);
+    endTime.setHours(endTime.getHours() + parseInt(duration));
+    return endTime.toTimeString().slice(0, 5);
+  };
+
+  // Gestione del pulsante "Mostra altro"
+  const handleShowMore = () => {
+    if (role === "paziente") {
+      navigate("/pazienti/attivita/iscritto");
+    } else {
+      navigate("/dashboard/attivita/interna");
+    }
+  };
+
+  // Ritorna la tabella con i dati formattati
   return (
     <div className="activities-table-container">
       {error && <p className="error">{error}</p>}
       <table className="activities-table">
         <thead>
           <tr>
-            <th>Attività Interne</th>
+            <th>{role === "paziente" ? "Attività Iscritto" : "Attività Interne"}</th>
             <th>Data</th>
             <th>Ora</th>
             <th>Stato</th>
@@ -97,25 +116,55 @@ export default function UpcomingActivities() {
           </tr>
         </thead>
         <tbody>
-          {limitedActivities.map((activity, index) => (
-            <tr key={index}>
-              <td>{activity.name}</td>
-              <td>{activity.date}</td>
-              <td>{activity.time}</td>
-              <td>
-                <StatusBadge status={activity.status} />
-              </td>
-              <td>{activity.participants}</td>
-            </tr>
-          ))}
+          {sortedActivities.map((activity, index) => {
+            // Format della data in "27 novembre 2024"
+            const activityStart = new Date(`${activity.datainizio}T${activity.orainizio}:00`);
+            const formattedDate = activityStart.toLocaleDateString("it-IT", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric"
+            });
+            // Calcola stato basato sull'orario corrente
+            const now = new Date();
+            const activityEnd = new Date(activityStart.getTime() + activity.durata * 3600000);
+            const status = (now >= activityStart && now <= activityEnd) ? "In progress" : "In arrivo";
+
+            return (
+              <tr
+                key={index}
+                onClick={() => {
+                  if (role === "paziente") {
+                    if (activity.tipo === "I") {
+                      navigate(`/pazienti/attivita/interna/${activity.activityId}`);
+                    } else if (activity.tipo === "E") {
+                      navigate(`/pazienti/attivita/esterna/${activity.activityId}`);
+                    }
+                  } else {
+                    navigate(`/dashboard/attivita/interna/${activity.id}`);
+                  }
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <td>{activity.titolo}</td>
+                <td>{formattedDate}</td>
+                <td>
+                  {activity.orainizio} - {calculateEndTime(activity.orainizio, activity.durata)}
+                </td>
+                <td>
+                  <StatusBadge status={status} />
+                </td>
+                <td>{activity.numeroIscritti}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
-      {/* Pulsante "Mostra altro" visibile sempre */}
       <div className="show-more-container">
-        <button className="show-more-button" onClick={() => navigate("/dashboard/attivita/interna")}>
+        <button className="show-more-button" onClick={handleShowMore}>
           Mostra altro
         </button>
       </div>
     </div>
   );
 }
+export default UpcomingActivities;
