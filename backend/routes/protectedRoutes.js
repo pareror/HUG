@@ -828,28 +828,28 @@ router.get("/paziente/:id",
   router.get("/caregivers",
     authenticateJWT,
     authorizeRole(5), // Solo i direttori (o chi ha il ruolo corretto) possono accedere
-    async (req, res) => {
-      console.log("📌 Recupero lista caregiver");
-      try {
-        db.all(
-          `SELECT id, username, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, genere, telefono, fotoProfilo 
-           FROM profiles 
-           WHERE role = 'caregiver'`,
-          (err, rows) => {
-            if (err) {
-              console.error("❌ Errore SQL nel recupero dei caregiver:", err.message);
-              return res.status(500).json({ error: "Errore nel recupero dei caregiver." });
-            }
-            console.log("✅ Caregiver recuperati:", rows);
-            res.json({ caregivers: rows });
-          }
-        );
-      } catch (error) {
-        console.error("❌ Errore generale nel recupero dei caregiver:", error);
-        res.status(500).json({ error: "Errore interno del server." });
-      }
+    (req, res) => {
+      console.log("📌 Recupero lista caregiver per il centro:", req.user.id);
+      const centerId = req.user.id; // L'ID del centro viene preso dal JWT dell'utente autenticato
+      const sql = `
+        SELECT 
+          id, username, nome, cognome, email, dataNascita, comuneDiResidenza, indirizzo, codiceFiscale, genere, telefono, fotoProfilo 
+        FROM profiles 
+        WHERE role = 'caregiver' 
+          AND centroDiurnoId = ?
+      `;
+      db.all(sql, [centerId], (err, rows) => {
+        if (err) {
+          console.error("❌ Errore SQL nel recupero dei caregiver:", err.message);
+          return res.status(500).json({ error: "Errore nel recupero dei caregiver." });
+        }
+        console.log("✅ Caregiver recuperati:", rows);
+        res.json({ caregivers: rows });
+      });
     }
   );
+  
+  
   
   router.post("/aggiungi-caregiver",
     authenticateJWT,
