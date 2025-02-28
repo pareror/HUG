@@ -31,22 +31,23 @@ const AboutUs = () => {
         <h2 className="section-title">Our Values</h2>
         <div className="values-container">
           <div className="value-card">
-            <span className="value-icon">💚</span>
-            <h3>Compassion</h3>
-            <p>We place the well-being and dignity of seniors at the center of everything we do.</p>
-          </div>
+          <span className="value-icon">💚</span>
+            <h3>Compassione</h3>
+            <p>Poniamo il benessere e la dignità degli anziani al centro di tutto ciò che facciamo.</p>
+            </div>
 
-          <div className="value-card">
-            <span className="value-icon">🔗</span>
-            <h3>Community</h3>
-            <p>We believe in the power of connection and socialization to improve quality of life.</p>
-          </div>
+            <div className="value-card">
+              <span className="value-icon">🔗</span>
+              <h3>Comunità</h3>
+              <p>Crediamo nel potere della connessione e della socializzazione per migliorare la qualità della vita.</p>
+            </div>
 
-          <div className="value-card">
-            <span className="value-icon">💡</span>
-            <h3>Innovation</h3>
-            <p>We use technology creatively to tackle the challenges of aging and healthcare.</p>
-          </div>
+            <div className="value-card">
+              <span className="value-icon">💡</span>
+              <h3>Innovazione</h3>
+              <p>Utilizziamo la tecnologia in modo creativo per affrontare le sfide dell'invecchiamento e dell'assistenza sanitaria.</p>
+            </div>
+
         </div>
       </div>
     </section>
