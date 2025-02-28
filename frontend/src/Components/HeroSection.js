@@ -1,7 +1,8 @@
 import React from "react";
 import "../css/HeroSection.css";
-
+import { useNavigate } from "react-router-dom";
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="hero">
       <div className="hero-content">
@@ -11,10 +12,10 @@ const HeroSection = () => {
           H.U.G. semplifica la gestione e promuove la socializzazione attraverso attività socioculturali proposte dagli enti esterni
           e trasporti efficienti garantiti dai tour operator, migliorando il benessere degli utenti e rendendo ogni esperienza accessibile e organizzata.
         </p>
-        <button className="cta-button">Non hai ancora un account? REGISTRATI ORA</button>
+        <button className="cta-button" onClick={() => navigate("/register")}>Non hai ancora un account? REGISTRATI ORA</button>
       </div>
       <div className="hero-image">
-        <img src="/images/community.jpg" alt="Anziani che giocano a carte" />
+        <img src="/images/community.jpg" alt="Anziani che giocano a carte"/>
       </div>
     </section>
   );
